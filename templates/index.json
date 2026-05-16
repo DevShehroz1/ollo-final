@@ -1,58 +1,30 @@
 /*
-* ------------------------------------------------------------
-* IMPORTANT: The contents of this file are auto-generated.
-*
-* This file may be updated by the Shopify admin theme editor
-* or related systems. Please exercise caution as any changes
-* made to this file may be overwritten.
-* ------------------------------------------------------------
-*/
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
-    "slideshow_hero": {
+    "slideshow_8KKtNU": {
       "type": "slideshow",
       "blocks": {
-        "slide_1": {
+        "slider_item_jiLA39": {
           "type": "slider_item",
           "settings": {
-            "image": "shopify://shop_images/fs1_s1.jpg",
-            "image_mobile": "shopify://shop_images/main_demo_mb1_bb77ad31-0df0-4c7b-ad2f-b95964e57f6e.jpg",
-            "overlay_opacity": 25,
-            "slider_effect": "effect_fadeinup",
-            "subheading": "New Season • Sizes 0–12y",
-            "heading": "Made to Move. Built to Last.",
-            "description": "Buttery-soft organic cotton your kids won't take off — and you won't have to wash twice.",
-            "first_button_label": "Shop New Arrivals",
-            "first_button_link": "shopify://collections/new-arrivals",
-            "first_button_style": true,
-            "second_button_label": "Shop Bestsellers",
-            "second_button_link": "shopify://collections/bestsellers",
-            "second_button_style": false,
-            "content_alignment": "left",
-            "content_position": "bottom-left",
-            "content_width": "full_width",
-            "content_max_width": 100,
-            "content_padding_block": 60,
-            "content_padding_inline": 60,
-            "show_content_background": false,
-            "content_background": "#ffffff",
-            "content_box_opacity": 100,
-            "content_alignment_mobile": "center"
-          }
-        },
-        "slide_2": {
-          "type": "slider_item",
-          "settings": {
-            "image": "shopify://shop_images/fs1_s2.jpg",
-            "image_mobile": "shopify://shop_images/main_demo_mb2_592f163a-e42f-4089-85db-d3e1ee71a6eb.jpg",
-            "overlay_opacity": 25,
-            "slider_effect": "effect_fadeindown",
-            "subheading": "Free Shipping Over ₹999",
-            "heading": "Playground-Proof. Parent-Approved.",
-            "description": "Reinforced knees, tag-free necks, and zero scratchy seams. Built for the way kids actually live.",
-            "first_button_label": "Shop Everyday Essentials",
-            "first_button_link": "shopify://collections/essentials",
-            "first_button_style": true,
+            "image": "shopify://shop_images/tabeena.jpg",
+            "image_mobile": "shopify://shop_images/Banner_2_mobile.jpg",
+            "overlay_opacity": 0,
+            "slider_effect": "effect_zoomout",
+            "subheading": "",
+            "heading": "",
+            "description": "",
+            "first_button_label": "",
+            "first_button_link": "shopify://collections/best-seller",
+            "first_button_style": false,
             "second_button_label": "",
             "second_button_link": "",
             "second_button_style": false,
@@ -68,19 +40,19 @@
             "content_alignment_mobile": "center"
           }
         },
-        "slide_3": {
+        "slider_item_6gxfVA": {
           "type": "slider_item",
           "settings": {
-            "image": "shopify://shop_images/fs1_s3.jpg",
-            "image_mobile": "shopify://shop_images/main_demo_mb3_0aa45fce-d652-465e-9e38-11034114270f.jpg",
-            "overlay_opacity": 25,
+            "image": "shopify://shop_images/tabeena-1.jpg",
+            "image_mobile": "shopify://shop_images/Banner_2_mobile-1.jpg",
+            "overlay_opacity": 0,
             "slider_effect": "effect_zoomout",
-            "subheading": "Limited Drop",
-            "heading": "Tiny Looks. Big Personality.",
-            "description": "Hand-picked outfits styled by parents who get it. Mix, match, and let them pick their hero piece.",
-            "first_button_label": "Shop The Drop",
-            "first_button_link": "shopify://collections/new-arrivals",
-            "first_button_style": true,
+            "subheading": "",
+            "heading": "",
+            "description": "",
+            "first_button_label": "",
+            "first_button_link": "shopify://collections/best-seller",
+            "first_button_style": false,
             "second_button_label": "",
             "second_button_link": "",
             "second_button_style": false,
@@ -97,569 +69,55 @@
           }
         }
       },
-      "block_order": ["slide_1", "slide_2", "slide_3"],
-      "custom_css": [".h-full_screen {--height-topbar: 41px;}"],
+      "block_order": [
+        "slider_item_jiLA39",
+        "slider_item_6gxfVA"
+      ],
+      "custom_css": [
+        ".h-full_screen {--height-topbar: 41px;}"
+      ],
       "settings": {
         "section_width": "full_width",
         "slide_height": "full_screen",
         "desktop_height": 800,
-        "mobile_height": 520,
+        "mobile_height": 300,
         "color_scheme": "scheme-c4fa9b2e-e94e-477a-a1f0-ab1da4f2a676",
         "subheading_font_size": 15,
         "subheading_font_weight": "subheading_weight",
-        "subheading_spacing_bottom": 8,
+        "subheading_spacing_bottom": 0,
         "heading_font_size": 70,
         "heading_font_weight": "heading_weight",
         "heading_uppercase": false,
-        "heading_spacing_bottom": 16,
+        "heading_spacing_bottom": 12,
         "des_font_size": 19,
-        "des_font_weight": "body_weight",
-        "des_spacing_bottom": 40,
+        "des_font_weight": "heading_weight",
+        "des_spacing_bottom": 60,
         "show_arrow": true,
         "carousel_pagination": "show_dots",
         "pagination_position": "center",
-        "autoplay": true,
-        "autorotate_speed": 6,
+        "autoplay": false,
+        "autorotate_speed": 5,
         "content_below_image": false,
         "padding_top": 0,
         "padding_bottom": 0,
         "reset_spacing": false
       }
     },
-    "trust_strip": {
-      "type": "icon-box",
-      "blocks": {
-        "trust_1": {
-          "type": "icon_box",
-          "settings": {
-            "icon_image": "",
-            "icon_svg": "leaf",
-            "heading": "100% Organic Cotton",
-            "description": "OEKO-TEX certified. Safe on the most sensitive skin."
-          }
-        },
-        "trust_2": {
-          "type": "icon_box",
-          "settings": {
-            "icon_image": "",
-            "icon_svg": "truck",
-            "heading": "Free Shipping Over ₹999",
-            "description": "Delivered to your door in 3–5 days, India-wide."
-          }
-        },
-        "trust_3": {
-          "type": "icon_box",
-          "settings": {
-            "icon_image": "",
-            "icon_svg": "check_badge",
-            "heading": "Easy 30-Day Returns",
-            "description": "Wrong size? No worries. Hassle-free exchange."
-          }
-        },
-        "trust_4": {
-          "type": "icon_box",
-          "settings": {
-            "icon_image": "",
-            "icon_svg": "blossom",
-            "heading": "Mom-Tested, Kid-Approved",
-            "description": "Designed by parents. Loved by 10,000+ little ones."
-          }
-        }
-      },
-      "block_order": ["trust_1", "trust_2", "trust_3", "trust_4"],
+    "custom_liquid_pp6Cjh": {
+      "type": "custom-liquid",
+      "name": "t:sections.custom_liquid.name",
       "settings": {
         "section_width": "container",
         "color_scheme": "",
-        "type": "default",
-        "column_gap": 25,
-        "icon_position": "left",
-        "icon_size": 36,
-        "spacing": 12,
-        "content_alignment": "left",
-        "heading_font_size": 16,
-        "heading_font_weight": "heading_weight",
-        "heading_uppercase": false,
-        "heading_spacing_bottom": 6,
-        "des_font_size": 13,
-        "des_font_weight": "body_weight",
-        "carousel_on_mobile": true,
-        "items_per_row_mobile": "2",
-        "padding_top": 36,
-        "padding_bottom": 24,
+        "custom_liquid": "",
+        "padding_top": 0,
+        "padding_bottom": 0,
         "reset_spacing": false
-      }
-    },
-    "shop_by_age": {
-      "type": "collection-list",
-      "blocks": {
-        "age_newborn": {
-          "type": "collection",
-          "settings": {
-            "collection": "newborn",
-            "collection_image": "shopify://shop_images/collection_img_1.jpg",
-            "collection_title": "Newborn 0–12m"
-          }
-        },
-        "age_toddler": {
-          "type": "collection",
-          "settings": {
-            "collection": "toddler",
-            "collection_image": "shopify://shop_images/collection_img_2.jpg",
-            "collection_title": "Toddler 1–3y"
-          }
-        },
-        "age_kids": {
-          "type": "collection",
-          "settings": {
-            "collection": "kids",
-            "collection_image": "shopify://shop_images/collection_img_5.jpg",
-            "collection_title": "Kids 4–7y"
-          }
-        },
-        "age_bigkids": {
-          "type": "collection",
-          "settings": {
-            "collection": "big-kids",
-            "collection_image": "shopify://shop_images/collection_img_6.jpg",
-            "collection_title": "Big Kids 8–12y"
-          }
-        }
-      },
-      "block_order": ["age_newborn", "age_toddler", "age_kids", "age_bigkids"],
-      "settings": {
-        "section_width": "fluid_container",
-        "color_scheme": "",
-        "heading": "Shop by Age",
-        "description": "<p>The right fit, every stage. Tap the age and we'll do the rest.</p>",
-        "show_view_all_button": false,
-        "header_size": "medium",
-        "header_alignment": "center",
-        "display_mode": "grid",
-        "image_ratio": "portrait",
-        "items_per_row": 4,
-        "column_gap": 15,
-        "collection_information_position": "below_image",
-        "design": "default",
-        "text_alignment": "center",
-        "show_product_count": false,
-        "show_description": false,
-        "font_size": 18,
-        "font_weight": "heading_weight",
-        "information_spacing": 12,
-        "rounded_image": true,
-        "items_per_row_mobile": 2,
-        "padding_top": 48,
-        "padding_bottom": 16,
-        "reset_spacing": false
-      }
-    },
-    "bestsellers_carousel": {
-      "type": "products-carousel",
-      "settings": {
-        "section_width": "container",
-        "color_scheme": "",
-        "heading": "Bestsellers Loved by Parents",
-        "description": "<p>The pieces that keep coming back to the cart — restocked weekly.</p>",
-        "show_view_all_button": true,
-        "header_size": "medium",
-        "header_alignment": "center",
-        "collection": "bestsellers",
-        "items_to_show": 8,
-        "items_per_row": 4,
-        "column_gap": 15,
-        "show_banner": false,
-        "show_arrow": true,
-        "carousel_pagination": "show_dots",
-        "infinite": true,
-        "autoplay": false,
-        "autorotate_speed": 5,
-        "items_per_row_mobile": 2,
-        "padding_top": 48,
-        "padding_bottom": 48,
-        "reset_spacing": false
-      }
-    },
-    "featured_grid_banner": {
-      "type": "collection-cards-with-banner",
-      "settings": {
-        "bg_color": "#FFF8F0",
-        "heading": "Tiny Wardrobe Essentials",
-        "heading_color": "#1a1a1a",
-        "heading_size": 36,
-        "heading_size_mobile": 26,
-        "content_max_width": 1280,
-        "fallback_collection": "essentials",
-        "products_limit": 6,
-        "columns_desktop": 3,
-        "columns_mobile": 2,
-        "column_gap_desktop": 20,
-        "row_gap_desktop": 28,
-        "column_gap_mobile": 12,
-        "row_gap_mobile": 18,
-        "banner_enable": true,
-        "banner_after_count": 3,
-        "banner_bg_color": "#F7C2C2",
-        "banner_text_color": "#1a1a1a",
-        "banner_accent_color": "#C8557A",
-        "banner_heading": "First Order? Get 15% Off.",
-        "banner_heading_accent": "Code: LITTLE15",
-        "banner_desc": "Stock the little wardrobe in one go — free shipping over ₹999.",
-        "banner_cta_text": "Apply at Checkout",
-        "banner_cta_link": "shopify://collections/all",
-        "banner_cta_bg": "#1a1a1a",
-        "banner_cta_text_color": "#ffffff",
-        "padding_top_desktop": 48,
-        "padding_bottom_desktop": 48,
-        "padding_top_mobile": 32,
-        "padding_bottom_mobile": 32
-      }
-    },
-    "why_ollo": {
-      "type": "why-us",
-      "settings": {
-        "bg_color": "#FAF5EE",
-        "eyebrow_color": "#C8557A",
-        "accent_color": "#1a1a1a",
-        "eyebrow_text": "Why Ollo",
-        "heading_html": "Clothes that keep up <em>with the kids in them.</em>",
-        "heading_accent": "with the kids in them.",
-        "heading_size": 56,
-        "heading_size_mobile": 32,
-        "description_html": "<p>Every piece is double-stitched at stress points, washed 50+ times before it ships, and tested by real kids on real days. So you buy once — and they keep wearing it until they outgrow it.</p>",
-        "result_text": "10,000+ happy parents and counting.",
-        "button_text": "Read Our Story",
-        "button_link": "/pages/about",
-        "padding_top_desktop": 64,
-        "padding_bottom_desktop": 64,
-        "padding_top_mobile": 40,
-        "padding_bottom_mobile": 40
-      }
-    },
-    "story_cards": {
-      "type": "sticky-image-cards",
-      "blocks": {
-        "card_soft": {
-          "type": "card",
-          "settings": {
-            "heading": "Soft on Skin",
-            "description": "<p>GOTS-certified organic cotton — naturally hypoallergenic, naturally breathable. No harsh dyes, no scratchy tags.</p>",
-            "image": "",
-            "image_position": "right",
-            "button_label": "Shop Organic Range",
-            "button_link": "shopify://collections/organic"
-          }
-        },
-        "card_play": {
-          "type": "card",
-          "settings": {
-            "heading": "Tough on Play",
-            "description": "<p>Reinforced knees, double-stitched seams, and shrink-tested fabric. Made to survive 100+ washes and still look like new.</p>",
-            "image": "",
-            "image_position": "left",
-            "button_label": "Shop Everyday Wear",
-            "button_link": "shopify://collections/essentials"
-          }
-        },
-        "card_parents": {
-          "type": "card",
-          "settings": {
-            "heading": "Loved by Parents",
-            "description": "<p>Tag-free necks, easy snap closures, machine-wash everything. Designed by parents who got tired of fighting with buttons at 7 a.m.</p>",
-            "image": "",
-            "image_position": "right",
-            "button_label": "Read Reviews",
-            "button_link": "/pages/reviews"
-          }
-        }
-      },
-      "block_order": ["card_soft", "card_play", "card_parents"],
-      "settings": {
-        "bg_color": "#FFFFFF",
-        "padding_top": 56,
-        "padding_bottom": 56,
-        "full_width_desktop": false,
-        "side_margin_desktop": 80,
-        "full_width_mobile": false,
-        "side_margin_mobile": 16,
-        "mobile_image_width_pct": 100,
-        "mobile_image_height_vh": 60
-      }
-    },
-    "new_arrivals_carousel": {
-      "type": "products-carousel",
-      "settings": {
-        "section_width": "container",
-        "color_scheme": "",
-        "heading": "Just Dropped",
-        "description": "<p>This week's freshest little looks — usually gone in days.</p>",
-        "show_view_all_button": true,
-        "header_size": "medium",
-        "header_alignment": "center",
-        "collection": "new-arrivals",
-        "items_to_show": 8,
-        "items_per_row": 4,
-        "column_gap": 15,
-        "show_banner": false,
-        "show_arrow": true,
-        "carousel_pagination": "show_dots",
-        "infinite": true,
-        "autoplay": false,
-        "autorotate_speed": 5,
-        "items_per_row_mobile": 2,
-        "padding_top": 48,
-        "padding_bottom": 48,
-        "reset_spacing": false
-      }
-    },
-    "how_to_size": {
-      "type": "how-it-works",
-      "blocks": {
-        "step_1": {
-          "type": "step",
-          "settings": {
-            "heading": "Measure once",
-            "description": "<p>Use our printable size chart. Height matters more than age — we've sized every piece for room to grow.</p>"
-          }
-        },
-        "step_2": {
-          "type": "step",
-          "settings": {
-            "heading": "Pick the next size up",
-            "description": "<p>Our 'true-to-grow' fit gives 2–3 cm of extra room. Kids stay in their clothes longer, parents shop less often.</p>"
-          }
-        },
-        "step_3": {
-          "type": "step",
-          "settings": {
-            "heading": "Wrong fit? We'll fix it",
-            "description": "<p>30-day free exchange — no questions, no return-shipping fees. Just send it back.</p>"
-          }
-        }
-      },
-      "block_order": ["step_1", "step_2", "step_3"],
-      "settings": {
-        "heading": "Sizing Made Simple",
-        "product_image": "",
-        "bg_color": "#FAF5EE",
-        "padding_top": 56,
-        "padding_bottom": 56
-      }
-    },
-    "parent_reviews": {
-      "type": "testimonials-grid",
-      "blocks": {
-        "review_1": {
-          "type": "testimonial",
-          "settings": {
-            "rating": 5,
-            "text": "My daughter refuses to take off the dungarees. They've been through 30+ washes and still look brand new. Worth every rupee.",
-            "name": "Priya M. — Mom of a 4-year-old"
-          }
-        },
-        "review_2": {
-          "type": "testimonial",
-          "settings": {
-            "rating": 5,
-            "text": "Finally, a kids' brand that doesn't have scratchy tags or weird seams. My son with sensitive skin can actually wear these all day.",
-            "name": "Karan S. — Dad of a 6-year-old"
-          }
-        },
-        "review_3": {
-          "type": "testimonial",
-          "settings": {
-            "rating": 5,
-            "text": "The sizing guide was spot on. Ordered up one size like they suggested and the romper still fits 6 months later.",
-            "name": "Anita R. — Mom of twins"
-          }
-        },
-        "review_4": {
-          "type": "testimonial",
-          "settings": {
-            "rating": 5,
-            "text": "Fast shipping, beautiful packaging, and the cotton is unbelievably soft. We've reordered 4 times now.",
-            "name": "Meera K. — Mom of an 8-year-old"
-          }
-        }
-      },
-      "block_order": ["review_1", "review_2", "review_3", "review_4"],
-      "settings": {
-        "heading": "What Parents Are Saying",
-        "color_scheme": "",
-        "padding_top": 56,
-        "padding_bottom": 56
-      }
-    },
-    "founder_note": {
-      "type": "founder-quote",
-      "settings": {
-        "bg_color": "#FFF8F0",
-        "text_color": "#1a1a1a",
-        "attribution_color": "#C8557A",
-        "and_color": "#C8557A",
-        "image": "",
-        "image_rotation": -3,
-        "quote": "I started Ollo because I was tired of buying my daughter clothes that lost their shape after two washes. Every piece we make has to pass one test — would I dress my own kid in it?",
-        "attribution": "Aanya — Founder & Mom of two",
-        "padding_top": 64,
-        "padding_bottom": 64,
-        "reset_spacing": false
-      }
-    },
-    "statement_cta": {
-      "type": "statement-banner",
-      "settings": {
-        "image": "",
-        "height": 480,
-        "height_mobile": 360,
-        "heading_spacing": 16,
-        "heading_main": "Soft on skin.",
-        "heading_accent": "Tough on play.",
-        "accent_color": "#F7C2C2",
-        "body_text": "Stock the little wardrobe with pieces built to last. Free shipping over ₹999.",
-        "body_spacing": 24
-      }
-    },
-    "homepage_faqs": {
-      "type": "faqs-grid",
-      "blocks": {
-        "faq_size": {
-          "type": "faq",
-          "settings": {
-            "question": "How do I pick the right size?",
-            "answer": "<p>Measure your child's height — our sizes are based on height, not age. If they're between sizes, go one size up. Our 'true-to-grow' fit gives 2–3 cm of room so the piece lasts longer.</p>",
-            "open_by_default": true
-          }
-        },
-        "faq_fabric": {
-          "type": "faq",
-          "settings": {
-            "question": "What fabric do you use?",
-            "answer": "<p>100% GOTS-certified organic cotton, dyed with OEKO-TEX safe dyes. No formaldehyde, no chlorine, no harsh chemicals. Safe on the most sensitive skin.</p>",
-            "open_by_default": false
-          }
-        },
-        "faq_returns": {
-          "type": "faq",
-          "settings": {
-            "question": "What's your return policy?",
-            "answer": "<p>30-day free returns and exchanges, no questions asked. If the size or style isn't right, we'll cover return shipping and swap it.</p>",
-            "open_by_default": false
-          }
-        },
-        "faq_shipping": {
-          "type": "faq",
-          "settings": {
-            "question": "How fast is shipping?",
-            "answer": "<p>Free shipping on orders over ₹999 across India. Delivered in 3–5 business days. Cash on Delivery available.</p>",
-            "open_by_default": false
-          }
-        },
-        "faq_wash": {
-          "type": "faq",
-          "settings": {
-            "question": "How do I care for Ollo clothes?",
-            "answer": "<p>Machine-wash cold with similar colors, tumble dry low. Every piece is pre-shrunk and tested through 50+ washes — they'll keep their shape and color for years.</p>",
-            "open_by_default": false
-          }
-        },
-        "faq_gift": {
-          "type": "faq",
-          "settings": {
-            "question": "Do you offer gift wrapping?",
-            "answer": "<p>Yes — we offer complimentary gift wrap on every order. Add a free personalized note at checkout.</p>",
-            "open_by_default": false
-          }
-        }
-      },
-      "block_order": ["faq_size", "faq_fabric", "faq_returns", "faq_shipping", "faq_wash", "faq_gift"],
-      "settings": {
-        "heading": "Questions Parents Ask",
-        "bg_color": "#FFFFFF",
-        "color_scheme": "",
-        "max_width": 920,
-        "padding_top": 48,
-        "padding_bottom": 64
-      }
-    },
-    "instagram_ugc": {
-      "type": "instagram-gallery",
-      "blocks": {
-        "ig_1": {
-          "type": "image",
-          "settings": {
-            "image": "",
-            "button_label": "Shop the Look",
-            "button_link": "shopify://collections/all"
-          }
-        },
-        "ig_2": {
-          "type": "image",
-          "settings": {
-            "image": "",
-            "button_label": "Shop the Look",
-            "button_link": "shopify://collections/all"
-          }
-        },
-        "ig_3": {
-          "type": "image",
-          "settings": {
-            "image": "",
-            "button_label": "Shop the Look",
-            "button_link": "shopify://collections/all"
-          }
-        },
-        "ig_4": {
-          "type": "image",
-          "settings": {
-            "image": "",
-            "button_label": "Shop the Look",
-            "button_link": "shopify://collections/all"
-          }
-        },
-        "ig_5": {
-          "type": "image",
-          "settings": {
-            "image": "",
-            "button_label": "Shop the Look",
-            "button_link": "shopify://collections/all"
-          }
-        },
-        "ig_6": {
-          "type": "image",
-          "settings": {
-            "image": "",
-            "button_label": "Shop the Look",
-            "button_link": "shopify://collections/all"
-          }
-        }
-      },
-      "block_order": ["ig_1", "ig_2", "ig_3", "ig_4", "ig_5", "ig_6"],
-      "settings": {
-        "instagram_link": "https://instagram.com/",
-        "bottom_button_label": "Tag #OlloKids to be featured",
-        "color_scheme": "",
-        "content_max_width": 1280,
-        "padding_h_desktop": 24,
-        "padding_h_mobile": 16,
-        "padding_top": 56,
-        "padding_bottom": 56
       }
     }
   },
   "order": [
-    "slideshow_hero",
-    "trust_strip",
-    "shop_by_age",
-    "bestsellers_carousel",
-    "featured_grid_banner",
-    "why_ollo",
-    "story_cards",
-    "new_arrivals_carousel",
-    "how_to_size",
-    "parent_reviews",
-    "founder_note",
-    "statement_cta",
-    "homepage_faqs",
-    "instagram_ugc"
+    "slideshow_8KKtNU",
+    "custom_liquid_pp6Cjh"
   ]
 }
