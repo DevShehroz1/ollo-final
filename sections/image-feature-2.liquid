@@ -1,0 +1,547 @@
+{%- liquid
+  assign s = section.settings
+  if s.reset_spacing
+    assign reset_spacing = ' remove_spacing'
+  endif
+-%}
+
+<div class="ss{{ reset_spacing }}" style="background-color: {{ s.bg_color }};">
+  <div class="ss__wrap" style="padding: {{ s.section_padding_v }}px {{ s.section_padding_h }}px;">
+    <div class="ss__block">
+
+      <div class="ss__image-panel">
+        {%- if s.image != blank -%}
+          {{
+            s.image
+            | image_url: width: 1400
+            | image_tag:
+              loading: 'lazy',
+              alt: s.image.alt | default: 'Story image',
+              class: 'ss__img',
+              widths: '400, 700, 1000, 1400',
+              sizes: '(max-width: 960px) 100vw, 55vw'
+          }}
+        {%- else -%}
+          {{ 'image' | placeholder_svg_tag: 'ss__img ss__img--placeholder' }}
+        {%- endif -%}
+      </div>
+
+      <div class="ss__copy">
+        {%- if s.heading != blank -%}
+          <h2 class="ss__headline">
+            <span class="ss__line"><span class="ss__word-white">A FUN</span>CTIONAL PERSONAL</span>
+            <span class="ss__line"><span class="ss__word-white">CARE</span> BRAND THAT PRIORITISES</span>
+            <span class="ss__line"><span class="ss__word-grad">BODY</span> CARE FOR PEOPLE WHO ACTUALLY</span>
+            <span class="ss__line"><span class="ss__word-grad">MOVE</span> THROUGH THEIR DAY.</span>
+          </h2>
+        {%- endif -%}
+
+        {%- if s.description != blank -%}
+          <p class="ss__desc" style="color: {{ s.desc_color }};">
+            {{ s.description }}
+          </p>
+        {%- endif -%}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    padding-left: {{ s.side_margin_desktop | default: 0 }}px;
+    padding-right: {{ s.side_margin_desktop | default: 0 }}px;
+  }
+  @media (max-width: 640px) {
+    #shopify-section-{{ section.id }} {
+      padding-left: {{ s.side_margin_mobile | default: 0 }}px;
+      padding-right: {{ s.side_margin_mobile | default: 0 }}px;
+    }
+  }
+  #shopify-section-{{ section.id }} .ss {
+    width: 100%;
+  }
+
+  #shopify-section-{{ section.id }} .ss__wrap {
+    display: grid;
+    place-items: center;
+  }
+
+  #shopify-section-{{ section.id }} .ss__block {
+    width: min(100%, {{ s.content_max_width }}px);
+    background: {{ s.bg_color }};
+    border-radius: 24px;
+    padding: {{ s.block_padding }}px;
+    display: grid;
+    grid-template-columns: {{ s.image_col_pct }}% 1fr;
+    gap: {{ s.column_gap }}px;
+    align-items: stretch;
+    isolation: isolate;
+    overflow: visible;
+  }
+
+  {%- if s.image_position == 'right' -%}
+  #shopify-section-{{ section.id }} .ss__block {
+    direction: rtl;
+  }
+  #shopify-section-{{ section.id }} .ss__image-panel,
+  #shopify-section-{{ section.id }} .ss__copy {
+    direction: ltr;
+  }
+  {%- endif -%}
+
+  #shopify-section-{{ section.id }} .ss__image-panel {
+    position: relative;
+    z-index: 1;
+    border-radius: 14px;
+    overflow: hidden;
+    clip-path: inset(0 round 14px);
+    align-self: start;
+    background: transparent;
+    line-height: 0;
+  }
+  #shopify-section-{{ section.id }} .ss__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+  }
+  #shopify-section-{{ section.id }} .ss__img--placeholder {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .ss__copy {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 8px 8px 8px 2px;
+    min-height: 400px;
+    overflow: visible;
+  }
+
+  #shopify-section-{{ section.id }} .ss__headline {
+    position: relative;
+    z-index: 3;
+    margin: 0;
+    font-family: 'Inter', 'Avenir Next', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: {{ s.heading_size }}px;
+    line-height: 43px;
+    letter-spacing: 0;
+    font-weight: 500;
+    font-style: normal;
+    text-transform: uppercase;
+    width: calc(100% + {{ s.heading_overlap }}px);
+    max-width: 860px;
+    margin-left: -{{ s.heading_overlap }}px;
+    color: {{ s.heading_color | default: '#111111' }};
+    overflow: visible;
+  }
+
+  #shopify-section-{{ section.id }} .ss__headline .ss__line {
+    display: block;
+    white-space: nowrap;
+  }
+
+  #shopify-section-{{ section.id }} .ss__headline .ss__word-white {
+    display: inline-block;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    /* Keep white words readable even if overlap shifts onto light background */
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.45);
+  }
+
+  #shopify-section-{{ section.id }} .ss__headline .ss__word-grad {
+    display: inline-block;
+    color: #cfcfcf !important; /* Fallback when text clipping isn't supported */
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.35);
+  }
+
+  @supports ((-webkit-background-clip: text) or (background-clip: text)) {
+    #shopify-section-{{ section.id }} .ss__headline .ss__word-grad {
+      background-image: linear-gradient(90deg, {{ s.grad_start_color | default: '#cfcfcf' }} 0%, {{ s.grad_end_color | default: '#333333' }} 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent !important;
+      color: transparent !important;
+      text-shadow: none;
+    }
+  }
+
+  #shopify-section-{{ section.id }} .ss__desc {
+    position: relative;
+    top: {{ s.desc_offset_y | default: 0 }}px;
+    margin: 0;
+    max-width: {{ s.desc_max_width }}px;
+    font-family: 'Inter', 'Avenir Next', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: {{ s.desc_size }}px;
+    line-height: 24px;
+    letter-spacing: 0;
+    font-weight: 400;
+    font-style: normal;
+    align-self: flex-start;
+    padding-top: 20px;
+  }
+
+  @media screen and (max-width: 1200px) and (min-width: 961px) {
+    #shopify-section-{{ section.id }} .ss__headline {
+      margin-left: clamp(-{{ s.heading_overlap }}px, -6.2vw, -{{ s.heading_overlap | minus: 30 }}px);
+    }
+  }
+
+  @media screen and (max-width: 960px) {
+    #shopify-section-{{ section.id }} .ss__block {
+      grid-template-columns: 1fr;
+    }
+    #shopify-section-{{ section.id }} .ss__copy {
+      min-height: auto;
+      gap: 22px;
+    }
+    #shopify-section-{{ section.id }} .ss__headline {
+      margin-left: 0;
+      width: 100%;
+      max-width: 100%;
+      font-size: {{ s.heading_size | minus: 8 }}px;
+    }
+    #shopify-section-{{ section.id }} .ss__desc {
+      font-size: {{ s.desc_size | minus: 2 }}px;
+      padding-top: 0;
+    }
+  }
+
+  @media screen and (max-width: 640px) {
+    #shopify-section-{{ section.id }} {
+      display: none;
+    }
+    #shopify-section-{{ section.id }} .ss__wrap {
+      padding: 24px 12px;
+    }
+    #shopify-section-{{ section.id }} .ss__block {
+      position: relative;
+      padding: 0;
+      background: transparent;
+      border-radius: 0;
+      gap: 0;
+    }
+    #shopify-section-{{ section.id }} .ss__image-panel {
+      width: 100%;
+    }
+    #shopify-section-{{ section.id }} .ss__img {
+      width: 100%;
+      {%- if s.mobile_image_height and s.mobile_image_height > 0 -%}
+        height: {{ s.mobile_image_height }}px;
+        object-fit: cover;
+      {%- else -%}
+        height: auto;
+      {%- endif -%}
+    }
+    #shopify-section-{{ section.id }} .ss__headline {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      right: 24px;
+      z-index: 5;
+      margin: 0;
+      width: auto;
+      max-width: none;
+      font-family: 'Inter', 'Avenir Next', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 16px;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      color: #ffffff;
+      text-align: left;
+    }
+    #shopify-section-{{ section.id }} .ss__headline .ss__line {
+      white-space: normal;
+    }
+    #shopify-section-{{ section.id }} .ss__headline .ss__word-white,
+    #shopify-section-{{ section.id }} .ss__headline .ss__word-grad {
+      color: #ffffff !important;
+      -webkit-text-fill-color: #ffffff !important;
+      background: none !important;
+      background-image: none !important;
+      text-shadow: none !important;
+    }
+    #shopify-section-{{ section.id }} .ss__copy {
+      padding: 16px 4px 0;
+      gap: 0;
+    }
+    #shopify-section-{{ section.id }} .ss__desc {
+      position: relative;
+      top: 0;
+      font-family: 'Inter', 'Avenir Next', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 18px;
+      letter-spacing: 0;
+      padding-top: 0;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Story Spotlight 2",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.overlay"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "label": "Max content width",
+      "default": 1200,
+      "min": 800,
+      "max": 1600,
+      "step": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_v",
+      "label": "Section vertical padding",
+      "default": 60,
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_h",
+      "label": "Section horizontal padding",
+      "default": 24,
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Side margins"
+    },
+    {
+      "type": "range",
+      "id": "side_margin_desktop",
+      "label": "Side margin – Desktop (px)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "side_margin_mobile",
+      "label": "Side margin – Mobile (px)",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "block_padding",
+      "label": "Inner block padding",
+      "default": 26,
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Gap between image and text",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image horizontal position",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "range",
+      "id": "image_col_pct",
+      "label": "Image column width",
+      "default": 54,
+      "min": 30,
+      "max": 70,
+      "step": 1,
+      "unit": "%"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "range",
+      "id": "mobile_image_height",
+      "label": "Image height (mobile)",
+      "info": "Set to 0 to use the image's natural aspect ratio. Any other value forces a fixed height with object-fit: cover.",
+      "default": 0,
+      "min": 0,
+      "max": 800,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading text",
+      "default": "A functional personal care brand that prioritises body care for people who actually move through their day."
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "grad_start_color",
+      "label": "Gradient word — start color",
+      "info": "Used for BODY / MOVE spans. Lighter end of the gradient.",
+      "default": "#cfcfcf"
+    },
+    {
+      "type": "color",
+      "id": "grad_end_color",
+      "label": "Gradient word — end color",
+      "info": "Used for BODY / MOVE spans. Darker end of the gradient.",
+      "default": "#333333"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading font size",
+      "default": 34,
+      "min": 20,
+      "max": 60,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "heading_overlap",
+      "label": "Heading left overlap (pulls heading over image)",
+      "default": 75,
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "heading_max_width",
+      "label": "Heading max width",
+      "default": 400,
+      "min": 100,
+      "max": 2100,
+      "step": 20,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Description"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description text",
+      "default": "Clean, proven ingredients sit at the center of every formula. We keep quality high by including premium components that are rarely available in this price range, giving skin and body effortless daily care with a noticeably elevated finish."
+    },
+    {
+      "type": "color",
+      "id": "desc_color",
+      "label": "Description color",
+      "default": "#3a3a3a"
+    },
+    {
+      "type": "range",
+      "id": "desc_size",
+      "label": "Description font size",
+      "default": 18,
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "desc_max_width",
+      "label": "Description max width",
+      "default": 480,
+      "min": 100,
+      "max": 1000,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "desc_offset_y",
+      "label": "Description vertical offset",
+      "info": "Negative pulls the paragraph up, positive pushes it down.",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing"
+    },
+    {
+      "type": "checkbox",
+      "id": "reset_spacing",
+      "label": "Remove section spacing",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Story Spotlight 2"
+    }
+  ]
+}
+{% endschema %}

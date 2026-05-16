@@ -1,0 +1,123 @@
+<section class="summr-section">
+  <div class="summr-wrapper">
+    
+    <!-- Image -->
+    <div class="summr-image">
+      <img src="{{ section.settings.image | image_url: width: 800 }}" alt="image">
+    </div>
+
+    <!-- Content -->
+    <div class="summr-content">
+      <h2 class="summr-heading">
+        {{ section.settings.heading }}
+      </h2>
+
+      <p class="summr-description">
+        {{ section.settings.description }}
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<style>
+.summr-section {
+  padding: 60px 20px;
+  background: #fff;
+}
+
+.summr-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+/* Image */
+.summr-image img {
+  width: 100%;
+  border-radius: 16px;
+  display: block;
+}
+
+/* Content */
+.summr-content {
+  position: relative;
+}
+
+/* Heading (overlapping effect) */
+.summr-heading {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 34px;
+  line-height: 38px;
+  letter-spacing: 0%;
+  margin: 0 0 20px;
+  position: relative;
+
+  /* This creates the slight “collapse/overlap” feel */
+  margin-top: -40px;
+}
+
+/* Description */
+.summr-description {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: 0%;
+  color: #333;
+  max-width: 500px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .summr-wrapper {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .summr-heading {
+    margin-top: 0;
+    font-size: 26px;
+    line-height: 32px;
+  }
+
+  .summr-description {
+    font-size: 16px;
+    line-height: 22px;
+  }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Summr Image Text",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "At Summr we’re on a mission to blend functional personal care with affordable luxury."
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Clean, proven ingredients provide the foundation for everything we make then we turn up the premium by including top-tier ingredients rarely found at this price point."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Summr Image Text"
+    }
+  ]
+}
+{% endschema %}

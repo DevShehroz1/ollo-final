@@ -1,0 +1,789 @@
+{%- liquid
+  assign s = section.settings
+  if s.reset_spacing
+    assign reset_spacing = ' remove_spacing'
+  endif
+  assign mt_mobile = s.margin_top_mobile
+  if mt_mobile == 0
+    assign mt_mobile = s.margin_top
+  endif
+  assign mb_mobile = s.margin_bottom_mobile
+  if mb_mobile == 0
+    assign mb_mobile = s.margin_bottom
+  endif
+-%}
+
+<div class="si{{ reset_spacing }}" style="background-color: {{ s.bg_color }};">
+  <div class="si__wrap">
+
+    <div class="si__body">
+
+      <div class="si__left">
+        {%- if s.list_heading != blank -%}
+          <h3 class="si__list-heading">{{ s.list_heading }}</h3>
+        {%- endif -%}
+        {%- if s.list_desc != blank -%}
+          <p class="si__list-desc">{{ s.list_desc | escape | replace: '|', '<br>' }}</p>
+        {%- endif -%}
+        {%- if s.image != blank -%}
+          <div class="si__image-wrap">
+            {{
+              s.image
+              | image_url: width: 900
+              | image_tag:
+                loading: 'lazy',
+                class: 'si__image',
+                alt: s.image.alt | default: s.list_heading
+            }}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="si__right">
+        <div class="si__items">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'item' -%}
+              <div class="si__item" {{ block.shopify_attributes }}>
+                <div class="si__icon">
+                  {%- if s.icon != blank -%}
+                    {{
+                      s.icon
+                      | image_url: width: 48
+                      | image_tag: loading: 'lazy', class: 'si__icon-img', alt: ''
+                    }}
+                  {%- else -%}
+                    <svg class="si__icon-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M50,50 C50,28 28,6 50,6 C72,6 50,28 50,50 C72,50 94,28 94,50 C94,72 72,50 50,50 C50,72 72,94 50,94 C28,94 50,72 50,50 C28,50 6,72 6,50 C6,28 28,50 50,50Z" fill="currentColor" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                  {%- endif -%}
+                </div>
+                <span class="si__item-name">{{ block.settings.name }}</span>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        {%- if s.footnote != blank -%}
+          <p class="si__footnote">{{ s.footnote }}</p>
+        {%- endif -%}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    margin-top: {{ s.margin_top | default: 0 }}px;
+    margin-bottom: {{ s.margin_bottom | default: 0 }}px;
+  }
+  #shopify-section-{{ section.id }} br {
+    display: none;
+  }
+  @media screen and (max-width: 767px) {
+    #shopify-section-{{ section.id }} br {
+      display: inline;
+    }
+  }
+  /* List description supports forced line breaks via `|` (which the
+     Liquid output converts to <br>). Override the section's global
+     <br> hide rule so the breaks render on desktop too. */
+  #shopify-section-{{ section.id }} .si__list-desc br {
+    display: inline;
+  }
+  #shopify-section-{{ section.id }} .si {
+    width: 100%;
+  }
+  #shopify-section-{{ section.id }} .si__wrap {
+    max-width: {{ s.content_max_width }}px;
+    margin: 0 auto;
+    padding: {{ s.padding_v }}px {{ s.padding_h }}px;
+    box-sizing: border-box;
+  }
+  /* Desktop-only side padding override (≥1025px). Mobile and tablet
+     keep the unscoped padding_h above so they stay unchanged. */
+  @media screen and (min-width: 1025px) {
+    #shopify-section-{{ section.id }} .si__wrap {
+      padding-left: {{ s.padding_h_desktop | default: 24 }}px;
+      padding-right: {{ s.padding_h_desktop | default: 24 }}px;
+    }
+  }
+
+
+  /* ── Two-column body ── */
+  #shopify-section-{{ section.id }} .si__body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: stretch;
+    min-height: {{ s.section_height }}px;
+  }
+
+  /* ── Left column ── */
+  #shopify-section-{{ section.id }} .si__left {
+    display: flex;
+    flex-direction: column;
+    {%- if s.enable_sticky_left %}
+    position: sticky;
+    top: {{ s.sticky_top_offset_desktop | default: 24 }}px;
+    align-self: start;
+    {%- endif %}
+  }
+  #shopify-section-{{ section.id }} .si__list-heading {
+    font-family: 'Inter', sans-serif;
+    font-weight: {{ s.list_heading_weight | default: 700 }};
+    font-style: normal;
+    font-size: {{ s.list_heading_size_desktop | default: 40 }}px;
+    line-height: {{ s.list_heading_line_height_desktop | default: 44 }}px;
+    letter-spacing: 0;
+    text-align: left;
+    text-transform: uppercase;
+    color: {{ s.text_color }};
+    margin: 0 0 24px;
+    max-width: {{ s.text_max_width }}px;
+  }
+  #shopify-section-{{ section.id }} .si__list-desc {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: {{ s.list_desc_size_desktop | default: 24 }}px;
+    line-height: {{ s.list_desc_line_height_desktop | default: 28 }}px;
+    letter-spacing: 0;
+    text-align: left;
+    color: {{ s.text_color }};
+    margin: 0 0 32px;
+    max-width: {{ s.text_max_width }}px;
+  }
+  #shopify-section-{{ section.id }} .si__image-wrap {
+    border-radius: 14px;
+    overflow: hidden;
+    width: {{ s.image_width }}%;
+    height: {{ s.image_height }}px;
+  }
+  #shopify-section-{{ section.id }} .si__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: {{ s.image_position }};
+    display: block;
+    border-radius: 14px;
+  }
+
+  /* ── Right column ── */
+  #shopify-section-{{ section.id }} .si__right {
+    padding-top: {{ s.list_offset }}px;
+  }
+  #shopify-section-{{ section.id }} .si__items {
+    display: flex;
+    flex-direction: column;
+  }
+  #shopify-section-{{ section.id }} .si__item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid {{ s.border_color }};
+    /* Scroll-reveal: items start muted, fade to full opacity + glow as
+       they cross the trigger line. JS adds .is-active when the item's
+       top crosses above the viewport-center line, and removes it when
+       the user scrolls back up past that line. */
+    opacity: {{ s.scroll_reveal_muted_opacity | default: 25 | divided_by: 100.0 }};
+    transition: opacity 900ms cubic-bezier(0.16, 1, 0.3, 1),
+                color 900ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  #shopify-section-{{ section.id }} .si__item.is-active {
+    opacity: 1;
+  }
+  #shopify-section-{{ section.id }} .si__item:first-child {
+    border-top: 1px solid {{ s.border_color }};
+  }
+  #shopify-section-{{ section.id }} .si__icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: {{ s.text_color }};
+    transition: color 900ms cubic-bezier(0.16, 1, 0.3, 1),
+                filter 900ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  #shopify-section-{{ section.id }} .si__item.is-active .si__icon {
+    color: {{ s.glow_color | default: '#A6BDDD' }};
+    filter: drop-shadow(0 0 10px {{ s.glow_color | default: '#A6BDDD' }}66);
+  }
+  /* Reduced motion — keep static, no transitions */
+  @media (prefers-reduced-motion: reduce) {
+    #shopify-section-{{ section.id }} .si__item,
+    #shopify-section-{{ section.id }} .si__icon {
+      transition: none !important;
+      opacity: 1 !important;
+    }
+  }
+  #shopify-section-{{ section.id }} .si__icon-img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    display: block;
+  }
+  #shopify-section-{{ section.id }} .si__icon-svg {
+    width: 24px;
+    height: 24px;
+  }
+  #shopify-section-{{ section.id }} .si__item-name {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    font-size: {{ s.item_name_size_desktop | default: 20 }}px;
+    line-height: {{ s.item_name_line_height_desktop | default: 28 }}px;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: {{ s.text_color }};
+  }
+  #shopify-section-{{ section.id }} .si__footnote {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 18px;
+    line-height: 22px;
+    letter-spacing: 0;
+    color: {{ s.text_color }};
+    margin: 16px 0 0;
+    padding-bottom: 16px;
+    border-bottom: 1px solid {{ s.border_color }};
+    opacity: 0.7;
+  }
+
+  /* ── Mobile ── */
+  @media screen and (max-width: 767px) {
+    #shopify-section-{{ section.id }} {
+      margin-top: {{ mt_mobile | default: 0 }}px;
+      margin-bottom: {{ mb_mobile | default: 0 }}px;
+    }
+    #shopify-section-{{ section.id }} .si__body {
+      grid-template-columns: 1fr;
+      gap: 24px;
+      min-height: 0;
+    }
+    #shopify-section-{{ section.id }} .si__left {
+      gap: 0;
+      position: static;
+    }
+    #shopify-section-{{ section.id }} .si__image-wrap {
+      order: 0;
+      width: 100%;
+      height: auto;
+      margin-bottom: 24px;
+    }
+    #shopify-section-{{ section.id }} .si__image {
+      height: auto;
+    }
+    #shopify-section-{{ section.id }} .si__list-heading {
+      order: 1;
+      font-size: {{ s.list_heading_size_mobile | default: 28 }}px;
+      line-height: {{ s.list_heading_line_height_mobile | default: 32 }}px;
+      margin-bottom: 16px;
+    }
+    #shopify-section-{{ section.id }} .si__list-desc {
+      order: 2;
+      font-size: {{ s.list_desc_size_mobile | default: 16 }}px;
+      line-height: {{ s.list_desc_line_height_mobile | default: 22 }}px;
+      margin-bottom: 0;
+    }
+    #shopify-section-{{ section.id }} .si__right {
+      padding-top: 0;
+    }
+    #shopify-section-{{ section.id }} .si__items {
+      gap: 0;
+    }
+    #shopify-section-{{ section.id }} .si__item {
+      border: 0;
+      border-bottom: 1px solid {{ s.border_color }};
+      border-radius: 0;
+      padding: 14px 0;
+    }
+    #shopify-section-{{ section.id }} .si__item:first-child {
+      border-top: 1px solid {{ s.border_color }};
+    }
+    #shopify-section-{{ section.id }} .si__item-name {
+      font-size: {{ s.item_name_size_mobile | default: 14 }}px;
+      line-height: {{ s.item_name_line_height_mobile | default: 20 }}px;
+    }
+    #shopify-section-{{ section.id }} .si__footnote {
+      border-bottom: 0;
+    }
+  }
+{% endstyle %}
+
+<script>
+  (function () {
+    var root = document.getElementById('shopify-section-{{ section.id }}');
+    if (!root) return;
+    var items = root.querySelectorAll('.si__item');
+    if (!items.length) return;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      // Show everything at full opacity for reduced-motion users.
+      items.forEach(function (el) { el.classList.add('is-active'); });
+      return;
+    }
+
+    var ticking = false;
+    function update() {
+      // Trigger line: 60% down the viewport (most of the item should be in
+      // view before it activates). Adjust by tweaking the multiplier.
+      var triggerY = window.innerHeight * 0.6;
+      items.forEach(function (el) {
+        var rect = el.getBoundingClientRect();
+        if (rect.top < triggerY) {
+          el.classList.add('is-active');
+        } else {
+          el.classList.remove('is-active');
+        }
+      });
+      ticking = false;
+    }
+
+    function onScroll() {
+      if (!ticking) {
+        window.requestAnimationFrame(update);
+        ticking = true;
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    update();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Scent Ingredients 2",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.overlay"]
+  },
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Divider line color",
+      "default": "#cccccc"
+    },
+    {
+      "type": "header",
+      "content": "Scroll reveal"
+    },
+    {
+      "type": "color",
+      "id": "glow_color",
+      "label": "Active item icon glow color",
+      "info": "Color for the icon when the item is the active one as the user scrolls.",
+      "default": "#A6BDDD"
+    },
+    {
+      "type": "range",
+      "id": "scroll_reveal_muted_opacity",
+      "label": "Inactive item opacity",
+      "info": "How faded each item is before the user scrolls to it. 100 = no fade.",
+      "default": 25,
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "label": "Max content width",
+      "default": 1200,
+      "min": 800,
+      "max": 2400,
+      "step": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_v",
+      "label": "Vertical padding",
+      "default": 80,
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_h",
+      "label": "Side padding — Mobile / iPad (≤1024px)",
+      "default": 24,
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_h_desktop",
+      "label": "Side padding — Desktop (≥1025px)",
+      "default": 24,
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "section_height",
+      "label": "Body min height",
+      "default": 500,
+      "min": 200,
+      "max": 1000,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky_left",
+      "label": "Sticky left column on desktop",
+      "info": "When the section enters the viewport, the left column (heading + image) sticks while the long ingredient list scrolls past it. Once the list ends, the page resumes normal scroll. Mobile is unaffected.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "sticky_top_offset_desktop",
+      "label": "Sticky top offset — Desktop",
+      "info": "How far below the viewport top the left column sticks. Increase if a fixed header overlaps it.",
+      "default": 24,
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Left Column"
+    },
+    {
+      "type": "text",
+      "id": "list_heading",
+      "label": "List heading",
+      "default": "A list of long no"
+    },
+    {
+      "type": "textarea",
+      "id": "list_desc",
+      "label": "List description",
+      "info": "Use the | character to force a line break (e.g. \"…purpose and you|won't catch us…\" → forced break after \"you\").",
+      "default": "Every ingredient in our formulas serves a purpose and you|won't catch us using a low dosage just for hype. We adhere|to the highest global industry standards and steer clear of|questionable ingredients."
+    },
+    {
+      "type": "select",
+      "id": "list_heading_weight",
+      "label": "List heading weight",
+      "default": "700",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi-bold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra-bold" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "list_heading_size_desktop",
+      "label": "List heading size — Desktop",
+      "default": 40,
+      "min": 14,
+      "max": 72,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "list_heading_size_mobile",
+      "label": "List heading size — Mobile",
+      "default": 28,
+      "min": 12,
+      "max": 56,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "list_heading_line_height_desktop",
+      "label": "List heading line height — Desktop",
+      "default": 44,
+      "min": 14,
+      "max": 80,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "list_heading_line_height_mobile",
+      "label": "List heading line height — Mobile",
+      "default": 32,
+      "min": 14,
+      "max": 60,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "list_desc_size_desktop",
+      "label": "List description size — Desktop",
+      "default": 24,
+      "min": 12,
+      "max": 40,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "list_desc_size_mobile",
+      "label": "List description size — Mobile",
+      "default": 16,
+      "min": 10,
+      "max": 28,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "list_desc_line_height_desktop",
+      "label": "List description line height — Desktop",
+      "default": 28,
+      "min": 14,
+      "max": 48,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "list_desc_line_height_mobile",
+      "label": "List description line height — Mobile",
+      "default": 22,
+      "min": 14,
+      "max": 36,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "text_max_width",
+      "label": "Text max width",
+      "default": 400,
+      "min": 200,
+      "max": 1000,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Product image"
+    },
+    {
+      "type": "range",
+      "id": "image_height",
+      "label": "Image height",
+      "default": 360,
+      "min": 200,
+      "max": 800,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "label": "Image width",
+      "default": 100,
+      "min": 40,
+      "max": 100,
+      "step": 1,
+      "unit": "%"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image focal point",
+      "default": "center center",
+      "options": [
+        { "value": "top left",      "label": "Top left" },
+        { "value": "top center",    "label": "Top center" },
+        { "value": "top right",     "label": "Top right" },
+        { "value": "center left",   "label": "Center left" },
+        { "value": "center center", "label": "Center" },
+        { "value": "center right",  "label": "Center right" },
+        { "value": "bottom left",   "label": "Bottom left" },
+        { "value": "bottom center", "label": "Bottom center" },
+        { "value": "bottom right",  "label": "Bottom right" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Right Column"
+    },
+    {
+      "type": "range",
+      "id": "item_name_size_desktop",
+      "label": "Item name size — Desktop",
+      "default": 20,
+      "min": 10,
+      "max": 40,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "item_name_size_mobile",
+      "label": "Item name size — Mobile",
+      "default": 14,
+      "min": 10,
+      "max": 28,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "item_name_line_height_desktop",
+      "label": "Item name line height — Desktop",
+      "default": 28,
+      "min": 14,
+      "max": 48,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "item_name_line_height_mobile",
+      "label": "Item name line height — Mobile",
+      "default": 20,
+      "min": 14,
+      "max": 36,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "list_offset",
+      "label": "List top offset",
+      "default": 120,
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon",
+      "label": "List item icon"
+    },
+    {
+      "type": "textarea",
+      "id": "footnote",
+      "label": "Footnote (below list)",
+      "default": "Polyethylene Glycol, PEG-ethers, and PEG-esters"
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Margin top (desktop)",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Margin bottom (desktop)",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margin top (mobile)",
+      "info": "Falls back to the desktop value when 0.",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margin bottom (mobile)",
+      "info": "Falls back to the desktop value when 0.",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "reset_spacing",
+      "label": "Remove section spacing",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "List item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Item name",
+          "default": "No animal-derived ingredients"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Scent Ingredients 2",
+      "blocks": [
+        { "type": "item", "settings": { "name": "No animal-derived ingredients" } },
+        { "type": "item", "settings": { "name": "No formaldehyde" } },
+        { "type": "item", "settings": { "name": "No sulphates (SLS/SLES)" } },
+        { "type": "item", "settings": { "name": "No artificial color" } },
+        { "type": "item", "settings": { "name": "No parabens" } },
+        { "type": "item", "settings": { "name": "No parafins" } },
+        { "type": "item", "settings": { "name": "No triclosan" } },
+        { "type": "item", "settings": { "name": "No trichlocarban" } },
+        { "type": "item", "settings": { "name": "No mineral oil" } },
+        { "type": "item", "settings": { "name": "No mica" } },
+        { "type": "item", "settings": { "name": "No edta" } },
+        { "type": "item", "settings": { "name": "No pegs" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

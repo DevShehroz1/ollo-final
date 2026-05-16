@@ -1,0 +1,266 @@
+{%- liquid
+  assign sec_st = section.settings
+  if sec_st.reset_spacing
+    assign reset_spacing = ' remove_spacing'
+  endif
+  assign pt_mobile = sec_st.padding_top_mobile
+  if pt_mobile == 0
+    assign pt_mobile = sec_st.padding_top
+  endif
+  assign pb_mobile = sec_st.padding_bottom_mobile
+  if pb_mobile == 0
+    assign pb_mobile = sec_st.padding_bottom
+  endif
+-%}
+<div
+  class="story-feature{{ reset_spacing }}"
+  style="background-color: {{ sec_st.bg_color }};"
+>
+  <div class="story-feature__inner">
+    <div class="story-feature__media">
+      {%- if sec_st.image != blank -%}
+        {%- assign image_alt = sec_st.image.alt | default: 'Story' -%}
+        {{
+          sec_st.image
+          | image_url: width: 1440
+          | image_tag:
+            loading: 'lazy',
+            alt: image_alt,
+            class: 'story-feature__img',
+            widths: '720, 1080, 1440',
+            sizes: '(max-width: 767px) 100vw, 50vw'
+        }}
+      {%- else -%}
+        {{ 'image' | placeholder_svg_tag: 'story-feature__img story-feature__img--placeholder' }}
+      {%- endif -%}
+    </div>
+    <div class="story-feature__text">
+      {%- if sec_st.description_1 != blank -%}
+        <p class="story-feature__desc story-feature__desc--1">{{ sec_st.description_1 }}</p>
+      {%- endif -%}
+      <hr class="story-feature__divider">
+      {%- if sec_st.description_2 != blank -%}
+        <p class="story-feature__desc story-feature__desc--2">{{ sec_st.description_2 }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% style %}
+  #shopify-section-{{ section.id }} br {
+    display: inline;
+  }
+  #shopify-section-{{ section.id }} .story-feature {
+    overflow: hidden;
+    padding-top: {{ sec_st.padding_top | default: 0 }}px;
+    padding-bottom: {{ sec_st.padding_bottom | default: 0 }}px;
+  }
+  #shopify-section-{{ section.id }} .story-feature__inner {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+  }
+  #shopify-section-{{ section.id }} .story-feature__media {
+    flex: 0 0 50%;
+    width: 50%;
+    padding: 50px;
+    box-sizing: border-box;
+    font-size: 0;
+    line-height: 0;
+  }
+  #shopify-section-{{ section.id }} .story-feature__img {
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+    display: block;
+    vertical-align: top;
+  }
+  #shopify-section-{{ section.id }} .story-feature__img--placeholder {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #444;
+    border-radius: 14px;
+    display: block;
+  }
+  #shopify-section-{{ section.id }} .story-feature__text {
+    flex: 0 0 50%;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 30px;
+    padding-left: 20px;
+    padding-right: 50px;
+    box-sizing: border-box;
+  }
+  #shopify-section-{{ section.id }} .story-feature__desc {
+    margin: 0;
+    color: {{ sec_st.text_color }};
+    letter-spacing: 0;
+  }
+  #shopify-section-{{ section.id }} .story-feature__desc--1 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 26px;
+  }
+  #shopify-section-{{ section.id }} .story-feature__divider {
+    width: 80px;
+    height: 0;
+    border: none;
+    border-top: 2px solid {{ sec_st.text_color }};
+    margin: 0;
+    opacity: 1;
+  }
+  #shopify-section-{{ section.id }} .story-feature__desc--2 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 24px;
+  }
+  @media screen and (max-width: 1199px) {
+    #shopify-section-{{ section.id }} .story-feature__text {
+      padding-left: 20px;
+      padding-right: 30px;
+    }
+  }
+  @media screen and (max-width: 767px) {
+    #shopify-section-{{ section.id }} .story-feature {
+      padding-top: {{ pt_mobile | default: 0 }}px;
+      padding-bottom: {{ pb_mobile | default: 0 }}px;
+    }
+    #shopify-section-{{ section.id }} .story-feature__inner {
+      flex-direction: column;
+      height: auto;
+    }
+    #shopify-section-{{ section.id }} .story-feature__media {
+      flex: none;
+      width: 100%;
+      padding: 20px 20px 0;
+    }
+    #shopify-section-{{ section.id }} .story-feature__img {
+      width: 100%;
+      height: auto;
+    }
+    #shopify-section-{{ section.id }} .story-feature__img--placeholder {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+    }
+    #shopify-section-{{ section.id }} .story-feature__text {
+      flex: none;
+      width: 100%;
+      padding: 50px 20px;
+      gap: 20px;
+    }
+    #shopify-section-{{ section.id }} .story-feature__desc--1 {
+      font-size: 20px;
+      line-height: 24px;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Story Feature",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.overlay"]
+  },
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#363B48"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#FFF8B8"
+    },
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "textarea",
+      "id": "description_1",
+      "label": "First paragraph (24px)",
+      "default": "Masking kind of a way, scents that feel like skin but better. Something becomes a version of you."
+    },
+    {
+      "type": "textarea",
+      "id": "description_2",
+      "label": "Second paragraph (18px)",
+      "default": "We wanted fragrance that sits differently on everyone who wears it. That blends into your chemistry, picks up your warmth, moves with your day. The kind where someone asks you what you're wearing and the honest answer is it doesn't smell like this on anyone else."
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top (mobile)",
+      "info": "Falls back to the desktop value when 0.",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom (mobile)",
+      "info": "Falls back to the desktop value when 0.",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "reset_spacing",
+      "label": "Remove section spacing",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Story Feature"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,710 @@
+{{ 'banner.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign mt_m = section.settings.margin_top_mobile
+  if mt_m == 0
+    assign mt_m = section.settings.margin_top_desktop
+  endif
+  assign mb_m = section.settings.margin_bottom_mobile
+  if mb_m == 0
+    assign mb_m = section.settings.margin_bottom_desktop
+  endif
+-%}
+{% style %}
+  #shopify-section-{{ section.id }} {
+    margin-top: {{ section.settings.margin_top_desktop | default: 0 }}px !important;
+    margin-bottom: {{ section.settings.margin_bottom_desktop | default: 0 }}px !important;
+  }
+  @media (max-width: 767.98px) {
+    #shopify-section-{{ section.id }} {
+      margin-top: {{ mt_m | default: 0 }}px !important;
+      margin-bottom: {{ mb_m | default: 0 }}px !important;
+    }
+    #shopify-section-{{ section.id }} .banner-1 {
+      padding-top: {{ section.settings.padding_top_mobile | default: 0 }}px !important;
+      padding-bottom: {{ section.settings.padding_bottom_mobile | default: 0 }}px !important;
+    }
+  }
+{% endstyle %}
+<style>
+  .banner-1 {
+    position: relative;
+    padding-top: var(--section-pt, 0px);
+    padding-bottom: var(--section-pb, 0px);
+  }
+  .banner-1 .banner-1__inner {
+    position: relative;
+    width: 100%;
+    height: 700px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+  .banner-1 .banner-1__media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+  .banner-1 .banner-1__media img,
+  .banner-1 .banner-1__media picture {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .banner-1 .banner-1__media:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: #000;
+    opacity: var(--overlay-opacity, 20%);
+    pointer-events: none;
+  }
+  .banner-1 .banner-1__content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 20px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    text-align: center;
+  }
+  .banner-1 .banner-1__heading {
+    font-family: 'Inter', var(--heading-font), sans-serif !important;
+    font-weight: 500 !important;
+    font-style: normal !important;
+    font-size: 40px !important;
+    line-height: 42px !important;
+    letter-spacing: 0 !important;
+    text-align: center !important;
+    text-transform: uppercase !important;
+    color: #fff;
+    width: 100%;
+    max-width: 660px;
+    margin: 0 auto var(--heading-mb, 16px);
+    padding: 0;
+  }
+  .banner-1 .banner-1__subheading {
+    font-family: 'Inter', var(--heading-font), sans-serif !important;
+    font-weight: 400 !important;
+    font-style: normal !important;
+    font-size: 18px !important;
+    line-height: 22px !important;
+    letter-spacing: 0 !important;
+    text-align: center !important;
+    text-transform: uppercase !important;
+    color: #fff;
+    width: 100%;
+    max-width: 660px;
+    margin: 0 auto var(--subheading-mb, 20px);
+    padding: 0;
+  }
+  /* The subheading uses \`|\` as a mobile-only line break (converted to
+     <br> in Liquid). Desktop hides the <br> so it stays one line. */
+  @media (min-width: 768px) {
+    .banner-1 .banner-1__subheading br {
+      display: none;
+    }
+  }
+  .banner-1 .banner-1__description {
+    font-family: 'Inter', var(--body-font), sans-serif !important;
+    font-weight: 400 !important;
+    font-style: normal !important;
+    font-size: 18px !important;
+    line-height: 24px !important;
+    letter-spacing: 0 !important;
+    text-align: center !important;
+    text-transform: none !important;
+    color: #fff;
+    width: 100%;
+    max-width: var(--description-mw, 660px);
+    margin: 0 auto var(--description-mb, 60px);
+    padding: 0;
+  }
+  .banner-1 .banner-1__description p {
+    font-family: 'Inter', var(--body-font), sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 18px !important;
+    line-height: 24px !important;
+    letter-spacing: 0 !important;
+    text-align: center !important;
+  }
+  .banner-1 .banner-1__description p {
+    margin: 0 0 8px;
+  }
+  .banner-1 .banner-1__description p:last-child {
+    margin-bottom: 0;
+  }
+  .banner-1 .banner-1__btn-wrap {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin-top: 140px !important;
+  }
+  /* CTA button — matches slideshow glass CTA but kept neutral (no saturation/brightness tint) */
+  .banner-1 .banner-1__btn {
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 300px !important;
+    height: 50px !important;
+    padding: 0 40px !important;
+    opacity: 1 !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(28px) !important;
+    -webkit-backdrop-filter: blur(28px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    color: #fff !important;
+    border-radius: 42px !important;
+    font-family: 'Inter', var(--heading-font), sans-serif !important;
+    font-size: 12.8px !important;
+    font-weight: 500 !important;
+    font-style: normal !important;
+    line-height: 19.58px !important;
+    letter-spacing: 0.96px !important;
+    text-transform: uppercase !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    text-decoration: none !important;
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.6),
+      inset 0 -1px 1px rgba(255, 255, 255, 0.15),
+      0 1px 2px rgba(0, 0, 0, 0.04),
+      0 8px 24px rgba(0, 0, 0, 0.12) !important;
+    transition: all 0.3s ease !important;
+    overflow: hidden !important;
+  }
+  .banner-1 .banner-1__btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 0) 60%, rgba(255, 255, 255, 0.1) 100%);
+    pointer-events: none;
+  }
+  .banner-1 .banner-1__btn > * { position: relative; z-index: 1; }
+  .banner-1 .banner-1__btn:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.7),
+      inset 0 -1px 1px rgba(255, 255, 255, 0.2),
+      0 1px 2px rgba(0, 0, 0, 0.06),
+      0 12px 32px rgba(0, 0, 0, 0.16) !important;
+  }
+  .banner-1 .banner-1__img-desktop {
+    display: block;
+  }
+  .banner-1 .banner-1__img-mobile {
+    display: none;
+  }
+  @media (max-width: 767.98px) {
+    .banner-1 .banner-1__img-desktop {
+      display: none;
+    }
+    .banner-1 .banner-1__img-mobile {
+      display: block;
+    }
+    .banner-1 .banner-1__heading {
+      /* Single-line on mobile is locked-in via the nowrap rule below.
+         Font scales with viewport width so long headings (e.g. "THE
+         SUMMR ROUTINE") fit on narrow phones without being clipped
+         to "THE SUMMR ROUT", while still reaching 28px on wider
+         mobile / tablet. */
+      font-size: clamp(18px, 6.4vw, 28px) !important;
+      line-height: 1.15 !important;
+      /* \`!important\` is needed because the theme's :where(h1, h2, …)
+         base rule in critical.css applies word-break: break-word which
+         was breaking nowrap. Also reset word-break / overflow-wrap so
+         nothing can split the heading mid-word. */
+      white-space: nowrap !important;
+      word-break: keep-all !important;
+      overflow-wrap: normal !important;
+      max-width: 100%;
+    }
+    .banner-1 .banner-1__subheading {
+      font-size: 14px;
+      line-height: 18px;
+    }
+    .banner-1 .banner-1__description {
+      font-size: 15px;
+      line-height: 22px;
+    }
+    .banner-1 .banner-1__content {
+      padding: 40px 12px;
+    }
+  }
+</style>
+{%- liquid
+  assign sec_st = section.settings
+  assign image_desktop = sec_st.image_desktop
+  assign image_mobile = sec_st.image_mobile | default: image_desktop
+-%}
+<div
+  id="banner-1-{{ section.id }}"
+  class="banner-1 color-{{ sec_st.color_scheme }} gradient"
+  style="--section-pt: {{ sec_st.padding_top }}px; --section-pb: {{ sec_st.padding_bottom }}px; --overlay-opacity: {{ sec_st.overlay_opacity }}%; --heading-mb: {{ sec_st.heading_spacing_bottom }}px; --subheading-mb: {{ sec_st.subheading_spacing_bottom }}px; --description-mb: {{ sec_st.description_spacing_bottom }}px; --description-mw: {{ sec_st.description_max_width }}px;"
+>
+  <div class="{{ sec_st.section_width }}">
+    <div
+      class="banner-1__inner{% if sec_st.section_width != 'full_width' %} rounded{% endif %}"
+      style="min-height: {{ sec_st.mobile_height }}px;"
+    >
+      <div class="banner-1__media">
+        {%- if image_desktop != blank -%}
+          <img
+            class="banner-1__img-desktop"
+            src="{{ image_desktop | image_url: width: 2400 }}"
+            srcset="
+              {{ image_desktop | image_url: width: 750 }} 750w,
+              {{ image_desktop | image_url: width: 1100 }} 1100w,
+              {{ image_desktop | image_url: width: 1500 }} 1500w,
+              {{ image_desktop | image_url: width: 1920 }} 1920w,
+              {{ image_desktop | image_url: width: 2400 }} 2400w,
+              {{ image_desktop | image_url: width: 3000 }} 3000w
+            "
+            sizes="100vw"
+            alt="{{ image_desktop.alt | escape }}"
+            width="{{ image_desktop.width }}"
+            height="{{ image_desktop.height }}"
+            loading="lazy"
+          >
+        {%- endif -%}
+        {%- if image_mobile != blank -%}
+          <img
+            class="banner-1__img-mobile"
+            src="{{ image_mobile | image_url: width: 1200 }}"
+            srcset="
+              {{ image_mobile | image_url: width: 480 }} 480w,
+              {{ image_mobile | image_url: width: 750 }} 750w,
+              {{ image_mobile | image_url: width: 1100 }} 1100w,
+              {{ image_mobile | image_url: width: 1500 }} 1500w
+            "
+            sizes="100vw"
+            alt="{{ image_mobile.alt | escape }}"
+            width="{{ image_mobile.width }}"
+            height="{{ image_mobile.height }}"
+            loading="lazy"
+          >
+        {%- endif -%}
+        {%- if image_desktop == blank and image_mobile == blank -%}
+          {%- render 'placeholder-render', class: 'absolute inset-0 w-full h-full object-fit-cover' -%}
+        {%- endif -%}
+      </div>
+      <div
+        class="banner-1__content"
+        style="min-height: {{ sec_st.desktop_height }}px;"
+      >
+        {%- if sec_st.heading != blank -%}
+          <h2 class="banner-1__heading">{{ sec_st.heading }}</h2>
+        {%- endif -%}
+        {%- if sec_st.subheading != blank -%}
+          {%- if sec_st.subheading_typewriter -%}
+            {%- assign tw_text = sec_st.subheading | strip_html | replace: '|', ' ' -%}
+            <div
+              class="banner-1__subheading banner-1__subheading--typewriter"
+              data-typewriter-text="{{ tw_text | escape }}"
+            >{{ tw_text | escape }}</div>
+          {%- else -%}
+            <div class="banner-1__subheading">{{ sec_st.subheading | replace: '|', '<br>' }}</div>
+          {%- endif -%}
+        {%- endif -%}
+        {%- if sec_st.description != blank -%}
+          <div class="banner-1__description">{{ sec_st.description }}</div>
+        {%- endif -%}
+        {%- if sec_st.button_label != blank -%}
+          <div class="banner-1__btn-wrap">
+            <a
+              {% if sec_st.button_link != blank %}href="{{ sec_st.button_link }}"{% else %}role="link" aria-disabled="true"{% endif %}
+              class="banner-1__btn"
+              aria-label="{{ sec_st.button_label | escape }}"
+            >
+              {{ sec_st.button_label }}
+            </a>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{%- if sec_st.subheading_typewriter and sec_st.subheading != blank -%}
+{% style %}
+  /* Typewriter — subheading types out then erases on a loop with a
+     blinking cursor. Same pattern as PDP Story Banner. */
+  #shopify-section-{{ section.id }} .banner-1__subheading--typewriter {
+    min-height: 1em;
+    white-space: pre-wrap;
+    letter-spacing: -0.4px !important;
+  }
+  #shopify-section-{{ section.id }} .banner-1__subheading--typewriter::after {
+    content: '|';
+    display: inline-block;
+    margin-left: 4px;
+    animation: banner1-cursor-{{ section.id }} 1s step-end infinite;
+    color: inherit;
+    font-weight: inherit;
+  }
+  @keyframes banner1-cursor-{{ section.id }} {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #shopify-section-{{ section.id }} .banner-1__subheading--typewriter::after {
+      animation: none;
+      opacity: 0;
+    }
+  }
+{% endstyle %}
+<script>
+  (function () {
+    var root = document.getElementById('shopify-section-{{ section.id }}');
+    if (!root) return;
+    var el = root.querySelector('.banner-1__subheading--typewriter');
+    if (!el) return;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var fullText = (el.getAttribute('data-typewriter-text') || el.textContent || '').trim();
+    if (!fullText.length) {
+      console.warn('[banner-1 typewriter] no text found');
+      return;
+    }
+
+    var typeMs      = {{ sec_st.typewriter_type_speed | default: 80 }};
+    var eraseMs     = {{ sec_st.typewriter_erase_speed | default: 40 }};
+    var holdFullMs  = {{ sec_st.typewriter_hold_full | default: 2200 }};
+    var holdEmptyMs = {{ sec_st.typewriter_hold_empty | default: 600 }};
+
+    var charIdx  = 0;
+    var deleting = false;
+
+    el.textContent = '';
+
+    function tick() {
+      if (deleting) {
+        charIdx--;
+        el.textContent = fullText.substring(0, charIdx);
+        if (charIdx <= 0) {
+          deleting = false;
+          setTimeout(tick, holdEmptyMs);
+          return;
+        }
+        setTimeout(tick, eraseMs);
+      } else {
+        charIdx++;
+        el.textContent = fullText.substring(0, charIdx);
+        if (charIdx >= fullText.length) {
+          deleting = true;
+          setTimeout(tick, holdFullMs);
+          return;
+        }
+        setTimeout(tick, typeMs);
+      }
+    }
+    setTimeout(tick, 400);
+  })();
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Banner 1",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Images"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_desktop",
+      "label": "Desktop image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Mobile image"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Image overlay opacity",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "THE SUMMR ROUTINE"
+    },
+    {
+      "type": "range",
+      "id": "heading_spacing_bottom",
+      "label": "Heading spacing bottom",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "info": "When typewriter is OFF: | forces a mobile-only line break. When typewriter is ON: | separates rotating phrases (each piece types out, holds, erases, then the next phrase starts).",
+      "default": "ONE CASE TO KEEP|SWITCH THE SCENT ANYTIME."
+    },
+    {
+      "type": "range",
+      "id": "subheading_spacing_bottom",
+      "label": "Subheading spacing bottom",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "checkbox",
+      "id": "subheading_typewriter",
+      "label": "Animate subheading as typewriter",
+      "info": "Types the subheading character-by-character with a blinking cursor, holds, erases, then retypes — on a continuous loop. When ON, the | character is converted to a space (so the line reads as one continuous phrase).",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "typewriter_type_speed",
+      "label": "Typing speed (ms per character)",
+      "info": "Lower = faster typing.",
+      "min": 20,
+      "max": 200,
+      "step": 5,
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "typewriter_erase_speed",
+      "label": "Erase speed (ms per character)",
+      "min": 10,
+      "max": 150,
+      "step": 5,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "typewriter_hold_full",
+      "label": "Hold after fully typed (ms)",
+      "min": 500,
+      "max": 5000,
+      "step": 100,
+      "default": 2200
+    },
+    {
+      "type": "range",
+      "id": "typewriter_hold_empty",
+      "label": "Hold before retyping (ms)",
+      "min": 100,
+      "max": 3000,
+      "step": 100,
+      "default": 600
+    },
+    {
+      "type": "html",
+      "id": "description",
+      "label": "Description",
+      "info": "Accepts raw HTML — use <br> for manual line breaks or <p> for paragraphs.",
+      "default": "<p>When the refill runs out, twist it out, click a new one in. Four seconds. You're back. No new packaging. No starting over. Just a small shift that becomes the only way you want to do it. Choose your case. Find your scent. Refill when needed.</p>"
+    },
+    {
+      "type": "range",
+      "id": "description_spacing_bottom",
+      "label": "Description spacing bottom",
+      "min": 0,
+      "max": 160,
+      "step": 2,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "description_max_width",
+      "label": "Description max width",
+      "info": "Constrains how wide the description column can get on desktop.",
+      "min": 280,
+      "max": 1200,
+      "step": 10,
+      "unit": "px",
+      "default": 660
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "START YOUR SUMMR"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "default": "full_width",
+      "options": [
+        { "value": "container", "label": "Container" },
+        { "value": "fluid_container", "label": "Fluid container" },
+        { "value": "stretch_width", "label": "Stretch width" },
+        { "value": "full_width", "label": "Full width" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "desktop_height",
+      "label": "Desktop height",
+      "min": 300,
+      "max": 900,
+      "step": 10,
+      "unit": "px",
+      "default": 640
+    },
+    {
+      "type": "range",
+      "id": "mobile_height",
+      "label": "Mobile height",
+      "min": 200,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "default": 480
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1",
+      "options": [
+        { "value": "scheme-1", "label": "Scheme 1" },
+        { "value": "scheme-2", "label": "Scheme 2" },
+        { "value": "scheme-3", "label": "Scheme 3" },
+        { "value": "scheme-4", "label": "Scheme 4" },
+        { "value": "scheme-5", "label": "Scheme 5" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Margins"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Margin top (desktop)",
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margin bottom (desktop)",
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margin top (mobile)",
+      "info": "Falls back to the desktop value when 0.",
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margin bottom (mobile)",
+      "info": "Falls back to the desktop value when 0.",
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Banner 1"
+    }
+  ]
+}
+{% endschema %}

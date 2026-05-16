@@ -1,0 +1,293 @@
+<style>
+  .faqs-grid {
+    padding-top: var(--section-pt, 80px);
+    padding-bottom: var(--section-pb, 80px);
+    background: var(--faqs-bg, #ffffff);
+  }
+  .faqs-grid__inner {
+    width: 100%;
+    max-width: var(--faqs-max-width, 980px);
+    margin: 0 auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
+  .faqs-grid__heading {
+    font-family: 'Inter', var(--heading-font), sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 28px;
+    line-height: 32px;
+    letter-spacing: 0;
+    text-align: center;
+    text-transform: uppercase;
+    margin: 0 0 32px;
+    padding: 0;
+    color: var(--color-foreground, #000);
+  }
+  .faqs-grid__items {
+    display: block;
+    border-top: 1px solid #1a1a1a;
+  }
+  .faqs-grid__item {
+    display: block;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  .faqs-grid__item > summary::-webkit-details-marker { display: none; }
+  .faqs-grid__item > summary { list-style: none; }
+  .faqs-grid__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 20px 24px;
+    cursor: pointer;
+    user-select: none;
+    font-family: 'Inter', var(--body-font), sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-foreground, #1a1a1a);
+    transition: opacity 0.2s ease;
+  }
+  .faqs-grid__question:hover { opacity: 0.7; }
+  .faqs-grid__question-text {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .faqs-grid__icon {
+    flex: 0 0 auto;
+    position: relative;
+    width: 16px;
+    height: 16px;
+    color: #1a1a1a;
+  }
+  .faqs-grid__icon::before,
+  .faqs-grid__icon::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background-color: currentColor;
+    transform-origin: center;
+    transition: transform 0.25s ease, opacity 0.2s ease;
+  }
+  .faqs-grid__icon::before {
+    width: 14px;
+    height: 1.25px;
+    transform: translate(-50%, -50%);
+  }
+  .faqs-grid__icon::after {
+    width: 1.25px;
+    height: 14px;
+    transform: translate(-50%, -50%);
+  }
+  .faqs-grid__item[open] .faqs-grid__icon::after {
+    transform: translate(-50%, -50%) scaleY(0);
+    opacity: 0;
+  }
+  .faqs-grid__answer {
+    padding: 0 24px 24px;
+    font-family: 'Inter', var(--body-font), sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 15px;
+    line-height: 24px;
+    letter-spacing: 0;
+    color: var(--color-foreground, #1a1a1a);
+  }
+  .faqs-grid__answer > *:first-child { margin-top: 0; }
+  .faqs-grid__answer > *:last-child { margin-bottom: 0; }
+  .faqs-grid__answer p { margin: 0 0 12px; }
+  .faqs-grid__answer p:last-child { margin-bottom: 0; }
+
+  @media (max-width: 767.98px) {
+    .faqs-grid__inner {
+      padding: 0 16px;
+    }
+    .faqs-grid__heading {
+      font-size: 22px;
+      line-height: 26px;
+      margin-bottom: 24px;
+    }
+    .faqs-grid__question {
+      padding: 16px 8px;
+      font-size: 12.5px;
+      line-height: 18px;
+      gap: 16px;
+    }
+    .faqs-grid__answer {
+      padding: 0 8px 18px;
+      font-size: 14px;
+      line-height: 22px;
+    }
+  }
+</style>
+{%- liquid
+  assign sec_st = section.settings
+-%}
+<div
+  id="faqs-grid-{{ section.id }}"
+  class="faqs-grid color-{{ sec_st.color_scheme }} gradient"
+  style="--section-pt: {{ sec_st.padding_top }}px; --section-pb: {{ sec_st.padding_bottom }}px; --faqs-bg: {{ sec_st.bg_color }}; --faqs-max-width: {{ sec_st.max_width | default: 980 }}px;"
+>
+  <div class="faqs-grid__inner">
+    {%- if sec_st.heading != blank -%}
+      <h2 class="faqs-grid__heading">{{ sec_st.heading }}</h2>
+    {%- endif -%}
+    {%- if section.blocks.size > 0 -%}
+      <div class="faqs-grid__items" data-faqs-grid>
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign b = block.settings
+          -%}
+          <details class="faqs-grid__item"{% if b.open_by_default %} open{% endif %} {{ block.shopify_attributes }}>
+            <summary class="faqs-grid__question">
+              <span class="faqs-grid__question-text">{{ b.question }}</span>
+              <span class="faqs-grid__icon" aria-hidden="true"></span>
+            </summary>
+            {%- if b.answer != blank -%}
+              <div class="faqs-grid__answer">{{ b.answer }}</div>
+            {%- endif -%}
+          </details>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+<script>
+  (function () {
+    var sectionId = {{ section.id | json }};
+    var sectionEl = document.getElementById('faqs-grid-' + sectionId);
+    if (!sectionEl) return;
+    var grid = sectionEl.querySelector('[data-faqs-grid]');
+    if (!grid) return;
+    var items = grid.querySelectorAll('.faqs-grid__item');
+    if (!items.length) return;
+
+    var firstOpen = null;
+    items.forEach(function (item) {
+      if (item.open) {
+        if (firstOpen) { item.open = false; }
+        else { firstOpen = item; }
+      }
+    });
+
+    items.forEach(function (item) {
+      item.addEventListener('toggle', function () {
+        if (!item.open) return;
+        items.forEach(function (other) {
+          if (other !== item && other.open) { other.open = false; }
+        });
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "FAQs Grid",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "FAQ"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1",
+      "options": [
+        { "value": "scheme-1", "label": "Scheme 1" },
+        { "value": "scheme-2", "label": "Scheme 2" },
+        { "value": "scheme-3", "label": "Scheme 3" },
+        { "value": "scheme-4", "label": "Scheme 4" },
+        { "value": "scheme-5", "label": "Scheme 5" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width (px)",
+      "min": 600,
+      "max": 1400,
+      "step": 20,
+      "default": 980
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 160,
+      "step": 2,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 160,
+      "step": 2,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "FAQ",
+      "limit": 20,
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "How long does the freshness last?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_by_default",
+          "label": "Open by default",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQs Grid",
+      "blocks": [
+        { "type": "faq", "settings": { "question": "How is this different from regular body sprays or deodorant?" } },
+        { "type": "faq", "settings": { "question": "Does this stop sweat?" } },
+        { "type": "faq", "settings": { "question": "How often do I have to reapply?" } },
+        { "type": "faq", "settings": { "question": "How long does one can of body spray last?" } },
+        { "type": "faq", "settings": { "question": "Will this stain my clothes or gear?" } },
+        { "type": "faq", "settings": { "question": "Are the scents for men or women?" } },
+        { "type": "faq", "settings": { "question": "I care about what I put on my body. Are your products clean?" } },
+        { "type": "faq", "settings": { "question": "I travel a lot — can I bring this spray with me?" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
