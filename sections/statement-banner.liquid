@@ -1,0 +1,228 @@
+{%- liquid
+  assign sec_st = section.settings
+-%}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block;
+  }
+  #shopify-section-{{ section.id }} .sb__wrap {
+    position: relative;
+    width: 100%;
+    height: {{ sec_st.height | default: 870 }}px;
+    overflow: hidden;
+  }
+  #shopify-section-{{ section.id }} .sb__media {
+    position: absolute;
+    inset: 0;
+  }
+  #shopify-section-{{ section.id }} .sb__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  #shopify-section-{{ section.id }} .sb__overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-color: #00000066;
+  }
+  #shopify-section-{{ section.id }} .sb__content {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 60px;
+    gap: 40px;
+    box-sizing: border-box;
+  }
+  #shopify-section-{{ section.id }} .sb__heading {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 36px;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    text-align: center;
+    max-width: 1300px;
+    margin: {{ sec_st.heading_spacing | default: 0 }}px 0 0;
+  }
+  #shopify-section-{{ section.id }} .sb__heading-main {
+    color: #ffffff;
+  }
+  #shopify-section-{{ section.id }} .sb__heading-accent {
+    color: {{ sec_st.accent_color | default: '#AEDEE4' }};
+  }
+  #shopify-section-{{ section.id }} .sb__body {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 24px;
+    letter-spacing: 0;
+    text-align: center;
+    color: #ffffff;
+    max-width: 866px;
+    margin: {{ sec_st.body_spacing | default: 120 }}px 0 0;
+  }
+  @media screen and (max-width: 767px) {
+    #shopify-section-{{ section.id }} .sb__wrap {
+      height: {{ sec_st.height_mobile | default: 600 }}px;
+    }
+    #shopify-section-{{ section.id }} .sb__content {
+      padding: 40px 24px;
+      gap: 24px;
+    }
+    #shopify-section-{{ section.id }} .sb__heading {
+      font-size: 20px;
+      line-height: 24px;
+      letter-spacing: 0;
+    }
+    #shopify-section-{{ section.id }} .sb__body {
+      font-size: 14px;
+      line-height: 20px;
+      letter-spacing: 0;
+    }
+  }
+{% endstyle %}
+
+<div class="sb__wrap">
+  <div class="sb__media">
+    {%- if sec_st.image != blank -%}
+      {{
+        sec_st.image
+        | image_url: width: 1440
+        | image_tag:
+          loading: 'lazy',
+          alt: sec_st.image.alt,
+          class: 'sb__img',
+          widths: '768, 1080, 1440',
+          sizes: '100vw'
+      }}
+    {%- else -%}
+      {{ 'lifestyle-1' | placeholder_svg_tag: 'sb__img' }}
+    {%- endif -%}
+    <div class="sb__overlay"></div>
+  </div>
+
+  <div class="sb__content">
+    {%- if sec_st.heading_main != blank or sec_st.heading_accent != blank -%}
+      <h2 class="sb__heading">
+        {%- if sec_st.heading_main != blank -%}
+          <span class="sb__heading-main">{{ sec_st.heading_main | escape }} </span>
+        {%- endif -%}
+        {%- if sec_st.heading_accent != blank -%}
+          <span class="sb__heading-accent">{{ sec_st.heading_accent | escape }}</span>
+        {%- endif -%}
+      </h2>
+    {%- endif -%}
+
+    {%- if sec_st.body_text != blank -%}
+      <p class="sb__body">{{ sec_st.body_text | escape }}</p>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Statement Banner",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.overlay"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image"
+    },
+    {
+      "type": "range",
+      "id": "height",
+      "label": "Height (desktop)",
+      "default": 870,
+      "min": 400,
+      "max": 1000,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "height_mobile",
+      "label": "Height (mobile)",
+      "default": 600,
+      "min": 300,
+      "max": 800,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "range",
+      "id": "heading_spacing",
+      "label": "Heading spacing (top)",
+      "default": 0,
+      "min": 0,
+      "max": 300,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "textarea",
+      "id": "heading_main",
+      "label": "Heading (white)",
+      "default": "We think caring about how you smell and caring about your skin should be the same decision."
+    },
+    {
+      "type": "textarea",
+      "id": "heading_accent",
+      "label": "Heading accent (colored)",
+      "default": "Not two different products."
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent text color",
+      "default": "#AEDEE4"
+    },
+    {
+      "type": "header",
+      "content": "Body text"
+    },
+    {
+      "type": "textarea",
+      "id": "body_text",
+      "label": "Body paragraph",
+      "default": "We worked with fragrance developers and cosmetic chemists who understand skin as well as they understand scent. People who refused to treat body care like a lesser category. We also felt strongly that fragrance has no gender. Labelling personal care as men's or women's is an outdated idea that limits everyone. The result? Fragrances that feel personal, not performative. Scents that work through heat instead of surrendering to it."
+    },
+    {
+      "type": "range",
+      "id": "body_spacing",
+      "label": "Body paragraph spacing (top)",
+      "default": 120,
+      "min": 0,
+      "max": 300,
+      "step": 10,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Statement Banner"
+    }
+  ]
+}
+{% endschema %}

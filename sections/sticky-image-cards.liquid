@@ -1,0 +1,665 @@
+{%- capture style -%}
+  --section-pt: {{ section.settings.padding_top }}; --section-pb: {{ section.settings.padding_bottom }};
+{%- endcapture -%}
+
+{%- liquid
+  # Resolve effective side margins — "Full width" checkbox wins over the
+  # range slider for that breakpoint (value: 0 when full-width is on).
+  assign side_d = section.settings.side_margin_desktop | default: 0
+  if section.settings.full_width_desktop
+    assign side_d = 0
+  endif
+  assign side_m = section.settings.side_margin_mobile | default: 0
+  if section.settings.full_width_mobile
+    assign side_m = 0
+  endif
+-%}
+
+{% assign block_count = section.blocks.size %}
+
+<style>
+  #StickyImageCards-{{ section.id }} {
+    padding-left: {{ side_d }}px;
+    padding-right: {{ side_d }}px;
+  }
+  @media (max-width: 640px) {
+    #StickyImageCards-{{ section.id }} {
+      padding-left: {{ side_m }}px;
+      padding-right: {{ side_m }}px;
+    }
+  }
+</style>
+
+<section
+  id="StickyImageCards-{{ section.id }}"
+  class="section{% if section.settings.padding_top < 30 %} pt-min{% endif %}{% if section.settings.padding_bottom < 30 %} pb-min{% endif %}"
+  style="{{ style | strip | strip_newlines }}; background-color: {{ section.settings.bg_color }}; --mob-img-w: {{ section.settings.mobile_image_width_pct | default: 100 }}%; --mob-img-h: {{ section.settings.mobile_image_height_vh | default: 60 }}vh;"
+>
+  <!-- Desktop: sticky scroll layout -->
+  <div class="sic sic--desktop" data-sic-section data-block-count="{{ block_count }}">
+    <div class="sic__sticky">
+      {%- for block in section.blocks -%}
+        <div class="sic__slide{% if forloop.first %} is-active{% endif %}{% if block.settings.image_position == 'right' %} sic__slide--img-right{% else %} sic__slide--img-left{% endif %}" data-sic-slide="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+          <div class="sic__slide-grid">
+            <div class="sic__slide-media">
+              {%- if block.settings.image != blank -%}
+                <div class="sic__slide-img-main">
+                  <img src="{{ block.settings.image | image_url: width: 1000 }}" alt="{{ block.settings.heading | escape }}" loading="lazy" width="1000" height="1000">
+                </div>
+              {%- endif -%}
+              {%- if block.settings.image_2 != blank -%}
+                <div class="sic__slide-img-secondary">
+                  <img src="{{ block.settings.image_2 | image_url: width: 600 }}" alt="{{ block.settings.heading | escape }}" loading="lazy" width="600" height="600">
+                </div>
+              {%- endif -%}
+              {%- if block.settings.image_3 != blank -%}
+                <div class="sic__slide-img-accent">
+                  <img src="{{ block.settings.image_3 | image_url: width: 400 }}" alt="Accent image" loading="lazy" width="400" height="400">
+                </div>
+              {%- endif -%}
+            </div>
+            <div class="sic__slide-content">
+              <h2 class="sic__heading">{{ block.settings.heading }}</h2>
+              {%- if block.settings.description != blank -%}
+                <div class="sic__description">{{ block.settings.description }}</div>
+              {%- endif -%}
+              {%- if block.settings.button_label != blank -%}
+                <a href="{{ block.settings.button_link | default: '#' }}" class="sic__btn">
+                  <span class="sic__btn-shine"></span>
+                  <span class="sic__btn-label">{{ block.settings.button_label }}</span>
+                </a>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+    <div class="sic__spacer" style="height: {{ block_count | times: 100 }}vh;"></div>
+  </div>
+
+  <!-- Mobile: stacked layout -->
+  <div class="sic sic--mobile" data-sic-mobile data-block-count="{{ block_count }}">
+    <div class="sic-mob__sticky">
+      {%- for block in section.blocks -%}
+        <div class="sic-mob__slide{% if forloop.first %} is-active{% endif %}" data-sic-mob-slide="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+          <div class="sic-mob__slide-inner">
+            <div class="sic-mob__media">
+              {%- if block.settings.image != blank -%}
+                <img src="{{ block.settings.image | image_url: width: 800 }}" alt="{{ block.settings.heading | escape }}" loading="lazy" width="800" height="800">
+              {%- endif -%}
+            </div>
+            <div class="sic-mob__content">
+              <h2 class="sic__heading">{{ block.settings.heading }}</h2>
+              {%- if block.settings.description != blank -%}
+                <div class="sic__description">{{ block.settings.description }}</div>
+              {%- endif -%}
+              {%- if block.settings.button_label != blank -%}
+                <a href="{{ block.settings.button_link | default: '#' }}" class="sic__btn">
+                  <span class="sic__btn-shine"></span>
+                  <span class="sic__btn-label">{{ block.settings.button_label }}</span>
+                </a>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+    <div class="sic__spacer" style="height: {{ block_count | times: 100 }}vh;"></div>
+  </div>
+</section>
+
+<style>
+  .sic { position: relative; }
+  .sic__spacer { pointer-events: none; }
+
+  /* Desktop */
+  .sic__sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    z-index: 2;
+  }
+  .sic__slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+  .sic__slide.is-active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    z-index: 2;
+  }
+  .sic__slide.is-prev {
+    opacity: 0;
+    transform: translateY(-60px);
+  }
+  .sic__slide-grid {
+    display: flex;
+    height: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 60px 60px;
+    gap: 60px;
+    align-items: center;
+  }
+  .sic__slide--img-left .sic__slide-grid {
+    flex-direction: row;
+  }
+  .sic__slide--img-right .sic__slide-grid {
+    flex-direction: row-reverse;
+  }
+  .sic__slide-media {
+    flex: 0 0 48%;
+    position: relative;
+    height: 80%;
+    max-height: 600px;
+  }
+  .sic__slide-img-main {
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .sic__slide-img-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .sic__slide-img-secondary {
+    position: absolute;
+    bottom: -40px;
+    right: -40px;
+    width: 45%;
+    aspect-ratio: 3/4;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    z-index: 3;
+    transform: rotate(-4deg);
+  }
+  .sic__slide--img-right .sic__slide-img-secondary {
+    right: -40px;
+    left: auto;
+    bottom: -40px;
+    transform: rotate(-4deg);
+  }
+  .sic__slide-img-secondary img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .sic__slide-img-accent {
+    position: absolute;
+    top: -80px;
+    left: -180px;
+    width: 70%;
+    z-index: 4;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1));
+  }
+  .sic__slide--img-right .sic__slide-img-accent {
+    left: -180px;
+    top: -60px;
+  }
+  .sic__slide-img-accent img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+  }
+  .sic__slide-content {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .sic__slide--img-left .sic__slide-content {
+    align-items: flex-start;
+  }
+  .sic__slide--img-right .sic__slide-content {
+    align-items: flex-start;
+  }
+  .sic__heading {
+    font-family: 'Inter', var(--heading-font), sans-serif;
+    font-weight: 500;
+    font-size: 54px;
+    line-height: 64px;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    margin: 0 0 24px;
+    color: #000;
+  }
+  .sic__description {
+    font-family: 'Inter', var(--body-font), sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 24px;
+    letter-spacing: 0;
+    color: #222;
+    margin: 0 0 32px;
+    max-width: 480px;
+  }
+  .sic__description p {
+    margin: 0 0 8px;
+  }
+  .sic__description p:last-child { margin-bottom: 0; }
+
+  /* Glass button */
+  .sic__btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.04);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: #111;
+    border-radius: 999px;
+    padding: 16px 40px;
+    font-family: 'Inter', var(--heading-font), sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: 0.96px;
+    text-transform: uppercase;
+    text-decoration: none;
+    box-shadow:
+      inset 0 1px 1px rgba(255,255,255,0.9),
+      inset 0 -1px 1px rgba(0,0,0,0.04),
+      0 1px 2px rgba(0,0,0,0.04),
+      0 8px 24px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+  .sic__btn-shine {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.2) 100%);
+    pointer-events: none;
+  }
+  .sic__btn-label { position: relative; z-index: 1; }
+  .sic__btn:hover {
+    background: rgba(0,0,0,0.08);
+    border-color: rgba(0,0,0,0.2);
+  }
+
+  /* Mobile layout */
+  .sic--mobile { display: none; position: relative; }
+  .sic-mob__sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    z-index: 2;
+  }
+  .sic-mob__slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+  .sic-mob__slide.is-active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    z-index: 2;
+  }
+  .sic-mob__slide.is-prev { opacity: 0; transform: translateY(-40px); }
+  .sic-mob__slide-inner {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-height: 100%;
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+  }
+  .sic-mob__media {
+    width: 100%;
+    /* Width is merchant-controlled via `mobile_image_width_pct` → CSS var.
+       Default 100% = fills whatever horizontal space the section's side
+       margin / full-width setting leaves. */
+    max-width: var(--mob-img-w, 100%);
+    /* Height is merchant-controlled via `mobile_image_height_vh` → CSS var.
+       Default 60vh = 60% of viewport height. Previously locked to
+       aspect-ratio: 1/1 which forced square images on mobile. */
+    height: var(--mob-img-h, 60vh);
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+    margin-inline: auto;
+  }
+  .sic-mob__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .sic-mob__content { flex: 0 0 auto; }
+  .sic-mob__content .sic__heading { font-size: 30px !important; line-height: 36px !important; margin-bottom: 16px; }
+  .sic-mob__content .sic__description { font-size: 15px; line-height: 21px; margin-bottom: 20px; }
+  .sic-mob__content .sic__btn { padding: 12px 28px; font-size: 11px; }
+
+  @media (max-width: 767px) {
+    .sic--desktop { display: none !important; }
+    .sic--mobile { display: block; }
+
+    /* Center image and text content horizontally on mobile */
+    .sic-mob__slide-inner {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .sic-mob__media {
+      /* Inherits from the base rule's --mob-img-w var (default 100%).
+         No 85% override here anymore — merchant's setting wins. */
+      margin-inline: auto;
+    }
+    .sic-mob__content {
+      width: 100%;
+      max-width: 560px;
+      margin-inline: auto;
+      padding-inline: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .sic-mob__content .sic__heading,
+    .sic-mob__content .sic__description {
+      text-align: center;
+      margin-inline: auto;
+    }
+    .sic-mob__content .sic__btn {
+      display: inline-flex;
+      margin-inline: auto;
+      align-self: center;
+    }
+  }
+
+  {% if section.id == 'sticky_image_cards_VnGBgB' %}
+  @media (min-width: 1025px) {
+    #StickyImageCards-{{ section.id }} .sic__slide-grid {
+      align-items: flex-start;
+    }
+    #StickyImageCards-{{ section.id }} .sic__slide-media {
+      flex: 0 0 660px;
+      height: 826px;
+      max-height: none;
+      overflow: visible;
+    }
+    #StickyImageCards-{{ section.id }} .sic__slide-img-main {
+      width: 660px;
+      height: 826px;
+      position: relative;
+      top: -83px;
+      opacity: 1;
+    }
+    /* Hide secondary/accent overlays so all 3 cards look uniformly sized */
+    #StickyImageCards-{{ section.id }} .sic__slide-img-secondary,
+    #StickyImageCards-{{ section.id }} .sic__slide-img-accent {
+      display: none !important;
+    }
+  }
+  {% endif %}
+</style>
+
+<script>
+  (function() {
+    var section = document.getElementById('StickyImageCards-{{ section.id }}');
+    if (!section) return;
+
+    // Desktop
+    var sic = section.querySelector('[data-sic-section]');
+    if (sic) {
+      var blockCount = parseInt(sic.getAttribute('data-block-count')) || 1;
+      var slides = section.querySelectorAll('[data-sic-slide]');
+      var currentIndex = 0;
+
+      function update() {
+        var rect = sic.getBoundingClientRect();
+        var sectionTop = -rect.top;
+        var sectionHeight = sic.offsetHeight - window.innerHeight;
+        var progress = Math.max(0, Math.min(1, sectionTop / sectionHeight));
+        var newIndex = Math.min(Math.floor(progress * blockCount), blockCount - 1);
+        if (newIndex !== currentIndex) {
+          for (var i = 0; i < slides.length; i++) {
+            slides[i].classList.remove('is-active', 'is-prev');
+          }
+          for (var j = 0; j < newIndex; j++) {
+            slides[j].classList.add('is-prev');
+          }
+          slides[newIndex].classList.add('is-active');
+          currentIndex = newIndex;
+        }
+      }
+      update();
+    }
+
+    // Mobile
+    var mobSection = section.querySelector('[data-sic-mobile]');
+    if (mobSection) {
+      var mobSlides = section.querySelectorAll('[data-sic-mob-slide]');
+      var mobIndex = 0;
+      var mobCount = mobSlides.length;
+
+      function updateMobile() {
+        var rect = mobSection.getBoundingClientRect();
+        var top = -rect.top;
+        var height = mobSection.offsetHeight - window.innerHeight;
+        var progress = Math.max(0, Math.min(1, top / height));
+        var newIdx = Math.min(Math.floor(progress * mobCount), mobCount - 1);
+        if (newIdx !== mobIndex) {
+          for (var i = 0; i < mobCount; i++) {
+            mobSlides[i].classList.remove('is-active', 'is-prev');
+          }
+          for (var j = 0; j < newIdx; j++) {
+            mobSlides[j].classList.add('is-prev');
+          }
+          mobSlides[newIdx].classList.add('is-active');
+          mobIndex = newIdx;
+        }
+      }
+      updateMobile();
+    }
+
+    var ticking = false;
+    window.addEventListener('scroll', function() {
+      if (!ticking) {
+        requestAnimationFrame(function() {
+          if (sic) update();
+          if (mobSection) updateMobile();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Sticky Image Cards",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.overlay"]
+  },
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Side margins"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width_desktop",
+      "label": "Full width – Desktop",
+      "info": "When on, section spans edge-to-edge on desktop regardless of the side margin below.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "side_margin_desktop",
+      "label": "Side margin – Desktop",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width_mobile",
+      "label": "Full width – Mobile",
+      "info": "When on, section spans edge-to-edge on mobile regardless of the side margin below.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "side_margin_mobile",
+      "label": "Side margin – Mobile",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "mobile_image_width_pct",
+      "label": "Mobile image width",
+      "info": "Width of the card image on mobile, as a percentage of the section's inner width. 100% = image fills whatever space the side margin leaves. Lower values = inset image with more side air.",
+      "min": 40,
+      "max": 100,
+      "step": 2,
+      "default": 100,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "mobile_image_height_vh",
+      "label": "Mobile image height",
+      "info": "Height of the card image on mobile, in vh (% of viewport height). Replaces the old square 1:1 aspect lock — merchant picks exactly how tall the image is.",
+      "min": 30,
+      "max": 90,
+      "step": 2,
+      "default": 60,
+      "unit": "vh"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Made with Naturally Derived Ingredients"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_2",
+          "label": "Second image (overlapping)",
+          "info": "Optional smaller image that overlaps the main image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_3",
+          "label": "Third image (accent/keychain)",
+          "info": "Optional floating accent image positioned at top-left of media area"
+        },
+        {
+          "type": "select",
+          "id": "image_position",
+          "label": "Image position",
+          "default": "left",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "right", "label": "Right" }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sticky Image Cards",
+      "blocks": [
+        {
+          "type": "card",
+          "settings": {
+            "heading": "Made with Naturally Derived Ingredients",
+            "image_position": "left"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "heading": "Summr Labs",
+            "description": "<p>Help shape what comes next at Summr. Get early access to unreleased fragrances, experience new formats before they launch, and step into the process behind what we're building. Your instincts, feedback, and preferences don't just matter — they actively shape how Summr evolves.</p>",
+            "button_label": "JOIN THE WAITLIST",
+            "image_position": "right"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

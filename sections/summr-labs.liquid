@@ -1,0 +1,941 @@
+{%- liquid
+  assign s = section.settings
+-%}
+
+<section
+  id="sl-{{ section.id }}"
+  class="sl"
+  style="
+    --sl-bg-overlay: {{ s.bg_overlay_opacity | default: 0 | divided_by: 100.0 }};
+    --sl-bg-color: {{ s.bg_color | default: '#000000' }};
+    --sl-text-color: {{ s.text_color | default: '#ffffff' }};
+    --sl-cta-bg: {{ s.cta_bg | default: '#FFF8B8' }};
+    --sl-cta-color: {{ s.cta_color | default: '#111111' }};
+  "
+>
+  {%- if s.bg_image != blank -%}
+    <img class="sl__bg" src="{{ s.bg_image | image_url: width: 2400 }}" alt="" loading="lazy" aria-hidden="true">
+  {%- endif -%}
+  <div class="sl__overlay" aria-hidden="true"></div>
+
+  <div class="sl__inner">
+    <div class="sl__text">
+      {%- if s.heading != blank -%}
+        <h2 class="sl__heading">{{ s.heading }}</h2>
+      {%- endif -%}
+      {%- if s.description != blank -%}
+        <p class="sl__description">{{ s.description }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- if s.center_image != blank -%}
+      <div class="sl__media-wrap">
+        <div class="sl__media">
+          <img
+            class="sl__media-img"
+            src="{{ s.center_image | image_url: width: 1200 }}"
+            alt="{{ s.heading | default: '' | escape }}"
+            loading="lazy"
+          >
+        </div>
+        {%- if s.cta_label != blank -%}
+          {%- comment -%}
+            CTA sits centered, overlapping the bottom edge of the image
+            by half its height so part of the pill rests on the image
+            and part on the background — the look in the reference.
+            Renders as a button to open the waitlist popup.
+          {%- endcomment -%}
+          <button
+            type="button"
+            class="sl__cta"
+            data-sl-open="{{ section.id }}"
+            aria-haspopup="dialog"
+            aria-controls="sl-modal-{{ section.id }}"
+          >
+            {{ s.cta_label }}
+          </button>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%}
+    Waitlist popup — opens when the CTA is clicked. Submits a Shopify
+    customer form so the email + phone land in Online Store →
+    Customers, tagged `summr-labs-waitlist` for easy filtering /
+    export. Shopify auto-emails the store owner on new submissions
+    via the standard customer-created notification.
+  {%- endcomment -%}
+  <div
+    class="sl-modal"
+    id="sl-modal-{{ section.id }}"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="sl-modal-heading-{{ section.id }}"
+  >
+    <div class="sl-modal__backdrop" data-sl-close="{{ section.id }}" aria-hidden="true"></div>
+    <div class="sl-modal__card" role="document">
+      <button
+        type="button"
+        class="sl-modal__close"
+        data-sl-close="{{ section.id }}"
+        aria-label="Close waitlist form"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+
+      {%- if s.modal_eyebrow != blank -%}
+        <p class="sl-modal__eyebrow">{{ s.modal_eyebrow }}</p>
+      {%- endif -%}
+      <h3 class="sl-modal__heading" id="sl-modal-heading-{{ section.id }}">
+        {{ s.modal_heading | default: 'Join the Summr Labs waitlist' }}
+      </h3>
+      {%- if s.modal_sub != blank -%}
+        <p class="sl-modal__sub">{{ s.modal_sub }}</p>
+      {%- endif -%}
+      <span class="sl-modal__rule" aria-hidden="true"></span>
+
+      {%- comment -%}
+        Pre-build the form id as a variable. Passing it inline as
+        `id: 'sl-form-' | append: section.id` makes Liquid apply the
+        `| append` filter to the whole form-tag argument list, which
+        corrupts the form-type lookup and throws "Invalid form type".
+      {%- endcomment -%}
+      {%- assign sl_form_id = 'sl-form-' | append: section.id -%}
+      {%- form 'customer', id: sl_form_id, class: 'sl-modal__form' -%}
+        <input type="hidden" name="contact[tags]" value="summr-labs-waitlist">
+        {%- comment -%}
+          Marketing acceptance puts the customer on the email
+          marketing list so post-launch announcements can be sent
+          to them without a re-opt-in.
+        {%- endcomment -%}
+        <input type="hidden" name="contact[accepts_marketing]" value="true">
+
+        {%- if form.posted_successfully? -%}
+          <p class="sl-modal__form-success">
+            {{ s.modal_success | default: 'You are on the list. We will be in touch soon.' }}
+          </p>
+        {%- else -%}
+          {%- if form.errors -%}
+            <p class="sl-modal__form-error">
+              {{ form.errors | default_errors }}
+            </p>
+          {%- endif -%}
+
+          <label class="sl-modal__field">
+            <span class="sl-modal__field-label">Email Address</span>
+            <input type="email" name="contact[email]" autocomplete="email" required>
+          </label>
+
+          <label class="sl-modal__field">
+            <span class="sl-modal__field-label">Phone No.</span>
+            <input type="tel" name="contact[phone]" autocomplete="tel" pattern="[0-9 +\-()]{6,}">
+          </label>
+
+          <button type="submit" class="sl-modal__submit">
+            <span>{{ s.modal_cta | default: 'JOIN THE WAITLIST' }}</span>
+          </button>
+        {%- endif -%}
+      {%- endform -%}
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    var sectionId = {{ section.id | json }};
+    var modal = document.getElementById('sl-modal-' + sectionId);
+    if (!modal) return;
+
+    // Move the modal to <body> so it escapes any parent overflow /
+    // transform / contain that would clip a position:fixed child.
+    // This is the most reliable fix for "popup not appearing" inside
+    // themes with heavy section wrappers.
+    if (modal.parentNode !== document.body) {
+      document.body.appendChild(modal);
+    }
+
+    var openers = document.querySelectorAll('[data-sl-open="' + sectionId + '"]');
+    var closers = modal.querySelectorAll('[data-sl-close="' + sectionId + '"]');
+
+    function openModal(e) {
+      if (e) { e.preventDefault(); }
+      modal.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+      var firstField = modal.querySelector('input[type="email"]');
+      if (firstField) setTimeout(function () { firstField.focus(); }, 60);
+    }
+    function closeModal(e) {
+      if (e) { e.preventDefault(); }
+      modal.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+
+    openers.forEach(function (btn) { btn.addEventListener('click', openModal); });
+    closers.forEach(function (btn) { btn.addEventListener('click', closeModal); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
+    });
+
+    // Auto-open on success. Shopify redirects back to the page after a
+    // successful POST and the form block re-renders with the
+    // .sl-modal__form-success element in place of the inputs.
+    if (modal.querySelector('.sl-modal__form-success')) openModal();
+
+    // Auto-open when arriving from another page that linked here with
+    // `?open-waitlist=true` (e.g. the homepage Sticky Card Section 2
+    // CTA). Strip the param after opening so refresh / share links
+    // don't keep re-triggering it.
+    try {
+      var url = new URL(window.location.href);
+      if (url.searchParams.get('open-waitlist') === 'true') {
+        openModal();
+        url.searchParams.delete('open-waitlist');
+        var clean = url.pathname + (url.searchParams.toString() ? '?' + url.searchParams.toString() : '') + url.hash;
+        window.history.replaceState({}, '', clean);
+      }
+    } catch (err) { /* URL not supported — skip */ }
+  })();
+</script>
+
+{% style %}
+  #sl-{{ section.id }}.sl {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: var(--sl-bg-color);
+    padding-top: {{ s.padding_top_desktop | default: 60 }}px;
+    padding-bottom: {{ s.padding_bottom_desktop | default: 80 }}px;
+    margin-top: {{ s.margin_top_desktop | default: 0 }}px;
+    margin-bottom: {{ s.margin_bottom_desktop | default: 0 }}px;
+  }
+  #sl-{{ section.id }} .sl__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    display: block;
+  }
+  #sl-{{ section.id }} .sl__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, var(--sl-bg-overlay));
+    z-index: 1;
+    pointer-events: none;
+  }
+  #sl-{{ section.id }} .sl__inner {
+    position: relative;
+    z-index: 2;
+    max-width: {{ s.max_width | default: 1400 }}px;
+    margin: 0 auto;
+    padding: 0 {{ s.side_padding | default: 24 }}px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: {{ s.gap_text_to_image | default: 32 }}px;
+  }
+  #sl-{{ section.id }} .sl__text {
+    text-align: center;
+    max-width: {{ s.text_max_width | default: 720 }}px;
+    margin: 0 auto;
+    color: var(--sl-text-color);
+  }
+  #sl-{{ section.id }} .sl__heading {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: {{ s.heading_size_desktop | default: 32 }}px;
+    line-height: 1.2;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 0 0 16px;
+    color: inherit;
+  }
+  #sl-{{ section.id }} .sl__description {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: {{ s.description_size_desktop | default: 15 }}px;
+    line-height: 1.5;
+    letter-spacing: 0;
+    margin: 0;
+    color: inherit;
+  }
+  #sl-{{ section.id }} .sl__media-wrap {
+    position: relative;
+    width: 100%;
+    max-width: {{ s.image_max_width | default: 460 }}px;
+    margin: 0 auto;
+  }
+  #sl-{{ section.id }} .sl__media {
+    width: 100%;
+    aspect-ratio: {{ s.image_aspect | default: '4 / 3' }};
+    border-radius: {{ s.image_radius | default: 14 }}px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.08);
+  }
+  #sl-{{ section.id }} .sl__media-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  #sl-{{ section.id }} .sl__cta {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, 50%);
+    background: var(--sl-cta-bg);
+    color: var(--sl-cta-color);
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: {{ s.cta_size | default: 13 }}px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 18px 40px;
+    border-radius: 999px;
+    text-decoration: none;
+    border: 0;
+    cursor: pointer;
+    transition: transform 200ms ease, box-shadow 200ms ease;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    white-space: nowrap;
+  }
+  #sl-{{ section.id }} .sl__cta:hover {
+    transform: translate(-50%, calc(50% - 1px));
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.24);
+  }
+  #sl-{{ section.id }} .sl__cta:active {
+    transform: translate(-50%, calc(50% + 1px));
+  }
+
+  /* ---------- Waitlist popup ----------
+     Selectors below are NOT scoped under the section ID because the
+     modal element is moved to <body> at runtime to escape any parent
+     overflow/transform/contain that would clip a position:fixed child.
+     A unique class (.sl-modal) is the selector root instead. */
+  .sl-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    box-sizing: border-box;
+  }
+  .sl-modal.is-open {
+    display: flex !important;
+    animation: sl-fade-in 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @keyframes sl-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes sl-card-up {
+    from { transform: translateY(14px) scale(0.985); opacity: 0; }
+    to   { transform: translateY(0) scale(1); opacity: 1; }
+  }
+  .sl-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 17, 22, 0.62);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .sl-modal__card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 540px;
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 60%),
+      #f5f3ee;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 24px;
+    padding: 48px 44px 44px;
+    box-sizing: border-box;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.9) inset,
+      0 30px 90px -20px rgba(0, 0, 0, 0.45),
+      0 8px 24px -12px rgba(0, 0, 0, 0.20);
+    color: #111;
+    text-align: center;
+    animation: sl-card-up 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .sl-modal__close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    color: #8a8a8a;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 50%;
+    transition: color 180ms ease, background 180ms ease;
+  }
+  .sl-modal__close:hover {
+    color: #111;
+    background: rgba(0, 0, 0, 0.05);
+  }
+  .sl-modal__close svg { width: 18px; height: 18px; display: block; }
+
+  .sl-modal__eyebrow {
+    margin: 0 0 14px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    line-height: 1.2;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #8a7a3a;
+  }
+  .sl-modal__heading {
+    margin: 0 auto 14px;
+    max-width: 380px;
+    font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 1.15;
+    letter-spacing: 0;
+    text-transform: none;
+    color: #111;
+  }
+  .sl-modal__sub {
+    margin: 0 auto 28px;
+    max-width: 420px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.55;
+    color: #555;
+  }
+  .sl-modal__rule {
+    display: block;
+    width: 44px;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.18);
+    margin: 0 auto 28px;
+  }
+  .sl-modal__form {
+    max-width: 380px;
+    margin: 0 auto;
+    text-align: left;
+  }
+  .sl-modal__form-success {
+    margin: 8px 0 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #2a6b3a;
+    text-align: center;
+  }
+  .sl-modal__form-error {
+    margin: 0 0 16px;
+    padding: 10px 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #8b1f1a;
+    background: rgba(179, 38, 30, 0.06);
+    border-radius: 8px;
+    text-align: left;
+  }
+  .sl-modal__field {
+    display: block;
+    margin: 0 0 14px;
+    position: relative;
+  }
+  .sl-modal__field-label {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8a8a8a;
+    margin-bottom: 8px;
+  }
+  .sl-modal__field input {
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    color: #111;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.4;
+    padding: 14px 16px;
+    box-sizing: border-box;
+    outline: none;
+    border-radius: 12px;
+    transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+  }
+  .sl-modal__field input::placeholder { color: #b4b4b4; }
+  .sl-modal__field input:hover { border-color: rgba(0, 0, 0, 0.20); }
+  .sl-modal__field input:focus {
+    border-color: #111;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.06);
+  }
+
+  /* Liquid Glass submit pill — same family as the slideshow CTA but
+     darkened so it reads as the primary action against the light card. */
+  .sl-modal__submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    margin: 22px 0 0;
+    position: relative;
+    background:
+      radial-gradient(130% 60% at 50% -10%, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0) 55%),
+      linear-gradient(108deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 38%, rgba(255, 255, 255, 0) 62%, rgba(255, 255, 255, 0.06) 100%),
+      #111;
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #fff;
+    border-radius: 999px;
+    padding: 16px 28px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow:
+      inset 0 1px 0.5px rgba(255, 255, 255, 0.25),
+      inset 0 -1px 0.5px rgba(0, 0, 0, 0.30),
+      0 2px 6px rgba(0, 0, 0, 0.12),
+      0 14px 36px -10px rgba(0, 0, 0, 0.35);
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+                background 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .sl-modal__submit::after {
+    content: '→';
+    display: inline-block;
+    font-size: 14px;
+    line-height: 1;
+    transform: translateX(0);
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .sl-modal__submit:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      inset 0 1px 0.5px rgba(255, 255, 255, 0.30),
+      inset 0 -1px 0.5px rgba(0, 0, 0, 0.30),
+      0 3px 8px rgba(0, 0, 0, 0.14),
+      0 22px 50px -12px rgba(0, 0, 0, 0.45);
+  }
+  .sl-modal__submit:hover::after { transform: translateX(3px); }
+  .sl-modal__submit:active { transform: translateY(0); }
+
+  @media (max-width: 767.98px) {
+    #sl-{{ section.id }}.sl {
+      padding-top: {{ s.padding_top_mobile | default: 40 }}px;
+      padding-bottom: {{ s.padding_bottom_mobile | default: 56 }}px;
+      margin-top: {{ s.margin_top_mobile | default: 0 }}px;
+      margin-bottom: {{ s.margin_bottom_mobile | default: 0 }}px;
+    }
+    #sl-{{ section.id }} .sl__inner {
+      gap: {{ s.gap_text_to_image_mobile | default: 24 }}px;
+      padding: 0 {{ s.side_padding_mobile | default: 16 }}px;
+    }
+    #sl-{{ section.id }} .sl__heading {
+      font-size: {{ s.heading_size_mobile | default: 22 }}px;
+    }
+    #sl-{{ section.id }} .sl__description {
+      font-size: {{ s.description_size_mobile | default: 13 }}px;
+    }
+    #sl-{{ section.id }} .sl__cta {
+      padding: 14px 28px;
+      font-size: {{ s.cta_size_mobile | default: 12 }}px;
+    }
+  }
+  @media (max-width: 767.98px) {
+    .sl-modal { padding: 16px; align-items: flex-end; }
+    .sl-modal__card {
+      padding: 40px 22px 28px;
+      border-radius: 20px 20px 18px 18px;
+      max-width: 100%;
+    }
+    .sl-modal__eyebrow { font-size: 10px; letter-spacing: 0.16em; margin-bottom: 10px; }
+    .sl-modal__heading { font-size: 26px; max-width: 320px; }
+    .sl-modal__sub { font-size: 13px; margin-bottom: 22px; }
+    .sl-modal__rule { margin-bottom: 22px; }
+    .sl-modal__field input { padding: 13px 14px; font-size: 14px; }
+    .sl-modal__submit { padding: 14px 22px; font-size: 12px; }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Summr Labs",
+  "tag": "section",
+  "class": "summr-labs-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background image (full-bleed)"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color (used when no image is set, or behind transparency)",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "range",
+      "id": "bg_overlay_opacity",
+      "label": "Dark overlay opacity (%)",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "default": 0,
+      "unit": "%"
+    },
+    {
+      "type": "header",
+      "content": "Heading + description"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "SUMMR LABS"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Summr Labs is where things are still being figured out. New scents before they have names. Formats that don't exist in stores yet. Decisions that are still open. You get access to all of it early and when you tell us what works and what doesn't, that feedback goes directly into what we build next."
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_desktop",
+      "label": "Heading size – Desktop (px)",
+      "min": 18,
+      "max": 64,
+      "step": 1,
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Heading size – Mobile (px)",
+      "min": 14,
+      "max": 36,
+      "step": 1,
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "description_size_desktop",
+      "label": "Description size – Desktop (px)",
+      "min": 11,
+      "max": 22,
+      "step": 1,
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "description_size_mobile",
+      "label": "Description size – Mobile (px)",
+      "min": 11,
+      "max": 18,
+      "step": 1,
+      "default": 13
+    },
+    {
+      "type": "header",
+      "content": "Center image"
+    },
+    {
+      "type": "image_picker",
+      "id": "center_image",
+      "label": "Center image"
+    },
+    {
+      "type": "select",
+      "id": "image_aspect",
+      "label": "Image aspect ratio",
+      "options": [
+        { "value": "1 / 1",  "label": "Square (1:1)" },
+        { "value": "4 / 3",  "label": "Landscape (4:3)" },
+        { "value": "16 / 9", "label": "Wide (16:9)" },
+        { "value": "3 / 4",  "label": "Portrait (3:4)" },
+        { "value": "4 / 5",  "label": "Portrait (4:5)" }
+      ],
+      "default": "4 / 3"
+    },
+    {
+      "type": "range",
+      "id": "image_max_width",
+      "label": "Image max width (px)",
+      "min": 280,
+      "max": 900,
+      "step": 10,
+      "default": 460
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "label": "Image border radius (px)",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA label",
+      "default": "JOIN THE WAITLIST"
+    },
+    {
+      "type": "paragraph",
+      "content": "Clicking the CTA opens a waitlist popup that saves the visitor to Online Store → Customers with the tag `summr-labs-waitlist`. Shopify also fires its new-customer email notification to the store owner."
+    },
+    {
+      "type": "header",
+      "content": "Waitlist popup"
+    },
+    {
+      "type": "text",
+      "id": "modal_eyebrow",
+      "label": "Popup eyebrow",
+      "default": "SUMMR LABS · WAITLIST"
+    },
+    {
+      "type": "text",
+      "id": "modal_heading",
+      "label": "Popup heading",
+      "default": "Join the Summr Labs waitlist"
+    },
+    {
+      "type": "textarea",
+      "id": "modal_sub",
+      "label": "Popup subtext",
+      "default": "Be the first to try new scents, formats, and ideas before they hit shelves. We'll only reach out when there's something to test."
+    },
+    {
+      "type": "text",
+      "id": "modal_cta",
+      "label": "Submit button label",
+      "default": "JOIN THE WAITLIST"
+    },
+    {
+      "type": "text",
+      "id": "modal_success",
+      "label": "Success message",
+      "default": "You're on the list. We'll be in touch soon."
+    },
+    {
+      "type": "color",
+      "id": "cta_bg",
+      "label": "CTA background",
+      "default": "#FFF8B8"
+    },
+    {
+      "type": "color",
+      "id": "cta_color",
+      "label": "CTA text color",
+      "default": "#111111"
+    },
+    {
+      "type": "range",
+      "id": "cta_size",
+      "label": "CTA text size – Desktop (px)",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "cta_size_mobile",
+      "label": "CTA text size – Mobile (px)",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Content max width (px)",
+      "min": 600,
+      "max": 1600,
+      "step": 20,
+      "default": 1400
+    },
+    {
+      "type": "range",
+      "id": "text_max_width",
+      "label": "Heading/description max width (px)",
+      "min": 360,
+      "max": 1200,
+      "step": 10,
+      "default": 720
+    },
+    {
+      "type": "range",
+      "id": "side_padding",
+      "label": "Side padding – Desktop (px)",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "side_padding_mobile",
+      "label": "Side padding – Mobile (px)",
+      "min": 0,
+      "max": 60,
+      "step": 1,
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "gap_text_to_image",
+      "label": "Gap between text and image – Desktop (px)",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "gap_text_to_image_mobile",
+      "label": "Gap between text and image – Mobile (px)",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Padding & margin – Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Top padding – Desktop (px)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Bottom padding – Desktop (px)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Top margin – Desktop (px)",
+      "min": -100,
+      "max": 100,
+      "step": 4,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Bottom margin – Desktop (px)",
+      "min": -100,
+      "max": 100,
+      "step": 4,
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Padding & margin – Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top padding – Mobile (px)",
+      "min": 0,
+      "max": 140,
+      "step": 4,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom padding – Mobile (px)",
+      "min": 0,
+      "max": 140,
+      "step": 4,
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Top margin – Mobile (px)",
+      "min": -80,
+      "max": 80,
+      "step": 4,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Bottom margin – Mobile (px)",
+      "min": -80,
+      "max": 80,
+      "step": 4,
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Summr Labs"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,764 @@
+{%- capture style -%}
+  --section-pt: {{ section.settings.padding_top }}; --section-pb: {{ section.settings.padding_bottom }};
+{%- endcapture -%}
+
+{%- liquid
+  # Resolve effective side margins — "Full width" checkbox wins over the
+  # range slider for that breakpoint (value: 0 when full-width is on).
+  assign side_d = section.settings.side_margin_desktop | default: 0
+  if section.settings.full_width_desktop
+    assign side_d = 0
+  endif
+  assign side_m = section.settings.side_margin_mobile | default: 0
+  if section.settings.full_width_mobile
+    assign side_m = 0
+  endif
+
+  assign mt_m = section.settings.margin_top_mobile
+  if mt_m == 0
+    assign mt_m = section.settings.margin_top_desktop
+  endif
+  assign mb_m = section.settings.margin_bottom_mobile
+  if mb_m == 0
+    assign mb_m = section.settings.margin_bottom_desktop
+  endif
+-%}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    margin-top: {{ section.settings.margin_top_desktop | default: 0 }}px !important;
+    margin-bottom: {{ section.settings.margin_bottom_desktop | default: 0 }}px !important;
+  }
+  @media (max-width: 767.98px) {
+    #shopify-section-{{ section.id }} {
+      margin-top: {{ mt_m | default: 0 }}px !important;
+      margin-bottom: {{ mb_m | default: 0 }}px !important;
+    }
+    #StickyImageCards-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top_mobile | default: 0 }}px !important;
+      padding-bottom: {{ section.settings.padding_bottom_mobile | default: 0 }}px !important;
+    }
+  }
+{% endstyle %}
+
+<style>
+  #StickyImageCards-{{ section.id }} {
+    padding-left: {{ side_d }}px;
+    padding-right: {{ side_d }}px;
+  }
+  @media (max-width: 640px) {
+    #StickyImageCards-{{ section.id }} {
+      padding-left: {{ side_m }}px;
+      padding-right: {{ side_m }}px;
+    }
+  }
+</style>
+
+{%- assign block = section.blocks.first -%}
+
+<section
+  id="StickyImageCards-{{ section.id }}"
+  class="section{% if section.settings.padding_top < 30 %} pt-min{% endif %}{% if section.settings.padding_bottom < 30 %} pb-min{% endif %}"
+  style="{{ style | strip | strip_newlines }}; background-color: {{ section.settings.bg_color }};"
+>
+  {%- if block -%}
+    {%- assign image_position = block.settings.image_position | default: 'left' -%}
+
+    <!-- Desktop: static single-card layout -->
+    <div class="sic sic--desktop">
+      <div class="sic__card sic__card--img-{{ image_position }}" {{ block.shopify_attributes }}>
+        <div class="sic__card-grid">
+          <div class="sic__card-media">
+            {%- if block.settings.image != blank -%}
+              <div class="sic__card-img-main">
+                <img src="{{ block.settings.image | image_url: width: 1000 }}" alt="{{ block.settings.heading | escape }}" loading="lazy" width="1000" height="1000">
+              </div>
+            {%- endif -%}
+            {%- if block.settings.image_2 != blank -%}
+              <div class="sic__card-img-secondary">
+                <img src="{{ block.settings.image_2 | image_url: width: 600 }}" alt="{{ block.settings.heading | escape }}" loading="lazy" width="600" height="600">
+              </div>
+            {%- endif -%}
+            {%- if block.settings.image_3 != blank -%}
+              <div class="sic__card-img-accent">
+                <img src="{{ block.settings.image_3 | image_url: width: 400 }}" alt="Accent image" loading="lazy" width="400" height="400">
+              </div>
+            {%- endif -%}
+          </div>
+          <div class="sic__card-content">
+            <h2 class="sic__heading">{{ block.settings.heading }}</h2>
+            {%- if block.settings.description != blank -%}
+              <div class="sic__description">{{ block.settings.description }}</div>
+            {%- endif -%}
+            {%- if block.settings.button_label != blank -%}
+              <a href="{{ block.settings.button_link | default: '#' }}" class="sic__btn">
+                <span class="sic__btn-shine"></span>
+                <span class="sic__btn-label">{{ block.settings.button_label }}</span>
+              </a>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile: scoped layout with all 3 images (main + overlap + accent) -->
+    <div class="sic2-mob" style="--s2m-heading-top: {{ section.settings.s2m_heading_top_px | default: 20 }}px; --s2m-img-top: {{ section.settings.s2m_img_top_px | default: 16 }}px; --s2m-img-bottom: {{ section.settings.s2m_img_bottom_px | default: 20 }}px; --s2m-img-w: {{ section.settings.s2m_img_width_pct | default: 86 }}%; --s2m-img-h: {{ section.settings.s2m_img_height_vh | default: 52 }}vh; --s2m-main-ox: {{ section.settings.s2m_main_offset_x | default: 0 }}px; --s2m-main-oy: {{ section.settings.s2m_main_offset_y | default: 0 }}px;">
+      <div class="sic2-mob__inner" {{ block.shopify_attributes }}>
+        {%- if block.settings.heading != blank -%}
+          <h2 class="sic2-mob__heading">{{ block.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if block.settings.image != blank -%}
+          <div class="sic2-mob__media">
+            <div class="sic2-mob__img-main">
+              <img
+                src="{{ block.settings.image | image_url: width: 800 }}"
+                alt="{{ block.settings.heading | escape }}"
+                loading="lazy"
+                width="800"
+                height="800"
+              >
+            </div>
+            {%- if block.settings.image_2 != blank -%}
+              <div class="sic2-mob__img-secondary">
+                <img src="{{ block.settings.image_2 | image_url: width: 500 }}" alt="{{ block.settings.heading | escape }}" loading="lazy" width="500" height="500">
+              </div>
+            {%- endif -%}
+            {%- if block.settings.image_3 != blank -%}
+              <div class="sic2-mob__img-accent">
+                <img src="{{ block.settings.image_3 | image_url: width: 300 }}" alt="Accent image" loading="lazy" width="300" height="300">
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+        <div class="sic2-mob__content">
+          {%- if block.settings.description != blank -%}
+            <div class="sic2-mob__description">{{ block.settings.description }}</div>
+          {%- endif -%}
+          {%- if block.settings.button_label != blank -%}
+            <a href="{{ block.settings.button_link | default: '#' }}" class="sic2-mob__btn">
+              <span class="sic2-mob__btn-shine"></span>
+              <span class="sic2-mob__btn-label">{{ block.settings.button_label }}</span>
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+<style>
+  .sic { position: relative; }
+
+  /* Desktop */
+  .sic__card {
+    position: relative;
+    width: 100%;
+  }
+  .sic__card-grid {
+    display: flex;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 60px 60px;
+    gap: 60px;
+    align-items: center;
+  }
+  .sic__card--img-left .sic__card-grid {
+    flex-direction: row;
+  }
+  .sic__card--img-right .sic__card-grid {
+    flex-direction: row-reverse;
+  }
+  .sic__card-media {
+    flex: 0 0 55%;
+    position: relative;
+    height: 700px;
+    max-height: 700px;
+    min-height: 600px;
+  }
+  .sic__card-img-main {
+    position: absolute;
+    top: 0;
+    left: -38px;
+    width: 509px;
+    height: 600px;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .sic__card-img-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .sic__card-img-secondary {
+    position: absolute;
+    top: 204px;
+    left: 326px;
+    right: auto;
+    bottom: auto;
+    width: 261px;
+    height: 355px;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    z-index: 3;
+    transform: rotate(-4deg);
+  }
+  .sic__card-img-secondary img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .sic__card-img-accent {
+    position: absolute;
+    top: -98px;
+    left: -250px;
+    width: 58%;
+    z-index: 4;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1));
+  }
+  .sic__card-img-accent img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+  }
+  .sic__card-content {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .sic__heading {
+    font-family: 'Inter', var(--heading-font), sans-serif;
+    font-weight: 500;
+    font-size: 54px;
+    line-height: 64px;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    margin: -80px 0 140px;
+    color: #000;
+  }
+  .sic__description {
+    font-family: 'Inter', var(--body-font), sans-serif !important;
+    font-weight: 400 !important;
+    font-style: normal !important;
+    font-size: 16px !important;
+    line-height: 22px !important;
+    letter-spacing: 0 !important;
+    vertical-align: middle !important;
+    color: #222;
+    margin: 0 0 32px;
+    max-width: 620px;
+  }
+  .sic__description p {
+    font-family: 'Inter', var(--body-font), sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 16px !important;
+    line-height: 22px !important;
+    letter-spacing: 0 !important;
+    margin: 0 0 8px;
+  }
+  .sic__description p:last-child { margin-bottom: 0; }
+
+  /* Glass button */
+  .sic__btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.04);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: #111;
+    border-radius: 999px;
+    padding: 16px 40px;
+    font-family: 'Inter', var(--heading-font), sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: 0.96px;
+    text-transform: uppercase;
+    text-decoration: none;
+    box-shadow:
+      inset 0 1px 1px rgba(255,255,255,0.9),
+      inset 0 -1px 1px rgba(0,0,0,0.04),
+      0 1px 2px rgba(0,0,0,0.04),
+      0 8px 24px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+  .sic__btn-shine {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.2) 100%);
+    pointer-events: none;
+  }
+  .sic__btn-label { position: relative; z-index: 1; }
+  .sic__btn:hover {
+    background: rgba(0,0,0,0.08);
+    border-color: rgba(0,0,0,0.2);
+  }
+
+  /* Mobile-only layout — fully scoped under .sic2-mob* (section 2 mobile).
+     Desktop view uses .sic__* from above and is completely independent of
+     any rules in this block. No collisions with sticky-image-cards.liquid
+     which uses .sic-mob__* — that's a different class namespace. */
+
+  /* Desktop ≥768px: show the desktop version, hide mobile */
+  .sic--desktop { display: block; }
+  .sic2-mob { display: none; }
+
+  /* Mobile <=767px: hide desktop, show the mobile-only layout */
+  @media (max-width: 767px) {
+    .sic--desktop { display: none !important; }
+    .sic2-mob { display: block; }
+  }
+
+  .sic2-mob__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+  }
+  .sic2-mob__heading {
+    font-family: 'Inter', var(--heading-font), sans-serif;
+    font-weight: 500;
+    font-size: 28px;
+    line-height: 32px;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: #000;
+    /* `--s2m-heading-top` = "Mobile — space above heading (px)" slider */
+    margin: var(--s2m-heading-top, 20px) 0 0;
+    padding: 0;
+  }
+  .sic2-mob__media {
+    position: relative;
+    width: var(--s2m-img-w, 86%);
+    height: var(--s2m-img-h, 52vh);
+    margin-top: var(--s2m-img-top, 16px);
+    margin-left: auto;
+    margin-right: auto;
+    flex-shrink: 0;
+    /* overflow visible so the accent keychain can extend beyond the
+       main block */
+    overflow: visible;
+  }
+  .sic2-mob__img-main {
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    overflow: hidden;
+    /* Merchant can nudge the main image block left/right and up/down
+       via the mobile offset sliders. Default 0 = image stays in its
+       natural inset:0 position. */
+    transform: translate(var(--s2m-main-ox, 0), var(--s2m-main-oy, 0));
+  }
+  .sic2-mob__img-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .sic2-mob__img-secondary {
+    position: absolute;
+    /* Explicit 140 × 190 size per the reference annotation. Sits at
+       bottom-right with a small overhang outside the main image block. */
+    right: -10px;
+    bottom: -20px;
+    width: 140px;
+    height: 190px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    z-index: 3;
+    transform: rotate(-4deg);
+  }
+  .sic2-mob__img-secondary img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .sic2-mob__img-accent {
+    position: absolute;
+    /* Accent keychain is smaller + further up/left to match the reference,
+       hanging off the top-left corner. */
+    top: -4%;
+    left: -8%;
+    width: 24%;
+    z-index: 4;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.12));
+    pointer-events: none;
+  }
+  .sic2-mob__img-accent img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+  }
+  .sic2-mob__content {
+    width: 100%;
+    /* `--s2m-img-bottom` = "Mobile — space below image (px)" slider */
+    margin-top: var(--s2m-img-bottom, 20px);
+    text-align: center;
+  }
+  .sic2-mob__description {
+    font-family: 'Inter', var(--body-font), sans-serif;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 21px;
+    color: #222;
+    margin: 0 auto 20px;
+    max-width: 420px;
+  }
+  .sic2-mob__description p {
+    margin: 0 0 8px;
+  }
+  .sic2-mob__description p:last-child {
+    margin-bottom: 0;
+  }
+  .sic2-mob__btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.04);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: #111;
+    border-radius: 999px;
+    padding: 12px 28px;
+    font-family: 'Inter', var(--heading-font), sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.9),
+      0 4px 16px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+  }
+  .sic2-mob__btn-shine {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 0) 60%, rgba(255, 255, 255, 0.2) 100%);
+    pointer-events: none;
+  }
+  .sic2-mob__btn-label {
+    position: relative;
+    z-index: 1;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Sticky Card Section 2",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.overlay"]
+  },
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (desktop)",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (desktop)",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top (mobile)",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom (mobile)",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Margins"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Margin top (desktop)",
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margin bottom (desktop)",
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margin top (mobile)",
+      "info": "Falls back to the desktop value when 0.",
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margin bottom (mobile)",
+      "info": "Falls back to the desktop value when 0.",
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Side margins"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width_desktop",
+      "label": "Full width – Desktop",
+      "info": "When on, section spans edge-to-edge on desktop regardless of the side margin below.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "side_margin_desktop",
+      "label": "Side margin – Desktop",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width_mobile",
+      "label": "Full width – Mobile",
+      "info": "When on, section spans edge-to-edge on mobile regardless of the side margin below.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "side_margin_mobile",
+      "label": "Side margin – Mobile",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Mobile layout (single image)"
+    },
+    {
+      "type": "paragraph",
+      "content": "These settings affect only the mobile (<=767px) view of this section. Desktop is unchanged."
+    },
+    {
+      "type": "range",
+      "id": "s2m_heading_top_px",
+      "label": "Space above heading",
+      "info": "Distance from the top of the card to the heading.",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "s2m_img_top_px",
+      "label": "Space between heading and image",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "s2m_img_width_pct",
+      "label": "Image width",
+      "info": "Percent of the card's inner width.",
+      "min": 50,
+      "max": 100,
+      "step": 2,
+      "default": 86,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "s2m_img_height_vh",
+      "label": "Image height",
+      "info": "Percent of viewport height.",
+      "min": 30,
+      "max": 80,
+      "step": 2,
+      "default": 52,
+      "unit": "vh"
+    },
+    {
+      "type": "range",
+      "id": "s2m_img_bottom_px",
+      "label": "Space between image and description",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Mobile — Main image offset"
+    },
+    {
+      "type": "range",
+      "id": "s2m_main_offset_x",
+      "label": "Main image — horizontal nudge",
+      "info": "Negative = left, positive = right. 0 = centered as normal.",
+      "min": -80,
+      "max": 80,
+      "step": 2,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "s2m_main_offset_y",
+      "label": "Main image — vertical nudge",
+      "info": "Negative = up, positive = down. 0 = no shift.",
+      "min": -80,
+      "max": 80,
+      "step": 2,
+      "default": 0,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Made with Naturally Derived Ingredients"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_2",
+          "label": "Second image (overlapping)",
+          "info": "Optional smaller image that overlaps the main image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_3",
+          "label": "Third image (accent/keychain)",
+          "info": "Optional floating accent image positioned at top-left of media area"
+        },
+        {
+          "type": "select",
+          "id": "image_position",
+          "label": "Image position",
+          "default": "left",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "right", "label": "Right" }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sticky Card Section 2",
+      "blocks": [
+        {
+          "type": "card",
+          "settings": {
+            "heading": "Summr Labs",
+            "description": "<p>Help shape what comes next at Summr. Get early access to unreleased fragrances, experience new formats before they launch, and step into the process behind what we're building. Your instincts, feedback, and preferences don't just matter — they actively shape how Summr evolves.</p>",
+            "button_label": "JOIN THE WAITLIST",
+            "image_position": "right"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

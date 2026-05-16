@@ -1,0 +1,782 @@
+{%- liquid
+  assign s = section.settings
+  if s.reset_spacing
+    assign reset_spacing = ' remove_spacing'
+  endif
+
+  assign rendered_heading = s.section_heading | replace: '|', '<br>'
+  if s.section_heading_italic_words != blank
+    assign italic_words = s.section_heading_italic_words | split: ','
+    for word in italic_words
+      assign w = word | strip
+      if w != blank
+        capture wrapped
+          echo '<span class="sc__heading-italic">'
+          echo w
+          echo '</span>'
+        endcapture
+        assign rendered_heading = rendered_heading | replace: w, wrapped
+      endif
+    endfor
+  endif
+-%}
+
+{%- if s.section_heading contains '<i' or s.section_heading contains '<em' or s.section_heading_italic_words != blank -%}
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500&display=swap" rel="stylesheet">
+{%- endif -%}
+
+<div class="sc{{ reset_spacing }}" style="background-color: {{ s.bg_color }};">
+  <div class="sc__wrap">
+    {%- if s.section_heading != blank -%}
+      <h2 class="sc__section-heading">{{ rendered_heading }}</h2>
+    {%- endif -%}
+    <div class="sc__grid">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'card' -%}
+          {%- assign b = block.settings -%}
+          <div class="sc__card" {{ block.shopify_attributes }}>
+
+            <div class="sc__image-wrap">
+              {%- if b.image != blank -%}
+                {{
+                  b.image
+                  | image_url: width: 800
+                  | image_tag:
+                    loading: 'lazy',
+                    class: 'sc__img',
+                    alt: b.image.alt | default: b.heading
+                }}
+              {%- else -%}
+                {{ 'image' | placeholder_svg_tag: 'sc__img sc__img--placeholder' }}
+              {%- endif -%}
+            </div>
+
+            <div class="sc__content">
+              {%- if b.heading != blank -%}
+                <h3 class="sc__heading">{{ b.heading }}</h3>
+              {%- endif -%}
+              <hr class="sc__divider">
+
+              {%- if b.label_1 != blank or b.text_1 != blank -%}
+                <div class="sc__point">
+                  {%- if b.label_1 != blank -%}
+                    <span class="sc__point-label">{{ b.label_1 }}</span>
+                  {%- endif -%}
+                  {%- if b.text_1 != blank -%}
+                    <p class="sc__point-text">{{ b.text_1 | replace: '[c]', '<span class="sc__hl">' | replace: '[/c]', '</span>' }}</p>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+
+              {%- if b.label_2 != blank or b.text_2 != blank -%}
+                <div class="sc__point">
+                  {%- if b.label_2 != blank -%}
+                    <span class="sc__point-label">{{ b.label_2 }}</span>
+                  {%- endif -%}
+                  {%- if b.text_2 != blank -%}
+                    <p class="sc__point-text">{{ b.text_2 | replace: '[c]', '<span class="sc__hl">' | replace: '[/c]', '</span>' }}</p>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+
+              {%- if b.label_3 != blank or b.text_3 != blank -%}
+                <div class="sc__point">
+                  {%- if b.label_3 != blank -%}
+                    <span class="sc__point-label">{{ b.label_3 }}</span>
+                  {%- endif -%}
+                  {%- if b.text_3 != blank -%}
+                    <p class="sc__point-text">{{ b.text_3 | replace: '[c]', '<span class="sc__hl">' | replace: '[/c]', '</span>' }}</p>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            </div>
+
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% style %}
+  #shopify-section-{{ section.id }} .sc {
+    width: 100%;
+  }
+  #shopify-section-{{ section.id }} .sc__wrap {
+    max-width: {{ s.content_max_width }}px;
+    margin: 0 auto;
+    padding: {{ s.padding_v }}px {{ s.padding_h }}px;
+    box-sizing: border-box;
+  }
+  /* Desktop-only side padding override (≥1025px). */
+  @media screen and (min-width: 1025px) {
+    #shopify-section-{{ section.id }} .sc__wrap {
+      padding-left: {{ s.padding_h_desktop | default: 24 }}px;
+      padding-right: {{ s.padding_h_desktop | default: 24 }}px;
+    }
+  }
+  #shopify-section-{{ section.id }} .sc__section-heading {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    font-size: {{ s.section_heading_size_desktop | default: 28 }}px;
+    line-height: 1.3;
+    letter-spacing: 0;
+    text-align: center;
+    color: {{ s.section_heading_color | default: s.text_color }};
+    margin: 0 auto {{ s.section_heading_gap_below | default: 60 }}px;
+    max-width: {{ s.section_heading_max_width_desktop | default: 900 }}px;
+  }
+  #shopify-section-{{ section.id }} .sc__section-heading br {
+    display: inline;
+  }
+  #shopify-section-{{ section.id }} .sc__section-heading :is(i, em, .sc__heading-italic) {
+    font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, 'Times New Roman', serif !important;
+    font-style: italic !important;
+    font-weight: 500;
+  }
+  #shopify-section-{{ section.id }} .sc__grid {
+    display: grid;
+    grid-template-columns: repeat({{ s.columns }}, 1fr);
+    gap: {{ s.card_gap }}px;
+  }
+  #shopify-section-{{ section.id }} .sc__card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Image ── */
+  #shopify-section-{{ section.id }} .sc__image-wrap {
+    width: {{ s.image_width_desktop | default: 100 }}%;
+    {%- if s.image_max_width_desktop_px and s.image_max_width_desktop_px > 0 -%}
+      max-width: {{ s.image_max_width_desktop_px }}px;
+    {%- endif -%}
+    {%- if s.image_height_desktop and s.image_height_desktop > 0 -%}
+      height: {{ s.image_height_desktop }}px;
+      aspect-ratio: auto;
+    {%- else -%}
+      aspect-ratio: 1 / 1;
+    {%- endif -%}
+    overflow: hidden;
+    margin-bottom: {{ s.image_gap }}px;
+  }
+  #shopify-section-{{ section.id }} .sc__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  #shopify-section-{{ section.id }} .sc__img--placeholder {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: #d9d9d9;
+  }
+
+  /* ── Content ── */
+  #shopify-section-{{ section.id }} .sc__content {
+    display: flex;
+    flex-direction: column;
+    gap: {{ s.point_gap }}px;
+  }
+  #shopify-section-{{ section.id }} .sc__heading {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 24px;
+    line-height: {{ s.heading_line_height_desktop | default: 28 }}px;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: {{ s.heading_color | default: s.text_color }};
+    margin: 0;
+  }
+  #shopify-section-{{ section.id }} .sc__divider {
+    width: 93px;
+    height: 0;
+    border: none;
+    border-top: 1px solid {{ s.divider_color }};
+    margin: 0;
+    opacity: 1;
+  }
+  #shopify-section-{{ section.id }} .sc__point {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  #shopify-section-{{ section.id }} .sc__point-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    font-size: {{ s.point_label_size_desktop | default: 16 }}px;
+    line-height: {{ s.point_label_line_height_desktop | default: 19 }}px;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: {{ s.label_color | default: s.text_color }};
+    display: block;
+  }
+  #shopify-section-{{ section.id }} .sc__point-text {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: {{ s.point_text_size_desktop | default: 18 }}px;
+    line-height: {{ s.point_text_line_height_desktop | default: 24 }}px;
+    letter-spacing: 0;
+    color: {{ s.description_color | default: s.text_color }};
+    margin: 0;
+  }
+  #shopify-section-{{ section.id }} .sc__point-text .sc__hl {
+    color: {{ s.highlight_color | default: s.text_color }};
+  }
+
+  /* ── Mobile ── */
+  @media screen and (max-width: 767px) {
+    #shopify-section-{{ section.id }} .sc__section-heading {
+      font-size: {{ s.section_heading_size_mobile | default: 20 }}px;
+      {%- if s.section_heading_max_width_mobile and s.section_heading_max_width_mobile > 0 %}
+      max-width: {{ s.section_heading_max_width_mobile }}px;
+      {%- else %}
+      max-width: 100%;
+      {%- endif %}
+    }
+    #shopify-section-{{ section.id }} .sc__grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    #shopify-section-{{ section.id }} .sc__image-wrap {
+      width: {{ s.image_width_mobile | default: 100 }}%;
+      {%- if s.image_max_width_mobile_px and s.image_max_width_mobile_px > 0 -%}
+        max-width: {{ s.image_max_width_mobile_px }}px;
+      {%- else -%}
+        max-width: none;
+      {%- endif -%}
+      {%- if s.image_height_mobile and s.image_height_mobile > 0 -%}
+        height: {{ s.image_height_mobile }}px;
+        aspect-ratio: auto;
+      {%- endif -%}
+    }
+    #shopify-section-{{ section.id }} .sc__heading {
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 20px;
+      line-height: {{ s.heading_line_height_mobile | default: 24 }}px;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+    #shopify-section-{{ section.id }} .sc__point-label {
+      font-size: {{ s.point_label_size_mobile | default: 14 }}px;
+      line-height: {{ s.point_label_line_height_mobile | default: 17 }}px;
+    }
+    #shopify-section-{{ section.id }} .sc__point-text {
+      font-size: {{ s.point_text_size_mobile | default: 16 }}px;
+      line-height: {{ s.point_text_line_height_mobile | default: 22 }}px;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Scent Cards",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.overlay"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section heading (above the cards)"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "section_heading",
+      "label": "Heading text",
+      "info": "Optional. Use | (pipe) for a line break — e.g. \"first line | second line\"."
+    },
+    {
+      "type": "text",
+      "id": "section_heading_italic_words",
+      "label": "Italic word(s) in heading",
+      "info": "Comma-separated. Each match in the heading is rendered in serif italic (Playfair Display). Example: \"signature\" or \"signature, scent\"."
+    },
+    {
+      "type": "color",
+      "id": "section_heading_color",
+      "label": "Heading color",
+      "info": "Leave empty to fall back to the default text color."
+    },
+    {
+      "type": "range",
+      "id": "section_heading_size_desktop",
+      "label": "Heading size — Desktop",
+      "default": 28,
+      "min": 16,
+      "max": 64,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "section_heading_size_mobile",
+      "label": "Heading size — Mobile",
+      "default": 20,
+      "min": 14,
+      "max": 40,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "section_heading_max_width_desktop",
+      "label": "Heading max width — Desktop",
+      "default": 900,
+      "min": 300,
+      "max": 1400,
+      "step": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "section_heading_max_width_mobile",
+      "label": "Heading max width — Mobile",
+      "info": "0 = full container width.",
+      "default": 0,
+      "min": 0,
+      "max": 800,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "section_heading_gap_below",
+      "label": "Gap below heading",
+      "default": 60,
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Section colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Default text color (fallback)",
+      "info": "Used for heading, label and description when no individual color is set below.",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Card heading color",
+      "info": "Leave empty to fall back to the default text color above."
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Point label color",
+      "info": "Leave empty to fall back to the default text color above."
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description color",
+      "info": "Leave empty to fall back to the default text color above. Applies to the body text under each point label."
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "Highlighted word color",
+      "info": "Wrap any word(s) in [c]…[/c] inside a card's text to render them in this color. Example: Sandalwood, [c]fresh coconut water[/c], bergamot. Leave empty to leave highlighted words in the description color."
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider line color",
+      "default": "#111111"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "label": "Max content width",
+      "default": 1200,
+      "min": 800,
+      "max": 2400,
+      "step": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_v",
+      "label": "Vertical padding",
+      "default": 80,
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_h",
+      "label": "Side padding — Mobile / iPad (≤1024px)",
+      "default": 24,
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_h_desktop",
+      "label": "Side padding — Desktop (≥1025px)",
+      "default": 24,
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns per row",
+      "default": 3,
+      "min": 1,
+      "max": 4,
+      "step": 1
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "label": "Gap between cards",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "range",
+      "id": "image_gap",
+      "label": "Gap below image",
+      "default": 16,
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "image_width_desktop",
+      "label": "Image width (desktop)",
+      "default": 100,
+      "min": 30,
+      "max": 100,
+      "step": 1,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "image_max_width_desktop_px",
+      "label": "Image max width — Desktop (px)",
+      "info": "0 = use the percentage above. Set a px value to cap the image width (e.g. 360 for a 360 px-wide card image).",
+      "default": 0,
+      "min": 0,
+      "max": 800,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "image_height_desktop",
+      "label": "Image height (desktop)",
+      "info": "Set to 0 to keep the 1:1 square aspect ratio.",
+      "default": 0,
+      "min": 0,
+      "max": 800,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "image_width_mobile",
+      "label": "Image width (mobile)",
+      "default": 100,
+      "min": 30,
+      "max": 100,
+      "step": 1,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "image_max_width_mobile_px",
+      "label": "Image max width — Mobile (px)",
+      "info": "0 = use the percentage above. Set a px value to cap the image width on mobile.",
+      "default": 0,
+      "min": 0,
+      "max": 800,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "image_height_mobile",
+      "label": "Image height (mobile)",
+      "info": "Set to 0 to keep the 1:1 square aspect ratio.",
+      "default": 0,
+      "min": 0,
+      "max": 800,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "range",
+      "id": "point_gap",
+      "label": "Gap between content rows",
+      "default": 12,
+      "min": 4,
+      "max": 40,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "point_label_size_desktop",
+      "label": "Point label size — Desktop",
+      "default": 16,
+      "min": 10,
+      "max": 28,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "point_label_size_mobile",
+      "label": "Point label size — Mobile",
+      "default": 14,
+      "min": 9,
+      "max": 24,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "point_text_size_desktop",
+      "label": "Point description size — Desktop",
+      "default": 18,
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "point_text_size_mobile",
+      "label": "Point description size — Mobile",
+      "default": 16,
+      "min": 10,
+      "max": 26,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "heading_line_height_desktop",
+      "label": "Card heading line height — Desktop",
+      "default": 28,
+      "min": 14,
+      "max": 60,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "heading_line_height_mobile",
+      "label": "Card heading line height — Mobile",
+      "default": 24,
+      "min": 14,
+      "max": 48,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "point_label_line_height_desktop",
+      "label": "Point label line height — Desktop",
+      "default": 19,
+      "min": 12,
+      "max": 40,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "point_label_line_height_mobile",
+      "label": "Point label line height — Mobile",
+      "default": 17,
+      "min": 10,
+      "max": 32,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "point_text_line_height_desktop",
+      "label": "Point description line height — Desktop",
+      "default": 24,
+      "min": 14,
+      "max": 48,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "point_text_line_height_mobile",
+      "label": "Point description line height — Mobile",
+      "default": 22,
+      "min": 12,
+      "max": 40,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing"
+    },
+    {
+      "type": "checkbox",
+      "id": "reset_spacing",
+      "label": "Remove section spacing",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Scent Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Card heading",
+          "default": "Coconut Water + Sandalwood"
+        },
+        {
+          "type": "header",
+          "content": "Point 1"
+        },
+        {
+          "type": "text",
+          "id": "label_1",
+          "label": "Label",
+          "default": "Notes"
+        },
+        {
+          "type": "textarea",
+          "id": "text_1",
+          "label": "Text",
+          "default": "Sandalwood, fresh coconut water, bergamot and black pepper"
+        },
+        {
+          "type": "header",
+          "content": "Point 2"
+        },
+        {
+          "type": "text",
+          "id": "label_2",
+          "label": "Label",
+          "default": "Depth"
+        },
+        {
+          "type": "textarea",
+          "id": "text_2",
+          "label": "Text",
+          "default": "Fresh, woody & long-lasting (aka 'The Heavyweight')"
+        },
+        {
+          "type": "header",
+          "content": "Point 3"
+        },
+        {
+          "type": "text",
+          "id": "label_3",
+          "label": "Label",
+          "default": "Inspiration"
+        },
+        {
+          "type": "textarea",
+          "id": "text_3",
+          "label": "Text",
+          "default": "Middle of the woods, Ralph Lauren's billiard room"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Scent Cards",
+      "blocks": [
+        {
+          "type": "card",
+          "settings": {
+            "heading": "Coconut Water + Sandalwood",
+            "label_1": "Notes",
+            "text_1": "Sandalwood, fresh coconut water, bergamot and black pepper",
+            "label_2": "Depth",
+            "text_2": "Fresh, woody & long-lasting (aka 'The Heavyweight')",
+            "label_3": "Inspiration",
+            "text_3": "Middle of the woods, Ralph Lauren's billiard room"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "heading": "Coconut Water + Sandalwood",
+            "label_1": "Notes",
+            "text_1": "Sandalwood, fresh coconut water, bergamot and black pepper",
+            "label_2": "Depth",
+            "text_2": "Fresh, woody & long-lasting (aka 'The Heavyweight')",
+            "label_3": "Inspiration",
+            "text_3": "Middle of the woods, Ralph Lauren's billiard room"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "heading": "Coconut Water + Sandalwood",
+            "label_1": "Notes",
+            "text_1": "Sandalwood, fresh coconut water, bergamot and black pepper",
+            "label_2": "Depth",
+            "text_2": "Fresh, woody & long-lasting (aka 'The Heavyweight')",
+            "label_3": "Inspiration",
+            "text_3": "Middle of the woods, Ralph Lauren's billiard room"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

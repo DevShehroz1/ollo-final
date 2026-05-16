@@ -1,0 +1,837 @@
+{%- liquid
+  assign sec_st = section.settings
+  assign mt_mobile = sec_st.margin_top_mobile
+  if mt_mobile == 0
+    assign mt_mobile = sec_st.margin_top_desktop
+  endif
+  assign mb_mobile = sec_st.margin_bottom_mobile
+  if mb_mobile == 0
+    assign mb_mobile = sec_st.margin_bottom_desktop
+  endif
+
+  # Safety net: if Line 1 ends with the same text as Line 2 (legacy
+  # content saved before the line2 field existed), strip the duplicate
+  # so we always render exactly 2 lines. Also collapse leftover
+  # whitespace (e.g. "...with </p>" → "...with</p>") so the heading
+  # doesn't render an empty trailing gap.
+  assign line1_html = sec_st.heading_html
+  assign line2_plain = sec_st.heading_html_line2 | strip_html | strip
+  if line2_plain != blank
+    assign line2_lower = line2_plain | downcase
+    assign line1_html = line1_html | replace: line2_plain, ''
+    assign line1_html = line1_html | replace: line2_lower, ''
+    assign line2_cap = line2_plain | capitalize
+    assign line1_html = line1_html | replace: line2_cap, ''
+    assign line2_upper = line2_plain | upcase
+    assign line1_html = line1_html | replace: line2_upper, ''
+  endif
+  assign line1_html = line1_html | replace: '   ', ' ' | replace: '  ', ' ' | replace: ' </p>', '</p>' | replace: ' </span>', '</span>'
+
+  # Mobile-only soft breaks: insert <br> after "blend" in line 1 and
+  # after "skin-first" in line 2 so the heading reads as 3 lines on
+  # mobile. CSS below hides these <br>s on desktop so the 2-line
+  # layout there is unchanged.
+  assign line1_html = line1_html | replace: 'blend ', 'blend<br> ' | replace: 'Blend ', 'Blend<br> '
+  assign line2_html = sec_st.heading_html_line2 | replace: 'skin-first ', 'skin-first<br> ' | replace: 'Skin-first ', 'Skin-first<br> ' | replace: 'Skin-First ', 'Skin-First<br> '
+-%}
+{% style %}
+  #shopify-section-{{ section.id }} {
+    margin-top: {{ sec_st.margin_top_desktop | default: 0 }}px !important;
+    margin-bottom: {{ sec_st.margin_bottom_desktop | default: 0 }}px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+    display: block;
+    width: 100%;
+  }
+  @media (max-width: 767.98px) {
+    #shopify-section-{{ section.id }} {
+      margin-top: {{ mt_mobile | default: 0 }}px !important;
+      margin-bottom: {{ mb_mobile | default: 0 }}px !important;
+    }
+  }
+{% endstyle %}
+
+<style>
+  #why-us-{{ section.id }} {
+    background: {{ sec_st.bg_color | default: '#363B48' }};
+    width: 100%;
+    padding-top: {{ sec_st.padding_top_desktop | default: 80 }}px;
+    padding-bottom: {{ sec_st.padding_bottom_desktop | default: 80 }}px;
+  }
+  #why-us-{{ section.id }} .wu__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: 32px;
+    padding-right: 32px;
+    color: #ffffff;
+  }
+  #why-us-{{ section.id }} .wu__eyebrow {
+    font-family: 'Inter', var(--body-font), sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-align: center;
+    color: {{ sec_st.eyebrow_color | default: '#FFF8B8' }};
+    margin: 0 0 28px;
+  }
+  #why-us-{{ section.id }} .wu__heading {
+    font-family: 'Inter', var(--body-font), sans-serif;
+    font-size: {{ sec_st.heading_size | default: 28 }}px;
+    line-height: 1.35;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    text-align: left;
+    margin: 0 auto;
+    max-width: {{ sec_st.heading_max_width | default: 760 }}px;
+    color: #ffffff;
+  }
+  #why-us-{{ section.id }} .wu__heading-line {
+    display: block;
+  }
+  #why-us-{{ section.id }} .wu__heading p {
+    display: inline;
+    margin: 0;
+  }
+  /* Hide soft-break <br>s on desktop so the heading reads as 2 lines */
+  #why-us-{{ section.id }} .wu__heading br {
+    display: none;
+  }
+  #why-us-{{ section.id }} .wu__heading em,
+  #why-us-{{ section.id }} .wu__heading-brand {
+    font-style: italic;
+    font-weight: 600;
+  }
+  #why-us-{{ section.id }} .wu__heading-accent {
+    font-style: italic;
+    font-weight: 500;
+    color: {{ sec_st.accent_color | default: '#FFF8B8' }};
+  }
+  #why-us-{{ section.id }} .wu__card {
+    position: relative;
+    margin: 56px auto 0;
+    max-width: {{ sec_st.card_max_width | default: 1040 }}px;
+    border-radius: {{ sec_st.card_radius | default: 14 }}px;
+    {%- if sec_st.card_border_width != 0 -%}
+      border: {{ sec_st.card_border_width | default: 0 }}px solid {{ sec_st.card_border_color | default: '#FFFFFF' }};
+    {%- endif -%}
+    background: rgba(255, 255, 255, 0.02);
+    overflow: hidden;
+    min-height: {{ sec_st.card_min_height | default: 480 }}px;
+    padding: 36px 36px 28px;
+    display: flex;
+    flex-direction: column;
+  }
+  #why-us-{{ section.id }} .wu__card-text {
+    font-family: 'Inter', var(--body-font), sans-serif;
+    font-size: {{ sec_st.description_size | default: 16 }}px;
+    line-height: 1.55;
+    color: #ffffff;
+    max-width: {{ sec_st.description_max_width | default: 540 }}px;
+    position: relative;
+    z-index: 2;
+  }
+  #why-us-{{ section.id }} .wu__card-text strong,
+  #why-us-{{ section.id }} .wu__card-text b {
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    font-style: normal;
+  }
+  #why-us-{{ section.id }} .wu__image-wrap {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  #why-us-{{ section.id }} .wu__image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: {{ sec_st.image_opacity | default: 70 | divided_by: 100.0 }};
+    filter:
+      grayscale({{ sec_st.image_grayscale | default: 100 }}%)
+      brightness({{ sec_st.image_brightness | default: 130 }}%)
+      contrast({{ sec_st.image_contrast | default: 80 }}%);
+    {%- case sec_st.image_position -%}
+      {%- when 'top-left' -%}
+        object-position: left top;
+      {%- when 'top-right' -%}
+        object-position: right top;
+      {%- when 'bottom-left' -%}
+        object-position: left bottom;
+      {%- when 'center' -%}
+        object-position: center center;
+      {%- else -%}
+        object-position: right bottom;
+    {%- endcase -%}
+  }
+  #why-us-{{ section.id }} .wu__card-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-color: rgba(0, 0, 0, {{ sec_st.overlay_strength | default: 55 | divided_by: 100.0 }});
+  }
+  #why-us-{{ section.id }} .wu__card-spacer {
+    flex: 1 1 auto;
+    min-height: 80px;
+  }
+  #why-us-{{ section.id }} .wu__card-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.45);
+    width: {{ sec_st.divider_width | default: 60 }}%;
+    margin: 0 0 18px;
+    position: relative;
+    z-index: 2;
+  }
+  #why-us-{{ section.id }} .wu__card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    position: relative;
+    z-index: 2;
+  }
+  #why-us-{{ section.id }} .wu__card-result {
+    font-family: 'Inter', var(--body-font), sans-serif;
+    font-size: 12px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.78);
+    margin: 0;
+    max-width: 60%;
+  }
+
+  /* iOS 26 "Liquid Glass" CTA — same spec as slideshow.liquid */
+  #why-us-{{ section.id }} .wu__btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    background:
+      radial-gradient(130% 60% at 50% -10%, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 55%),
+      radial-gradient(140% 90% at 50% 115%, rgba(210, 222, 255, 0.22) 0%, rgba(210, 222, 255, 0) 55%),
+      linear-gradient(108deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 38%, rgba(255, 255, 255, 0) 62%, rgba(255, 255, 255, 0.10) 100%),
+      rgba(255, 255, 255, 0.10);
+    -webkit-backdrop-filter: blur(28px) saturate(180%) contrast(1.12);
+    backdrop-filter: blur(28px) saturate(180%) contrast(1.12);
+    border: {{ sec_st.button_border_width | default: 1 }}px solid {{ sec_st.button_border_color | default: '#000000' }};
+    color: #ffffff;
+    border-radius: 999px;
+    padding: 12px 28px;
+    font-family: 'Inter', var(--heading-font), sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 14px;
+    letter-spacing: 0.96px;
+    text-transform: uppercase;
+    text-align: center;
+    white-space: nowrap;
+    box-shadow:
+      inset 0 1.5px 0.5px rgba(255, 255, 255, 0.70),
+      inset 1px 0 1px rgba(255, 255, 255, 0.14),
+      inset -1px 0 1px rgba(255, 255, 255, 0.14),
+      inset 0 -1px 0.5px rgba(0, 0, 0, 0.18),
+      0 1px 2px rgba(0, 0, 0, 0.14),
+      0 18px 44px -10px rgba(0, 0, 0, 0.38);
+    transition: background 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    overflow: hidden;
+    isolation: isolate;
+    margin-right: {{ sec_st.button_offset_right | default: 6 }}px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #why-us-{{ section.id }} .wu__btn:hover {
+    background:
+      radial-gradient(130% 65% at 50% -10%, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0) 55%),
+      radial-gradient(140% 90% at 50% 115%, rgba(225, 235, 255, 0.28) 0%, rgba(225, 235, 255, 0) 55%),
+      linear-gradient(108deg, rgba(255, 255, 255, 0.20) 0%, rgba(255, 255, 255, 0) 38%, rgba(255, 255, 255, 0) 62%, rgba(255, 255, 255, 0.14) 100%),
+      rgba(255, 255, 255, 0.14);
+    transform: translateY(-1px);
+    box-shadow:
+      inset 0 1.5px 0.5px rgba(255, 255, 255, 0.85),
+      inset 1px 0 1px rgba(255, 255, 255, 0.18),
+      inset -1px 0 1px rgba(255, 255, 255, 0.18),
+      inset 0 -1px 0.5px rgba(0, 0, 0, 0.22),
+      0 2px 6px rgba(0, 0, 0, 0.16),
+      0 24px 54px -12px rgba(0, 0, 0, 0.48);
+    color: #ffffff;
+  }
+  #why-us-{{ section.id }} .wu__btn:active {
+    transform: translateY(0);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    #why-us-{{ section.id }} .wu__btn {
+      background: rgba(255, 255, 255, 0.22);
+    }
+  }
+
+  @media (max-width: 767.98px) {
+    #why-us-{{ section.id }} {
+      padding-top: {{ sec_st.padding_top_mobile | default: 56 }}px;
+      padding-bottom: {{ sec_st.padding_bottom_mobile | default: 56 }}px;
+    }
+    #why-us-{{ section.id }} .wu__inner {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+    #why-us-{{ section.id }} .wu__eyebrow {
+      font-size: 10px;
+      margin-bottom: 14px;
+    }
+    #why-us-{{ section.id }} .wu__heading {
+      font-size: {{ sec_st.heading_size_mobile | default: 18 }}px;
+      max-width: 100%;
+      line-height: 1.4;
+      text-align: center;
+    }
+    /* On mobile the two heading-line spans flow inline so only the
+       <br>s after "blend" / "skin-first" create breaks (3 lines total).
+       The space between the two spans in the HTML keeps the words apart. */
+    #why-us-{{ section.id }} .wu__heading-line {
+      display: inline;
+      margin-bottom: 0;
+    }
+    #why-us-{{ section.id }} .wu__heading br {
+      display: inline;
+    }
+    #why-us-{{ section.id }} .wu__card {
+      margin-top: 28px;
+      max-width: 100%;
+      padding: 20px 16px 18px;
+      min-height: {{ sec_st.card_min_height_mobile | default: 360 }}px;
+      border-radius: {{ sec_st.card_radius | default: 14 }}px;
+    }
+    #why-us-{{ section.id }} .wu__card-text {
+      font-size: {{ sec_st.description_size_mobile | default: 16 }}px;
+      max-width: {{ sec_st.description_max_width_mobile | default: 100 }}%;
+      line-height: 1.5;
+    }
+    #why-us-{{ section.id }} .wu__card-divider {
+      width: {{ sec_st.divider_width_mobile | default: 70 }}%;
+      margin-bottom: 14px;
+    }
+    #why-us-{{ section.id }} .wu__card-bottom {
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      justify-content: center;
+    }
+    #why-us-{{ section.id }} .wu__card-result {
+      font-size: 10px;
+      line-height: 1.4;
+      max-width: 100%;
+      flex: 1 1 100%;
+      order: 1;
+      text-align: center;
+    }
+    #why-us-{{ section.id }} .wu__btn {
+      padding: 10px 22px;
+      font-size: 10px;
+      letter-spacing: 0.8px;
+      margin-left: 0;
+      align-self: center;
+      order: 2;
+    }
+  }
+  @media (max-width: 380px) {
+    #why-us-{{ section.id }} .wu__heading {
+      font-size: 16px;
+    }
+    #why-us-{{ section.id }} .wu__card-text {
+      font-size: 15px;
+    }
+  }
+</style>
+
+<section id="why-us-{{ section.id }}" class="why-us">
+  <div class="wu__inner">
+    {%- if sec_st.eyebrow_text != blank -%}
+      <p class="wu__eyebrow">{{ sec_st.eyebrow_text | escape }}</p>
+    {%- endif -%}
+    <h2 class="wu__heading">
+      <span class="wu__heading-line">{{ line1_html }}</span>
+      {%- if sec_st.heading_html_line2 != blank or sec_st.heading_accent != blank -%}
+        <span class="wu__heading-line">
+          {{ line2_html }}
+          {%- if sec_st.heading_accent != blank -%}
+            <span class="wu__heading-accent">{{ sec_st.heading_accent | escape }}</span>
+          {%- endif -%}
+        </span>
+      {%- endif -%}
+    </h2>
+
+    <div class="wu__card">
+      {%- if sec_st.image != blank -%}
+        <div class="wu__image-wrap">
+          {{ sec_st.image | image_url: width: 1800 | image_tag: alt: sec_st.image.alt | default: '', loading: 'lazy', sizes: '(max-width: 768px) 100vw, 1040px' }}
+        </div>
+        <div class="wu__card-overlay"></div>
+      {%- endif -%}
+
+      <div class="wu__card-text">{{ sec_st.description_html }}</div>
+
+      <div class="wu__card-spacer"></div>
+
+      <div class="wu__card-divider"></div>
+      <div class="wu__card-bottom">
+        <p class="wu__card-result">{{ sec_st.result_text | escape }}</p>
+        {%- if sec_st.button_text != blank -%}
+          <a class="wu__btn" href="{{ sec_st.button_link | default: '#' }}">{{ sec_st.button_text | escape }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Why Us",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.overlay"]
+  },
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#363B48"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow color",
+      "default": "#FFF8B8"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Heading accent color",
+      "default": "#FFF8B8"
+    },
+    {
+      "type": "header",
+      "content": "Eyebrow & heading"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow_text",
+      "label": "Eyebrow",
+      "default": "WHY US"
+    },
+    {
+      "type": "richtext",
+      "id": "heading_html",
+      "label": "Heading line 1 (use <em> for italic words like Summr)",
+      "default": "<p>At <em>Summr</em> we're on a mission to blend functional personal care with</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "heading_html_line2",
+      "label": "Heading line 2",
+      "default": "<p>skin-first science for</p>"
+    },
+    {
+      "type": "text",
+      "id": "heading_accent",
+      "label": "Heading accent (italic + accent color, appended to line 2)",
+      "default": "performative routines."
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size (desktop)",
+      "min": 16,
+      "max": 56,
+      "step": 1,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Heading size (mobile)",
+      "min": 12,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "heading_max_width",
+      "label": "Heading block width",
+      "info": "Block width on desktop. Lines are forced via Line 1 / Line 2 fields, but a wider block prevents either line from wrapping further.",
+      "min": 300,
+      "max": 1600,
+      "step": 20,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "header",
+      "content": "Card"
+    },
+    {
+      "type": "richtext",
+      "id": "description_html",
+      "label": "Card description (use <strong> for bold)",
+      "default": "<p>We start with what works: clean, proven ingredients your skin can trust. Then we go further: <strong>functional actives, refillable formats, and formulas</strong> that actually hold up in Indian heat.</p>"
+    },
+    {
+      "type": "text",
+      "id": "result_text",
+      "label": "Bottom-left result text",
+      "default": "The result is even-toned, effortless care for your skin and body."
+    },
+    {
+      "type": "range",
+      "id": "card_border_width",
+      "label": "Card border width",
+      "info": "Set to 0 to hide the border completely.",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card border color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Card border radius",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "card_max_width",
+      "label": "Card / image width (desktop)",
+      "info": "Controls the width of the card and the image inside it (image fills the card).",
+      "min": 600,
+      "max": 1400,
+      "step": 10,
+      "unit": "px",
+      "default": 1040
+    },
+    {
+      "type": "range",
+      "id": "card_min_height",
+      "label": "Card min height (desktop)",
+      "min": 280,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "default": 480
+    },
+    {
+      "type": "range",
+      "id": "card_min_height_mobile",
+      "label": "Card min height (mobile)",
+      "min": 240,
+      "max": 700,
+      "step": 10,
+      "unit": "px",
+      "default": 360
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image focus point",
+      "info": "Which side of the image stays visible when it covers the card.",
+      "options": [
+        { "value": "top-left", "label": "Top left" },
+        { "value": "top-right", "label": "Top right" },
+        { "value": "bottom-left", "label": "Bottom left" },
+        { "value": "bottom-right", "label": "Bottom right" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "overlay_strength",
+      "label": "Black overlay intensity",
+      "info": "0 = no overlay (original image colors), 90 = nearly solid black.",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "default": 55
+    },
+    {
+      "type": "range",
+      "id": "image_grayscale",
+      "label": "Image grayscale",
+      "info": "100% = fully black-and-white.",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "image_brightness",
+      "label": "Image brightness",
+      "info": "Push above 100% for the washed / whitened look.",
+      "min": 50,
+      "max": 200,
+      "step": 5,
+      "unit": "%",
+      "default": 130
+    },
+    {
+      "type": "range",
+      "id": "image_contrast",
+      "label": "Image contrast",
+      "info": "Lower values flatten the image toward white.",
+      "min": 50,
+      "max": 200,
+      "step": 5,
+      "unit": "%",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "image_opacity",
+      "label": "Image opacity",
+      "info": "Lower values let the dark card background show through, fading the image further toward white.",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 70
+    },
+    {
+      "type": "header",
+      "content": "Description"
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "label": "Description size (desktop)",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "description_size_mobile",
+      "label": "Description size (mobile)",
+      "min": 10,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "description_max_width",
+      "label": "Description max width (desktop)",
+      "info": "Lower this to force the same line breaks as the reference image.",
+      "min": 280,
+      "max": 900,
+      "step": 10,
+      "unit": "px",
+      "default": 700
+    },
+    {
+      "type": "range",
+      "id": "description_max_width_mobile",
+      "label": "Description max width (mobile)",
+      "min": 50,
+      "max": 100,
+      "step": 2,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Divider line"
+    },
+    {
+      "type": "range",
+      "id": "divider_width",
+      "label": "Divider width (desktop)",
+      "min": 20,
+      "max": 100,
+      "step": 2,
+      "unit": "%",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "divider_width_mobile",
+      "label": "Divider width (mobile)",
+      "min": 20,
+      "max": 100,
+      "step": 2,
+      "unit": "%",
+      "default": 70
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "SUMMR STORY"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "range",
+      "id": "button_offset_right",
+      "label": "Button right margin",
+      "min": 0,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "default": 6
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Button border color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "button_border_width",
+      "label": "Button border width",
+      "min": 0,
+      "max": 3,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "header",
+      "content": "Margins"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Margin top (desktop)",
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margin bottom (desktop)",
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margin top (mobile)",
+      "info": "Falls back to the desktop value when 0.",
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margin bottom (mobile)",
+      "info": "Falls back to the desktop value when 0.",
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Why Us"
+    }
+  ]
+}
+{% endschema %}

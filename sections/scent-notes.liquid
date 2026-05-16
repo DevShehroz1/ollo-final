@@ -1,0 +1,660 @@
+{%- liquid
+  assign st = section.settings
+
+  # Pull each field from a product metafield first; fall back to the
+  # section setting if the metafield is empty (or if we're outside a
+  # product context). Keeps the section drop-in usable on non-product
+  # pages while letting product pages override per-scent.
+  assign mf = product.metafields.custom
+  assign sn_eyebrow      = mf.scent_eyebrow      | default: st.eyebrow
+  assign sn_heading      = mf.scent_heading      | default: st.heading
+  assign sn_description  = mf.scent_description  | default: st.description
+  assign sn_top_notes    = mf.scent_top_notes    | default: st.top_notes
+  assign sn_middle_notes = mf.scent_middle_notes | default: st.middle_notes
+  assign sn_base_notes   = mf.scent_base_notes   | default: st.base_notes
+-%}
+
+<style>
+  #sn-{{ section.id }} {
+    background: {{ st.bg_color | default: '#ffffff' }};
+    color: {{ st.text_color | default: '#1a1a1a' }};
+    padding-top: {{ st.padding_top_desktop | default: 80 }}px;
+    padding-bottom: {{ st.padding_bottom_desktop | default: 80 }}px;
+    margin-top: {{ st.margin_top_desktop | default: 0 }}px;
+    margin-bottom: {{ st.margin_bottom_desktop | default: 0 }}px;
+  }
+  #sn-{{ section.id }} .sn__inner {
+    width: 100%;
+    max-width: {{ st.max_width | default: 1500 }}px;
+    margin: 0 auto;
+    padding: 0 {{ st.side_padding | default: 24 }}px;
+    box-sizing: border-box;
+  }
+  #sn-{{ section.id }} {
+    --sn-side-padding-mobile: {{ st.side_padding_mobile | default: 16 }}px;
+  }
+  #sn-{{ section.id }} .sn__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: {{ st.column_gap | default: 80 }}px;
+    align-items: start;
+  }
+  #sn-{{ section.id }} .sn__grid--image-left { direction: rtl; }
+  #sn-{{ section.id }} .sn__grid--image-left > * { direction: ltr; }
+
+  #sn-{{ section.id }} .sn__text {
+    padding: {{ st.text_padding_top | default: 24 }}px 0 0;
+    max-width: {{ st.text_max_width | default: 600 }}px;
+  }
+  #sn-{{ section.id }} .sn__eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: {{ st.eyebrow_size | default: 14 }}px;
+    line-height: 1.3;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 0 0 24px;
+    color: inherit;
+  }
+  #sn-{{ section.id }} .sn__heading {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: {{ st.heading_size_desktop | default: 24 }}px;
+    line-height: 1.25;
+    letter-spacing: 0;
+    margin: 0 0 24px;
+    color: inherit;
+  }
+  #sn-{{ section.id }} .sn__description {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: {{ st.description_size | default: 14 }}px;
+    line-height: 1.55;
+    margin: 0 0 36px;
+    color: inherit;
+  }
+  #sn-{{ section.id }} .sn__description p { margin: 0 0 12px; }
+  #sn-{{ section.id }} .sn__description p:last-child { margin-bottom: 0; }
+
+  #sn-{{ section.id }} .sn__notes-list {
+    border-top: 1px solid {{ st.divider_color | default: '#1a1a1a' }};
+  }
+  #sn-{{ section.id }} .sn__note {
+    border-bottom: 1px solid {{ st.divider_color | default: '#1a1a1a' }};
+    padding: {{ st.note_padding | default: 18 }}px 0;
+  }
+  #sn-{{ section.id }} .sn__note-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 1.3;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 0 0 6px;
+    color: inherit;
+  }
+  #sn-{{ section.id }} .sn__note-value {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.45;
+    margin: 0;
+    color: inherit;
+  }
+
+  #sn-{{ section.id }} .sn__image-wrap {
+    width: 100%;
+  }
+  #sn-{{ section.id }} .sn__image {
+    position: relative;
+    width: 100%;
+    {%- if st.image_height_px and st.image_height_px > 0 -%}
+    height: {{ st.image_height_px }}px;
+    {%- else -%}
+    aspect-ratio: {{ st.image_aspect | default: '4 / 5' }};
+    {%- endif -%}
+    border-radius: 15px;
+    overflow: hidden;
+    background: rgba(0,0,0,0.04);
+  }
+  #sn-{{ section.id }} .sn__image img,
+  #sn-{{ section.id }} .sn__image video,
+  #sn-{{ section.id }} .sn__image iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border: 0;
+  }
+
+  @media (max-width: 900px) {
+    #sn-{{ section.id }} {
+      padding-top: {{ st.padding_top_mobile | default: 48 }}px;
+      padding-bottom: {{ st.padding_bottom_mobile | default: 48 }}px;
+      margin-top: {{ st.margin_top_mobile | default: 0 }}px;
+      margin-bottom: {{ st.margin_bottom_mobile | default: 0 }}px;
+    }
+    #sn-{{ section.id }} .sn__inner {
+      padding-left: var(--sn-side-padding-mobile);
+      padding-right: var(--sn-side-padding-mobile);
+    }
+    #sn-{{ section.id }} .sn__grid,
+    #sn-{{ section.id }} .sn__grid--image-left {
+      grid-template-columns: 1fr;
+      gap: 28px;
+      direction: ltr;
+    }
+    #sn-{{ section.id }} .sn__heading {
+      font-size: {{ st.heading_size_mobile | default: 24 }}px;
+      line-height: 1.25;
+    }
+    #sn-{{ section.id }} .sn__text {
+      padding-top: 0;
+      max-width: 100%;
+    }
+    /* Image / video first on mobile, sized to 390x409 with 15px corners. */
+    #sn-{{ section.id }} .sn__image-wrap {
+      order: 1;
+      display: flex;
+      justify-content: center;
+    }
+    #sn-{{ section.id }} .sn__image {
+      width: 100%;
+      max-width: 390px;
+      aspect-ratio: 390 / 409;
+      border-radius: 15px;
+    }
+    #sn-{{ section.id }} .sn__text       { order: 2; }
+  }
+</style>
+
+<section id="sn-{{ section.id }}">
+  <div class="sn__inner">
+    <div class="sn__grid {% if st.image_position == 'left' %}sn__grid--image-left{% endif %}">
+      <div class="sn__text">
+        {%- if sn_eyebrow != blank -%}
+          <p class="sn__eyebrow">{{ sn_eyebrow }}</p>
+        {%- endif -%}
+        {%- if sn_heading != blank -%}
+          <h2 class="sn__heading">{{ sn_heading }}</h2>
+        {%- endif -%}
+        {%- if mf.scent_description != blank -%}
+          {%- comment -%}
+            metafield_tag renders rich-text metafields as proper HTML.
+            Without it, Shopify outputs the raw AST (e.g.
+            {"type":"root","children":[...]}). Plain-text and
+            multi-line metafields also render correctly through this
+            filter.
+          {%- endcomment -%}
+          <div class="sn__description">{{ mf.scent_description | metafield_tag }}</div>
+        {%- elsif st.description != blank -%}
+          <div class="sn__description">{{ st.description }}</div>
+        {%- endif -%}
+
+        <div class="sn__notes-list">
+          {%- if st.top_label != blank or sn_top_notes != blank -%}
+            <div class="sn__note">
+              {%- if st.top_label != blank -%}<p class="sn__note-label">{{ st.top_label }}</p>{%- endif -%}
+              {%- if sn_top_notes != blank -%}<p class="sn__note-value">{{ sn_top_notes }}</p>{%- endif -%}
+            </div>
+          {%- endif -%}
+          {%- if st.middle_label != blank or sn_middle_notes != blank -%}
+            <div class="sn__note">
+              {%- if st.middle_label != blank -%}<p class="sn__note-label">{{ st.middle_label }}</p>{%- endif -%}
+              {%- if sn_middle_notes != blank -%}<p class="sn__note-value">{{ sn_middle_notes }}</p>{%- endif -%}
+            </div>
+          {%- endif -%}
+          {%- if st.base_label != blank or sn_base_notes != blank -%}
+            <div class="sn__note">
+              {%- if st.base_label != blank -%}<p class="sn__note-label">{{ st.base_label }}</p>{%- endif -%}
+              {%- if sn_base_notes != blank -%}<p class="sn__note-value">{{ sn_base_notes }}</p>{%- endif -%}
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <div class="sn__image-wrap">
+        <div class="sn__image">
+          {%- if st.video != blank -%}
+            {%- comment -%}
+              Uploaded Shopify video. Render with the standard <video> tag,
+              auto-playing muted in loop with playsinline so it works on iOS.
+              Preview image (if any) is used as the poster frame.
+            {%- endcomment -%}
+            <video
+              class="sn__video"
+              autoplay
+              muted
+              loop
+              playsinline
+              webkit-playsinline
+              preload="auto"
+              disablepictureinpicture
+              {% if st.video.preview_image %}poster="{{ st.video.preview_image | image_url: width: 1400 }}"{% endif %}
+            >
+              {%- for source in st.video.sources -%}
+                <source src="{{ source.url }}" type="{{ source.mime_type }}">
+              {%- endfor -%}
+            </video>
+          {%- elsif st.video_url != blank -%}
+            {%- comment -%}
+              External video (YouTube / Vimeo). Use the embed_url from the
+              parsed video_url. autoplay+muted+loop are passed as query
+              params on the embed.
+            {%- endcomment -%}
+            {%- if st.video_url.type == 'youtube' -%}
+              <iframe
+                src="https://www.youtube.com/embed/{{ st.video_url.id }}?autoplay=1&mute=1&loop=1&playlist={{ st.video_url.id }}&controls=0&playsinline=1&modestbranding=1"
+                title="{{ st.heading | escape }}"
+                frameborder="0"
+                allow="autoplay; encrypted-media"
+                allowfullscreen
+              ></iframe>
+            {%- elsif st.video_url.type == 'vimeo' -%}
+              <iframe
+                src="https://player.vimeo.com/video/{{ st.video_url.id }}?autoplay=1&muted=1&loop=1&controls=0&background=1"
+                title="{{ st.heading | escape }}"
+                frameborder="0"
+                allow="autoplay; encrypted-media"
+                allowfullscreen
+              ></iframe>
+            {%- endif -%}
+          {%- elsif st.image != blank -%}
+            {{ st.image | image_url: width: 1400 | image_tag: alt: st.heading, loading: 'lazy' }}
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  /* Force-start uploaded videos in this Scent Notes section. Some
+     browsers (notably Safari with low-power mode, and a handful of
+     stricter Android builds) ignore the autoplay attribute. Setting
+     muted=true at runtime + an explicit play() call covers those
+     edge cases. Failures are silently swallowed so a blocked
+     play() doesn't throw in the console. */
+  (function () {
+    var sec = document.getElementById('sn-{{ section.id }}');
+    if (!sec) return;
+    sec.querySelectorAll('video.sn__video').forEach(function (v) {
+      v.muted = true;
+      v.defaultMuted = true;
+      v.playsInline = true;
+      var attempt = function () {
+        var p = v.play();
+        if (p && typeof p.catch === 'function') p.catch(function () {});
+      };
+      if (v.readyState >= 2) attempt();
+      v.addEventListener('loadeddata', attempt, { once: true });
+      v.addEventListener('canplay',    attempt, { once: true });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Scent Notes",
+  "tag": "section",
+  "class": "scent-notes-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "paragraph",
+      "content": "On product pages, each text field below is overridden by the matching product metafield (custom.scent_eyebrow, scent_heading, scent_description, scent_top_notes, scent_middle_notes, scent_base_notes) when set. Define these in Settings → Custom data → Products."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow / scent name",
+      "default": "COCONUT WATER + SANDALWOOD"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "A fresh, woody scent that sustains a warm, cozy feeling all day"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Black pepper wakes you up, sandalwood draws you in while refreshing coconut water and bergamot keep things from getting too heavy.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Top notes"
+    },
+    {
+      "type": "text",
+      "id": "top_label",
+      "label": "Top notes label",
+      "default": "TOP NOTES:"
+    },
+    {
+      "type": "text",
+      "id": "top_notes",
+      "label": "Top notes",
+      "default": "Bergamot, Meyer Lemon, Black Pepper"
+    },
+    {
+      "type": "header",
+      "content": "Middle notes"
+    },
+    {
+      "type": "text",
+      "id": "middle_label",
+      "label": "Middle notes label",
+      "default": "MIDDLE NOTES:"
+    },
+    {
+      "type": "text",
+      "id": "middle_notes",
+      "label": "Middle notes",
+      "default": "Coconut Water, Geranium, Cardamom"
+    },
+    {
+      "type": "header",
+      "content": "Base notes"
+    },
+    {
+      "type": "text",
+      "id": "base_label",
+      "label": "Base notes label",
+      "default": "BASE NOTES:"
+    },
+    {
+      "type": "text",
+      "id": "base_notes",
+      "label": "Base notes",
+      "default": "Cedarwood, Sandalwood, Patchouli"
+    },
+    {
+      "type": "header",
+      "content": "Media (video or image)"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video (uploaded)",
+      "info": "Upload a video file. Auto-plays muted in loop. Takes priority over the image and external URL below."
+    },
+    {
+      "type": "video_url",
+      "id": "video_url",
+      "label": "Video URL (YouTube or Vimeo)",
+      "accept": ["youtube", "vimeo"],
+      "info": "External video link. Used only if no uploaded video is set."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image (fallback)",
+      "info": "Used only if neither video field is set."
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position",
+      "options": [
+        { "value": "right", "label": "Right" },
+        { "value": "left",  "label": "Left" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "select",
+      "id": "image_aspect",
+      "label": "Image aspect",
+      "options": [
+        { "value": "1 / 1",  "label": "Square (1:1)" },
+        { "value": "4 / 5",  "label": "Portrait (4:5)" },
+        { "value": "3 / 4",  "label": "Portrait (3:4)" },
+        { "value": "2 / 3",  "label": "Tall (2:3)" },
+        { "value": "16 / 9", "label": "Landscape (16:9)" }
+      ],
+      "default": "4 / 5"
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "label": "Image border radius (px)",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "image_height_px",
+      "label": "Image / video height (px)",
+      "info": "0 = auto (uses the aspect ratio above). Set a value to lock the media to a specific pixel height.",
+      "min": 0,
+      "max": 900,
+      "step": 10,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size",
+      "label": "Eyebrow size (px)",
+      "min": 10,
+      "max": 22,
+      "step": 1,
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "heading_size_desktop",
+      "label": "Heading size – Desktop (px)",
+      "min": 14,
+      "max": 56,
+      "step": 1,
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Heading size – Mobile (px)",
+      "min": 14,
+      "max": 32,
+      "step": 1,
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "label": "Description size (px)",
+      "min": 11,
+      "max": 22,
+      "step": 1,
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width (px)",
+      "min": 800,
+      "max": 1700,
+      "step": 20,
+      "default": 1500
+    },
+    {
+      "type": "range",
+      "id": "side_padding",
+      "label": "Side padding – Desktop (px)",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "side_padding_mobile",
+      "label": "Side padding – Mobile (px)",
+      "min": 0,
+      "max": 60,
+      "step": 1,
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Column gap (px)",
+      "min": 16,
+      "max": 160,
+      "step": 4,
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "text_max_width",
+      "label": "Text column max width (px)",
+      "min": 360,
+      "max": 800,
+      "step": 10,
+      "default": 600
+    },
+    {
+      "type": "range",
+      "id": "text_padding_top",
+      "label": "Text top offset (px)",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "note_padding",
+      "label": "Note row padding (px)",
+      "min": 8,
+      "max": 40,
+      "step": 1,
+      "default": 18
+    },
+    {
+      "type": "header",
+      "content": "Padding & margin – Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Top padding – Desktop (px)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Bottom padding – Desktop (px)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Top margin – Desktop (px)",
+      "min": -100,
+      "max": 100,
+      "step": 4,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Bottom margin – Desktop (px)",
+      "min": -100,
+      "max": 100,
+      "step": 4,
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Padding & margin – Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top padding – Mobile (px)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom padding – Mobile (px)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Top margin – Mobile (px)",
+      "min": -80,
+      "max": 80,
+      "step": 4,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Bottom margin – Mobile (px)",
+      "min": -80,
+      "max": 80,
+      "step": 4,
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Scent Notes"
+    }
+  ]
+}
+{% endschema %}

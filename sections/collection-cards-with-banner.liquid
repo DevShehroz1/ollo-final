@@ -1,0 +1,1384 @@
+{%- liquid
+  assign s = section.settings
+  assign mt_m = s.margin_top_mobile
+  if mt_m == 0
+    assign mt_m = s.margin_top_desktop
+  endif
+  assign mb_m = s.margin_bottom_mobile
+  if mb_m == 0
+    assign mb_m = s.margin_bottom_desktop
+  endif
+
+  assign atc_text = s.card_button_text | default: 'ADD TO CART'
+  assign banner_after = s.banner_after_count | default: 2
+  assign cutout_w  = s.cutout_w_percent | default: 25
+  assign cutout_h  = s.cutout_h_percent | default: 25
+  assign poly_x    = 100 | minus: cutout_w
+  assign poly_y    = 100 | minus: cutout_h
+
+  assign products_limit = s.products_limit | default: 12
+-%}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    margin-top: {{ s.margin_top_desktop | default: 0 }}px !important;
+    margin-bottom: {{ s.margin_bottom_desktop | default: 0 }}px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+    display: block;
+    width: 100%;
+  }
+  @media (max-width: 767.98px) {
+    #shopify-section-{{ section.id }} {
+      margin-top: {{ mt_m | default: 0 }}px !important;
+      margin-bottom: {{ mb_m | default: 0 }}px !important;
+    }
+  }
+{% endstyle %}
+
+<style>
+  /* ── Section shell ─────────────────────────────────────────────── */
+  #cgcb-{{ section.id }} {
+    background-color: {{ s.bg_color | default: '#FFFFFF' }};
+    width: 100%;
+    padding-top: {{ s.padding_top_desktop | default: 64 }}px;
+    padding-bottom: {{ s.padding_bottom_desktop | default: 64 }}px;
+    font-family: 'Inter', var(--body-font), sans-serif;
+  }
+  #cgcb-{{ section.id }} .cgcb__inner {
+    max-width: {{ s.content_max_width | default: 1280 }}px;
+    margin: 0 auto;
+    padding-left: {{ s.section_pad_h_desktop | default: 32 }}px;
+    padding-right: {{ s.section_pad_h_desktop | default: 32 }}px;
+  }
+  {%- if s.heading != blank -%}
+  #cgcb-{{ section.id }} .cgcb__title {
+    margin: 0 0 28px;
+    font-family: 'Inter', sans-serif;
+    font-size: {{ s.heading_size | default: 28 }}px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    text-align: center;
+    color: {{ s.heading_color | default: '#000000' }};
+  }
+  {%- endif -%}
+
+  /* ── Grid ──────────────────────────────────────────────────────── */
+  #cgcb-{{ section.id }} .cgcb__grid {
+    display: grid;
+    grid-template-columns: repeat({{ s.columns_desktop | default: 2 }}, 1fr);
+    gap: {{ s.row_gap_desktop | default: 36 }}px {{ s.column_gap_desktop | default: 28 }}px;
+  }
+
+  /* ── Card ──────────────────────────────────────────────────────── */
+  #cgcb-{{ section.id }} .cgcb__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  {%- comment -%}
+    Map the card_bg_choice select to a hex value. `custom` lets the
+    merchant pick any colour via the card_bg_custom color setting.
+  {%- endcomment -%}
+  {%- assign card_bg = '#FFF8B8' -%}
+  {%- case s.card_bg_choice -%}
+    {%- when 'butter_yellow' -%}{%- assign card_bg = '#FFF8B8' -%}
+    {%- when 'grey'          -%}{%- assign card_bg = '#EFEFEF' -%}
+    {%- when 'blue'          -%}{%- assign card_bg = '#C6DCE8' -%}
+    {%- when 'custom'        -%}{%- assign card_bg = s.card_bg_custom | default: '#FFF8B8' -%}
+  {%- endcase -%}
+
+  #cgcb-{{ section.id }} .cgcb__media {
+    position: relative;
+    width: 100%;
+    max-width: {{ s.card_image_width_desktop | default: 540 }}px;
+    height: {{ s.card_image_height_desktop | default: 410 }}px;
+    border-radius: {{ s.card_radius | default: 20 }}px;
+    overflow: hidden;
+    background: {{ card_bg }};
+    /* Force absolutely-positioned children (the ATC pill) to be
+       clipped at the rounded corners. Without this, Safari + some
+       Chromium builds let the pill's bottom-right corner poke out
+       past the image's curve because the child has its own z-index. */
+    isolation: isolate;
+    transform: translateZ(0);
+  }
+  #cgcb-{{ section.id }} .cgcb__media-img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  #cgcb-{{ section.id }} .cgcb__media-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  /* Mobile uses the 2nd product image; desktop uses the 1st. */
+  #cgcb-{{ section.id }} .cgcb__media-img--mobile { display: none; }
+  /* ATC button — sits inside the polygon notch in the bottom-right. */
+  #cgcb-{{ section.id }} .cgcb__atc {
+    position: absolute;
+    bottom: {{ s.atc_offset | default: 8 }}px;
+    right: {{ s.atc_offset | default: 8 }}px;
+    /* Ensure the pill can never overflow its image card on the
+       horizontal axis, even at narrow column widths. */
+    max-width: calc(100% - {{ s.atc_offset | default: 8 | times: 2 }}px);
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: {{ s.atc_pad_v | default: 10 }}px {{ s.atc_pad_h | default: 18 }}px;
+    border-radius: {{ s.atc_radius | default: 30 }}px;
+    {%- if s.atc_width_desktop and s.atc_width_desktop > 0 %}
+    width: {{ s.atc_width_desktop }}px;
+    {%- endif %}
+    {%- if s.atc_height_desktop and s.atc_height_desktop > 0 %}
+    height: {{ s.atc_height_desktop }}px;
+    {%- endif %}
+    background-color: {{ s.card_button_bg | default: '#BFCED6' }};
+    color: {{ s.card_button_text_color | default: '#000000' }};
+    font-family: 'Inter', sans-serif;
+    font-size: {{ s.card_button_size | default: 11 }}px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    z-index: 2;
+  }
+  #cgcb-{{ section.id }} .cgcb__atc:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+  }
+  /* Desktop: show text, hide icon */
+  #cgcb-{{ section.id }} .cgcb__atc-icon { display: none; }
+  #cgcb-{{ section.id }} .cgcb__atc-text { display: inline; }
+
+  /* Card info */
+  #cgcb-{{ section.id }} .cgcb__info {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: {{ s.title_price_gap | default: 16 }}px;
+    margin: 16px 0 0;
+    flex-wrap: wrap;
+    /* Match the image card's max width so the inline ATC stays under
+       the card on desktop instead of pushing to the grid cell's far
+       right edge. */
+    width: 100%;
+    max-width: {{ s.card_image_width_desktop | default: 540 }}px;
+  }
+  #cgcb-{{ section.id }} .cgcb__title-link {
+    text-decoration: none;
+    color: {{ s.card_text_color | default: '#000000' }};
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+  #cgcb-{{ section.id }} .cgcb__title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: {{ s.card_title_size | default: 14 }}px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: inherit;
+    margin: 0;
+  }
+  #cgcb-{{ section.id }} .cgcb__price {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: {{ s.card_price_size | default: 14 }}px;
+    color: {{ s.card_text_color | default: '#000000' }};
+    white-space: nowrap;
+  }
+  /* Desktop inline ATC — same font size as the title so it reads as
+     part of the same row. Pushed to the right of the row via
+     margin-left: auto. Pill background uses the original ATC colours
+     (card_button_bg / card_button_text_color). Hidden by default;
+     enabled in the desktop media query below. */
+  #cgcb-{{ section.id }} .cgcb__atc-inline {
+    display: none;
+    margin-left: auto;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 14px;
+    {%- if s.inline_atc_width_desktop and s.inline_atc_width_desktop > 0 %}
+    width: {{ s.inline_atc_width_desktop }}px;
+    padding-left: 0;
+    padding-right: 0;
+    {%- endif %}
+    {%- if s.inline_atc_height_desktop and s.inline_atc_height_desktop > 0 %}
+    height: {{ s.inline_atc_height_desktop }}px;
+    padding-top: 0;
+    padding-bottom: 0;
+    {%- endif %}
+    background-color: {{ s.card_button_bg | default: '#BFCED6' }};
+    color: {{ s.card_button_text_color | default: '#000000' }};
+    border-radius: 18px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    /* `translate` offsets the pill horizontally from its natural
+       right-aligned position. Negative = move left, positive = move
+       right. Keeps margin-left:auto pushing it to the row's right
+       edge first, then nudges from there. */
+    translate: {{ s.inline_atc_offset_x_desktop | default: 0 }}px 0;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  #cgcb-{{ section.id }} .cgcb__atc-inline:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
+  }
+  @media (min-width: 768px) {
+    /* Hide the image-overlay ATC on desktop — the inline one in the
+       info row replaces it so the button is always visible regardless
+       of the card background colour. */
+    #cgcb-{{ section.id }} .cgcb__atc { display: none !important; }
+    #cgcb-{{ section.id }} .cgcb__atc-inline { display: inline-flex; }
+  }
+  #cgcb-{{ section.id }} .cgcb__desc {
+    margin: 6px 0 0;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: {{ s.card_desc_size | default: 11 }}px;
+    letter-spacing: 0.08em;
+    line-height: 1.45;
+    text-transform: uppercase;
+    color: {{ s.card_text_color | default: '#000000' }};
+    opacity: 0.7;
+  }
+
+  /* ── Inline banner (between rows) ─────────────────────────────── */
+  #cgcb-{{ section.id }} .cgcb__banner {
+    grid-column: 1 / -1;                           /* span all grid columns */
+    background-color: {{ s.banner_bg_color | default: '#363B47' }};
+    border-radius: {{ s.banner_radius | default: 14 }}px;
+    overflow: hidden;
+    position: relative;
+    margin: {{ s.banner_margin_top_desktop | default: 12 }}px {{ s.banner_side_margin_desktop | default: 0 }}px {{ s.banner_margin_bottom_desktop | default: 12 }}px;
+    color: {{ s.banner_text_color | default: '#FFFFFF' }};
+  }
+  #cgcb-{{ section.id }} .cgcb__banner-inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    padding: {{ s.banner_pad_v_desktop | default: 88 }}px {{ s.banner_pad_h_desktop | default: 56 }}px;
+    min-height: {{ s.banner_height_desktop | default: 440 }}px;
+  }
+  #cgcb-{{ section.id }} .cgcb__banner-content {
+    position: relative;
+    z-index: 2;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    max-width: 540px;
+  }
+  #cgcb-{{ section.id }} .cgcb__banner-heading {
+    margin: 0 0 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: {{ s.banner_heading_size_desktop | default: 26 }}px;
+    line-height: 1.3;
+    font-weight: 700;
+    font-style: italic;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: {{ s.banner_accent_color | default: '#FFF8B8' }};
+  }
+  #cgcb-{{ section.id }} .cgcb__banner-accent {
+    color: {{ s.banner_accent_color | default: '#FFF8B8' }};
+  }
+  #cgcb-{{ section.id }} .cgcb__banner-desc {
+    margin: 0 0 30px;
+    max-width: 480px;
+    font-family: 'Inter', sans-serif;
+    font-size: {{ s.banner_desc_size_desktop | default: 16 }}px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.88);
+  }
+  #cgcb-{{ section.id }} .cgcb__banner-cta {
+    display: inline-block;
+    margin-top: auto;
+    margin-bottom: -{{ s.banner_cta_offset_y_desktop | default: 16 }}px;
+    align-self: flex-start;
+    padding: {{ s.banner_cta_pad_v | default: 14 }}px {{ s.banner_cta_pad_h | default: 32 }}px;
+    border-radius: 999px;
+    background-color: {{ s.banner_cta_bg | default: '#FFF8B8' }};
+    color: {{ s.banner_cta_text_color | default: '#111111' }};
+    font-family: 'Inter', sans-serif;
+    font-size: {{ s.banner_cta_size | default: 14 }}px;
+    font-weight: 600;
+    font-style: normal;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  #cgcb-{{ section.id }} .cgcb__banner-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+  }
+  #cgcb-{{ section.id }} .cgcb__banner-media {
+    flex: 0 0 auto;
+    position: relative;
+    align-self: stretch;
+    margin: {{ s.banner_pad_v_desktop | default: 88 | times: -1 }}px -20px {{ s.banner_pad_v_desktop | default: 88 | times: -1 }}px 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  #cgcb-{{ section.id }} .cgcb__banner-media img {
+    display: block;
+    width: {{ s.banner_image_width_desktop | default: 420 }}px;
+    height: auto;
+    max-height: {{ s.banner_image_max_height_desktop | default: 540 }}px;
+    object-fit: contain;
+    transform: translateY({{ s.banner_image_offset_y | default: 5 }}px);
+  }
+  #cgcb-{{ section.id }} .cgcb__banner-media--mobile { display: none; }
+
+  /* ── Mobile ────────────────────────────────────────────────────── */
+  @media (max-width: 767.98px) {
+    #cgcb-{{ section.id }} {
+      padding-top: {{ s.padding_top_mobile | default: 40 }}px;
+      padding-bottom: {{ s.padding_bottom_mobile | default: 40 }}px;
+    }
+    #cgcb-{{ section.id }} .cgcb__inner {
+      padding-left: {{ s.section_pad_h_mobile | default: 12 }}px;
+      padding-right: {{ s.section_pad_h_mobile | default: 12 }}px;
+    }
+    #cgcb-{{ section.id }} .cgcb__title {
+      font-size: {{ s.heading_size_mobile | default: 22 }}px;
+      margin-bottom: 20px;
+    }
+    #cgcb-{{ section.id }} .cgcb__grid {
+      grid-template-columns: repeat({{ s.columns_mobile | default: 2 }}, 1fr);
+      gap: {{ s.row_gap_mobile | default: 22 }}px {{ s.column_gap_mobile | default: 14 }}px;
+    }
+    /* Mobile: hide desktop (1st) image, show mobile (2nd) image.
+       Card adapts to the natural aspect of the 2nd image — no fixed
+       aspect-ratio, the image's intrinsic dimensions drive the height. */
+    #cgcb-{{ section.id }} .cgcb__media {
+      max-width: 100%;
+      height: auto;
+      aspect-ratio: auto;
+      border-radius: {{ s.card_radius_mobile | default: 10 }}px;
+    }
+    #cgcb-{{ section.id }} .cgcb__media-img--desktop { display: none; }
+    #cgcb-{{ section.id }} .cgcb__media-img--mobile  { display: block; }
+    #cgcb-{{ section.id }} .cgcb__media-img--mobile img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    #cgcb-{{ section.id }} .cgcb__title-text {
+      font-size: {{ s.card_title_size_mobile | default: 12 }}px;
+    }
+    #cgcb-{{ section.id }} .cgcb__price {
+      font-size: {{ s.card_price_size_mobile | default: 12 }}px;
+    }
+    #cgcb-{{ section.id }} .cgcb__desc {
+      font-size: {{ s.card_desc_size_mobile | default: 10 }}px;
+    }
+    /* Mobile ATC = circular icon-only button (cart bag icon) */
+    #cgcb-{{ section.id }} .cgcb__atc {
+      width: {{ s.atc_icon_size_mobile | default: 36 }}px;
+      height: {{ s.atc_icon_size_mobile | default: 36 }}px;
+      padding: 0;
+      border-radius: 999px;
+      background-color: {{ s.atc_icon_bg_mobile | default: '#FFFFFF' }};
+      color: {{ s.atc_icon_color_mobile | default: '#111111' }};
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.10);
+      bottom: {{ s.atc_offset_mobile | default: 8 }}px;
+      right: {{ s.atc_offset_mobile | default: 8 }}px;
+    }
+    #cgcb-{{ section.id }} .cgcb__atc-text { display: none !important; }
+    #cgcb-{{ section.id }} .cgcb__atc-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 50%;
+      height: 50%;
+    }
+    #cgcb-{{ section.id }} .cgcb__atc-icon svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    /* Banner mobile */
+    #cgcb-{{ section.id }} .cgcb__banner {
+      margin: {{ s.banner_margin_top_mobile | default: 12 }}px {{ s.banner_side_margin_mobile | default: 0 }}px {{ s.banner_margin_bottom_mobile | default: 12 }}px;
+      border-radius: {{ s.banner_radius_mobile | default: 14 }}px;
+    }
+    #cgcb-{{ section.id }} .cgcb__banner-inner {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: {{ s.banner_pad_v_mobile | default: 36 }}px {{ s.banner_pad_h_mobile | default: 24 }}px 0;
+      gap: 22px;
+      min-height: {{ s.banner_height_mobile | default: 540 }}px;
+    }
+    #cgcb-{{ section.id }} .cgcb__banner-content {
+      max-width: 100%;
+      width: 100%;
+      text-align: center;
+    }
+    #cgcb-{{ section.id }} .cgcb__banner-heading {
+      font-size: {{ s.banner_heading_size_mobile | default: 22 }}px;
+    }
+    #cgcb-{{ section.id }} .cgcb__banner-desc {
+      font-size: {{ s.banner_desc_size_mobile | default: 15 }}px;
+      margin-bottom: 22px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #cgcb-{{ section.id }} .cgcb__banner-cta {
+      padding: {{ s.banner_cta_pad_v_mobile | default: 13 }}px {{ s.banner_cta_pad_h_mobile | default: 28 }}px;
+      font-size: {{ s.banner_cta_size_mobile | default: 14 }}px;
+      margin-top: 0;
+      margin-bottom: 0;
+      align-self: center;
+    }
+    #cgcb-{{ section.id }} .cgcb__banner-media {
+      align-self: center;
+      justify-content: center;
+      width: 100%;
+      margin: 8px 0 -28px;
+    }
+    #cgcb-{{ section.id }} .cgcb__banner-media--desktop { display: none; }
+    #cgcb-{{ section.id }} .cgcb__banner-media--mobile { display: flex; }
+    #cgcb-{{ section.id }} .cgcb__banner-media img {
+      width: {{ s.banner_image_width_mobile | default: 320 }}px;
+      max-height: {{ s.banner_image_max_height_mobile | default: 360 }}px;
+      margin: 0 auto;
+      transform: none;
+    }
+  }
+</style>
+
+<section id="cgcb-{{ section.id }}" class="cgcb">
+  <div class="cgcb__inner">
+    {%- if s.heading != blank -%}
+      <h2 class="cgcb__title">{{ s.heading | escape }}</h2>
+    {%- endif -%}
+
+    <div class="cgcb__grid">
+      {%- liquid
+        if collection
+          assign products = collection.products
+        else
+          assign products = section.settings.fallback_collection.products
+        endif
+        assign banner_inserted = false
+      -%}
+
+      {%- for product in products limit: products_limit -%}
+        {%- assign sd = product.metafields.custom.short_description | default: product.description | strip_html | truncatewords: 14 -%}
+        {%- comment -%}
+          Image strategy: both desktop AND mobile use the 2nd product
+          image. If the product only has one image, fall back to the
+          featured (first) image so the card still renders.
+        {%- endcomment -%}
+        {%- assign img_desktop = product.images[1] | default: product.featured_image -%}
+        {%- assign img_mobile  = product.images[1] | default: product.featured_image -%}
+        <div class="cgcb__card">
+          <div class="cgcb__media">
+            <a class="cgcb__media-img cgcb__media-img--desktop" href="{{ product.url }}">
+              {%- if img_desktop != blank -%}
+                {{ img_desktop | image_url: width: 1080 | image_tag: alt: product.title, loading: 'lazy', sizes: '(min-width: 768px) 540px, 100vw' }}
+              {%- endif -%}
+            </a>
+            <a class="cgcb__media-img cgcb__media-img--mobile" href="{{ product.url }}">
+              {%- if img_mobile != blank -%}
+                {{ img_mobile | image_url: width: 800 | image_tag: alt: product.title, loading: 'lazy', sizes: '50vw' }}
+              {%- endif -%}
+            </a>
+            <a class="cgcb__atc" href="{{ product.url }}" aria-label="{{ atc_text | escape }} — {{ product.title | escape }}">
+              <span class="cgcb__atc-text">{{ atc_text | escape }}</span>
+              <span class="cgcb__atc-icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5.5 7h13l-1 12.2a2 2 0 0 1-2 1.8H8.5a2 2 0 0 1-2-1.8L5.5 7z"/>
+                  <path d="M9 7V5.4a3 3 0 0 1 6 0V7"/>
+                </svg>
+              </span>
+            </a>
+          </div>
+          <div class="cgcb__info">
+            <a class="cgcb__title-link" href="{{ product.url }}">
+              <span class="cgcb__title cgcb__title-text">{{ product.title | upcase }}</span>
+            </a>
+            {%- if product.price > 0 -%}
+              <span class="cgcb__price">{{ product.price | money }}</span>
+            {%- endif -%}
+            {%- comment -%}
+              Desktop inline ATC — sits to the right of the title/price
+              row. The original `.cgcb__atc` button (over the image) is
+              hidden on desktop and stays only as the mobile icon.
+            {%- endcomment -%}
+            <a class="cgcb__atc-inline" href="{{ product.url }}" aria-label="{{ atc_text | escape }} — {{ product.title | escape }}">
+              {{ atc_text | escape }}
+            </a>
+          </div>
+          {%- if s.show_description and sd != blank -%}
+            <p class="cgcb__desc">{{ sd | upcase }}</p>
+          {%- endif -%}
+        </div>
+
+        {%- comment -%}
+          Insert the banner once after `banner_after` products.
+        {%- endcomment -%}
+        {%- if s.banner_enable and banner_inserted == false and forloop.index == banner_after -%}
+          <div class="cgcb__banner" style="background-color: {{ s.banner_bg_color | default: '#363B47' }};">
+            <div class="cgcb__banner-inner">
+              <div class="cgcb__banner-content">
+                <h3 class="cgcb__banner-heading">
+                  {{ s.banner_heading | default: 'BUILD YOUR OWN STARTER PACK' | escape }}<span class="cgcb__banner-accent">{{ s.banner_heading_accent | default: '.' | escape }}</span>
+                </h3>
+                {%- if s.banner_desc != blank -%}
+                  <p class="cgcb__banner-desc">{{ s.banner_desc | escape }}</p>
+                {%- endif -%}
+                {%- if s.banner_cta_text != blank -%}
+                  <a class="cgcb__banner-cta" href="{{ s.banner_cta_link | default: '#' }}">{{ s.banner_cta_text | escape }}</a>
+                {%- endif -%}
+              </div>
+              {%- if s.banner_image_desktop != blank -%}
+                <div class="cgcb__banner-media cgcb__banner-media--desktop" aria-hidden="true">
+                  {{ s.banner_image_desktop | image_url: width: 1000 | image_tag: alt: '', loading: 'lazy' }}
+                </div>
+              {%- endif -%}
+              {%- if s.banner_image_mobile != blank -%}
+                <div class="cgcb__banner-media cgcb__banner-media--mobile" aria-hidden="true">
+                  {{ s.banner_image_mobile | image_url: width: 800 | image_tag: alt: '', loading: 'lazy' }}
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+          {%- assign banner_inserted = true -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collection grid + banner",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.overlay"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section heading (optional)"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size (desktop)",
+      "min": 16, "max": 48, "step": 1, "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Heading size (mobile)",
+      "min": 14, "max": 36, "step": 1, "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "label": "Content max width",
+      "min": 800, "max": 1600, "step": 20, "unit": "px",
+      "default": 1280
+    },
+    {
+      "type": "collection",
+      "id": "fallback_collection",
+      "label": "Fallback collection (only used when not on a collection page)"
+    },
+    {
+      "type": "range",
+      "id": "products_limit",
+      "label": "Products to show",
+      "min": 2, "max": 50, "step": 1,
+      "default": 12
+    },
+
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Products per row (desktop)",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Products per row (mobile)",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "range",
+      "id": "column_gap_desktop",
+      "label": "Column gap (desktop)",
+      "min": 0, "max": 80, "step": 2, "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "row_gap_desktop",
+      "label": "Row gap (desktop)",
+      "min": 0, "max": 100, "step": 2, "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "column_gap_mobile",
+      "label": "Column gap (mobile)",
+      "min": 0, "max": 40, "step": 1, "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "row_gap_mobile",
+      "label": "Row gap (mobile)",
+      "min": 0, "max": 80, "step": 2, "unit": "px",
+      "default": 22
+    },
+
+    {
+      "type": "header",
+      "content": "Card image (with notch cutout)"
+    },
+    {
+      "type": "range",
+      "id": "card_image_width_desktop",
+      "label": "Image width (desktop)",
+      "min": 280, "max": 800, "step": 10, "unit": "px",
+      "default": 540
+    },
+    {
+      "type": "range",
+      "id": "card_image_height_desktop",
+      "label": "Image height (desktop)",
+      "min": 220, "max": 800, "step": 10, "unit": "px",
+      "default": 410
+    },
+    {
+      "type": "select",
+      "id": "card_image_aspect_mobile",
+      "label": "Image aspect ratio (mobile)",
+      "options": [
+        { "value": "1 / 1", "label": "1:1 square" },
+        { "value": "4 / 3", "label": "4:3" },
+        { "value": "3 / 2", "label": "3:2" },
+        { "value": "5 / 6", "label": "5:6 portrait" },
+        { "value": "27 / 20", "label": "Match desktop 540×410" }
+      ],
+      "default": "1 / 1"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Card image radius (desktop)",
+      "min": 0, "max": 40, "step": 1, "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "card_radius_mobile",
+      "label": "Card image radius (mobile)",
+      "min": 0, "max": 30, "step": 1, "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "select",
+      "id": "card_bg_choice",
+      "label": "Card background colour",
+      "info": "Behind the product image. Pick \"Custom\" to use the colour picker below.",
+      "options": [
+        { "value": "butter_yellow", "label": "Butter yellow (#FFF8B8)" },
+        { "value": "grey",          "label": "Grey (#EFEFEF)" },
+        { "value": "blue",          "label": "Blue (#C6DCE8)" },
+        { "value": "custom",        "label": "Custom (use picker below)" }
+      ],
+      "default": "butter_yellow"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_custom",
+      "label": "Custom card background",
+      "info": "Used only when \"Card background colour\" is set to Custom.",
+      "default": "#FFF8B8"
+    },
+
+    {
+      "type": "header",
+      "content": "ATC button (sits inside the notch)"
+    },
+    {
+      "type": "text",
+      "id": "card_button_text",
+      "label": "ATC text",
+      "default": "ADD TO CART"
+    },
+    {
+      "type": "color",
+      "id": "card_button_bg",
+      "label": "ATC background",
+      "default": "#BFCED6"
+    },
+    {
+      "type": "color",
+      "id": "card_button_text_color",
+      "label": "ATC text color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "card_button_size",
+      "label": "ATC text size (desktop)",
+      "min": 7, "max": 24, "step": 1, "unit": "px",
+      "default": 9
+    },
+    {
+      "type": "range",
+      "id": "card_button_size_mobile",
+      "label": "ATC text size (mobile)",
+      "min": 7, "max": 14, "step": 1, "unit": "px",
+      "default": 9
+    },
+    {
+      "type": "range",
+      "id": "atc_pad_v",
+      "label": "ATC padding top/bottom (desktop)",
+      "min": 2, "max": 40, "step": 1, "unit": "px",
+      "default": 6
+    },
+    {
+      "type": "range",
+      "id": "atc_pad_h",
+      "label": "ATC padding left/right (desktop)",
+      "min": 4, "max": 60, "step": 1, "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "atc_pad_v_mobile",
+      "label": "ATC padding top/bottom (mobile)",
+      "min": 4, "max": 18, "step": 1, "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "atc_pad_h_mobile",
+      "label": "ATC padding left/right (mobile)",
+      "min": 6, "max": 30, "step": 1, "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "atc_offset",
+      "label": "ATC offset from card edge",
+      "min": 0, "max": 30, "step": 1, "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "atc_radius",
+      "label": "ATC pill radius (desktop)",
+      "info": "Set ≥ button height/2 for a fully rounded pill.",
+      "min": 0, "max": 60, "step": 1, "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "atc_width_desktop",
+      "label": "ATC fixed width (desktop)",
+      "info": "0 = auto (size by text + padding). Use to lock the pill to an exact width.",
+      "min": 0, "max": 400, "step": 4, "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "atc_height_desktop",
+      "label": "ATC fixed height (desktop)",
+      "info": "0 = auto (size by text + padding). Use to lock the pill to an exact height.",
+      "min": 0, "max": 100, "step": 2, "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Inline ATC (desktop, under image)"
+    },
+    {
+      "type": "paragraph",
+      "content": "These three sliders control the inline ADD TO CART pill that sits under the image on desktop. 0 = auto (driven by text + padding) for width and height. The horizontal offset nudges the pill from its right-aligned position — negative moves left, positive moves right."
+    },
+    {
+      "type": "range",
+      "id": "inline_atc_width_desktop",
+      "label": "Inline ATC fixed width (desktop)",
+      "info": "0 = auto.",
+      "min": 0, "max": 400, "step": 4, "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "inline_atc_height_desktop",
+      "label": "Inline ATC fixed height (desktop)",
+      "info": "0 = auto.",
+      "min": 0, "max": 80, "step": 2, "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "inline_atc_offset_x_desktop",
+      "label": "Inline ATC horizontal offset (desktop)",
+      "info": "Negative = move left, positive = move right.",
+      "min": -200, "max": 200, "step": 4, "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Mobile cart icon button"
+    },
+    {
+      "type": "paragraph",
+      "content": "On mobile the ADD TO CART pill becomes a small circular icon button (cart bag) — the icon style from the product grid."
+    },
+    {
+      "type": "range",
+      "id": "atc_icon_size_mobile",
+      "label": "Icon button size (mobile)",
+      "min": 24, "max": 56, "step": 1, "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "atc_offset_mobile",
+      "label": "Icon button offset from card edge (mobile)",
+      "min": 0, "max": 20, "step": 1, "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "color",
+      "id": "atc_icon_bg_mobile",
+      "label": "Icon button background (mobile)",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "atc_icon_color_mobile",
+      "label": "Icon color (mobile)",
+      "default": "#111111"
+    },
+
+    {
+      "type": "header",
+      "content": "Card text"
+    },
+    {
+      "type": "color",
+      "id": "card_text_color",
+      "label": "Title / price / description color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "card_title_size",
+      "label": "Title size (desktop)",
+      "min": 10, "max": 22, "step": 1, "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "card_title_size_mobile",
+      "label": "Title size (mobile)",
+      "min": 9, "max": 18, "step": 1, "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "card_price_size",
+      "label": "Price size (desktop)",
+      "min": 10, "max": 22, "step": 1, "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "card_price_size_mobile",
+      "label": "Price size (mobile)",
+      "min": 9, "max": 18, "step": 1, "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "title_price_gap",
+      "label": "Gap between title and price",
+      "info": "How much horizontal space sits between the product title and the price. Lower = price tucks closer to the title; higher = price sits further to the right.",
+      "min": 4, "max": 80, "step": 2, "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show short description below title",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "card_desc_size",
+      "label": "Description size (desktop)",
+      "min": 8, "max": 18, "step": 1, "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "card_desc_size_mobile",
+      "label": "Description size (mobile)",
+      "min": 7, "max": 14, "step": 1, "unit": "px",
+      "default": 10
+    },
+
+    {
+      "type": "header",
+      "content": "Inline banner (between rows)"
+    },
+    {
+      "type": "checkbox",
+      "id": "banner_enable",
+      "label": "Show banner",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "banner_after_count",
+      "label": "Insert after N products",
+      "min": 1, "max": 24, "step": 1,
+      "default": 2
+    },
+    {
+      "type": "color",
+      "id": "banner_bg_color",
+      "label": "Banner background",
+      "default": "#363B47"
+    },
+    {
+      "type": "color",
+      "id": "banner_text_color",
+      "label": "Banner text color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "banner_accent_color",
+      "label": "Banner accent color",
+      "default": "#FFF8B8"
+    },
+    {
+      "type": "text",
+      "id": "banner_heading",
+      "label": "Banner heading",
+      "default": "BUILD YOUR OWN STARTER PACK"
+    },
+    {
+      "type": "text",
+      "id": "banner_heading_accent",
+      "label": "Banner heading accent (cream-colored suffix)",
+      "info": "Appended to the end of the heading in accent color (e.g. a period).",
+      "default": "."
+    },
+    {
+      "type": "textarea",
+      "id": "banner_desc",
+      "label": "Banner description",
+      "default": "Choose your case and fill it with the scents you actually want to wear. Swap them out whenever. Build it around your mood, your week, your skin."
+    },
+    {
+      "type": "text",
+      "id": "banner_cta_text",
+      "label": "Banner CTA text",
+      "default": "START YOUR SUMMR"
+    },
+    {
+      "type": "url",
+      "id": "banner_cta_link",
+      "label": "Banner CTA link"
+    },
+    {
+      "type": "color",
+      "id": "banner_cta_bg",
+      "label": "Banner CTA background",
+      "default": "#FFF8B8"
+    },
+    {
+      "type": "color",
+      "id": "banner_cta_text_color",
+      "label": "Banner CTA text color",
+      "default": "#111111"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image_desktop",
+      "label": "Banner image (desktop)"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image_mobile",
+      "label": "Banner image (mobile)"
+    },
+
+    {
+      "type": "header",
+      "content": "Banner — desktop sizing"
+    },
+    {
+      "type": "range",
+      "id": "banner_radius",
+      "label": "Border radius",
+      "min": 0, "max": 40, "step": 1, "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "banner_height_desktop",
+      "label": "Min height",
+      "min": 200, "max": 800, "step": 10, "unit": "px",
+      "default": 440
+    },
+    {
+      "type": "range",
+      "id": "banner_pad_v_desktop",
+      "label": "Padding top/bottom",
+      "min": 16, "max": 200, "step": 4, "unit": "px",
+      "default": 88
+    },
+    {
+      "type": "range",
+      "id": "banner_pad_h_desktop",
+      "label": "Padding left/right",
+      "min": 16, "max": 120, "step": 4, "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "banner_side_margin_desktop",
+      "label": "Side margin (around banner)",
+      "min": 0, "max": 100, "step": 2, "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "banner_margin_top_desktop",
+      "label": "Space above banner",
+      "min": 0, "max": 100, "step": 2, "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "banner_margin_bottom_desktop",
+      "label": "Space below banner",
+      "min": 0, "max": 100, "step": 2, "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "banner_heading_size_desktop",
+      "label": "Heading size",
+      "min": 16, "max": 48, "step": 1, "unit": "px",
+      "default": 26
+    },
+    {
+      "type": "range",
+      "id": "banner_desc_size_desktop",
+      "label": "Description size",
+      "min": 11, "max": 22, "step": 1, "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "banner_cta_size",
+      "label": "CTA text size",
+      "min": 10, "max": 18, "step": 1, "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "banner_cta_pad_v",
+      "label": "CTA padding top/bottom",
+      "min": 6, "max": 22, "step": 1, "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "banner_cta_pad_h",
+      "label": "CTA padding left/right",
+      "min": 12, "max": 60, "step": 1, "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "banner_cta_offset_y_desktop",
+      "label": "CTA bottom offset (desktop)",
+      "info": "Pushes the CTA pill below the bottom of the content area (overhangs into the banner padding). 0 = sit flush with content padding.",
+      "min": -40, "max": 80, "step": 2, "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "banner_image_width_desktop",
+      "label": "Banner image width",
+      "min": 200, "max": 800, "step": 10, "unit": "px",
+      "default": 420
+    },
+    {
+      "type": "range",
+      "id": "banner_image_max_height_desktop",
+      "label": "Banner image max height",
+      "min": 200, "max": 800, "step": 10, "unit": "px",
+      "default": 540
+    },
+    {
+      "type": "range",
+      "id": "banner_image_offset_y",
+      "label": "Banner image vertical nudge",
+      "min": -40, "max": 40, "step": 1, "unit": "px",
+      "default": 5
+    },
+
+    {
+      "type": "header",
+      "content": "Banner — mobile sizing"
+    },
+    {
+      "type": "range",
+      "id": "banner_radius_mobile",
+      "label": "Border radius (mobile)",
+      "min": 0, "max": 40, "step": 1, "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "banner_height_mobile",
+      "label": "Min height",
+      "min": 240, "max": 800, "step": 10, "unit": "px",
+      "default": 540
+    },
+    {
+      "type": "range",
+      "id": "banner_pad_v_mobile",
+      "label": "Padding top/bottom",
+      "min": 12, "max": 120, "step": 2, "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "banner_pad_h_mobile",
+      "label": "Padding left/right",
+      "min": 8, "max": 80, "step": 2, "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "banner_side_margin_mobile",
+      "label": "Side margin (around banner)",
+      "min": 0, "max": 60, "step": 2, "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "banner_margin_top_mobile",
+      "label": "Space above banner",
+      "min": 0, "max": 60, "step": 2, "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "banner_margin_bottom_mobile",
+      "label": "Space below banner",
+      "min": 0, "max": 60, "step": 2, "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "banner_heading_size_mobile",
+      "label": "Heading size",
+      "min": 14, "max": 36, "step": 1, "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "banner_desc_size_mobile",
+      "label": "Description size",
+      "min": 10, "max": 20, "step": 1, "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "banner_cta_size_mobile",
+      "label": "CTA text size",
+      "min": 9, "max": 18, "step": 1, "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "banner_cta_pad_v_mobile",
+      "label": "CTA padding top/bottom",
+      "min": 6, "max": 22, "step": 1, "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "banner_cta_pad_h_mobile",
+      "label": "CTA padding left/right",
+      "min": 10, "max": 50, "step": 1, "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "banner_image_width_mobile",
+      "label": "Banner image width",
+      "min": 120, "max": 600, "step": 10, "unit": "px",
+      "default": 320
+    },
+    {
+      "type": "range",
+      "id": "banner_image_max_height_mobile",
+      "label": "Banner image max height",
+      "min": 160, "max": 600, "step": 10, "unit": "px",
+      "default": 360
+    },
+
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding top (desktop)",
+      "min": 0, "max": 200, "step": 2, "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding bottom (desktop)",
+      "min": 0, "max": 200, "step": 2, "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top (mobile)",
+      "min": 0, "max": 200, "step": 2, "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom (mobile)",
+      "min": 0, "max": 200, "step": 2, "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "section_pad_h_desktop",
+      "label": "Section side padding (desktop)",
+      "min": 0, "max": 80, "step": 2, "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "section_pad_h_mobile",
+      "label": "Section side padding (mobile)",
+      "min": 0, "max": 40, "step": 2, "unit": "px",
+      "default": 12
+    },
+
+    {
+      "type": "header",
+      "content": "Section margin"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Margin top (desktop)",
+      "min": -200, "max": 200, "step": 4, "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margin bottom (desktop)",
+      "min": -200, "max": 200, "step": 4, "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margin top (mobile)",
+      "info": "Falls back to the desktop value when 0.",
+      "min": -200, "max": 200, "step": 4, "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margin bottom (mobile)",
+      "info": "Falls back to the desktop value when 0.",
+      "min": -200, "max": 200, "step": 4, "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection grid + banner"
+    }
+  ]
+}
+{% endschema %}

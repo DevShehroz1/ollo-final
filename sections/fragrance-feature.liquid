@@ -1,0 +1,568 @@
+{%- liquid
+  assign s = section.settings
+  if s.reset_spacing
+    assign reset_spacing = ' remove_spacing'
+  endif
+-%}
+
+
+
+<div class="ff{{ reset_spacing }}" style="background-color: {{ s.bg_color }};">
+  <div class="ff__wrap">
+
+    <div class="ff__left">
+      <div class="ff__text">
+        {%- if s.heading != blank -%}
+          <h2 class="ff__heading">{{ s.heading }}</h2>
+        {%- endif -%}
+        <hr class="ff__divider">
+        {%- if s.description != blank -%}
+          <p class="ff__desc">{{ s.description }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="ff__right">
+      <div class="ff__grid">
+
+        <div class="ff__img-wrap ff__img-wrap--tl">
+          {%- if s.image_1 != blank -%}
+            {{
+              s.image_1
+              | image_url: width: 800
+              | image_tag: loading: 'lazy', class: 'ff__img', alt: s.image_1.alt | default: ''
+            }}
+          {%- else -%}
+            {{ 'image' | placeholder_svg_tag: 'ff__img ff__img--placeholder' }}
+          {%- endif -%}
+        </div>
+
+        <div class="ff__img-wrap ff__img-wrap--tr">
+          {%- if s.image_2 != blank -%}
+            {{
+              s.image_2
+              | image_url: width: 800
+              | image_tag: loading: 'lazy', class: 'ff__img', alt: s.image_2.alt | default: ''
+            }}
+          {%- else -%}
+            {{ 'image' | placeholder_svg_tag: 'ff__img ff__img--placeholder' }}
+          {%- endif -%}
+        </div>
+
+        <div class="ff__img-wrap ff__img-wrap--bl">
+          {%- if s.image_3 != blank -%}
+            {{
+              s.image_3
+              | image_url: width: 800
+              | image_tag: loading: 'lazy', class: 'ff__img', alt: s.image_3.alt | default: ''
+            }}
+          {%- else -%}
+            {{ 'image' | placeholder_svg_tag: 'ff__img ff__img--placeholder' }}
+          {%- endif -%}
+        </div>
+
+        <div class="ff__img-wrap ff__img-wrap--br">
+          {%- if s.image_4 != blank -%}
+            {{
+              s.image_4
+              | image_url: width: 800
+              | image_tag: loading: 'lazy', class: 'ff__img', alt: s.image_4.alt | default: ''
+            }}
+          {%- else -%}
+            {{ 'image' | placeholder_svg_tag: 'ff__img ff__img--placeholder' }}
+          {%- endif -%}
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    margin-top: {{ s.margin_top_desktop | default: 0 }}px;
+    margin-bottom: {{ s.margin_bottom_desktop | default: 0 }}px;
+  }
+  @media screen and (max-width: 767px) {
+    #shopify-section-{{ section.id }} {
+      margin-top: {{ s.margin_top_mobile | default: 0 }}px;
+      margin-bottom: {{ s.margin_bottom_mobile | default: 0 }}px;
+    }
+  }
+  #shopify-section-{{ section.id }} .ff {
+    width: 100%;
+  }
+  #shopify-section-{{ section.id }} .ff__wrap {
+    max-width: {{ s.content_max_width }}px;
+    margin: 0 auto;
+    padding: {{ s.padding_top_desktop | default: s.padding_v | default: 80 }}px {{ s.padding_h_right }}px {{ s.padding_bottom_desktop | default: s.padding_v | default: 80 }}px {{ s.padding_h_left }}px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: {{ s.left_col_pct }}% 1fr;
+    gap: {{ s.column_gap }}px;
+    align-items: center;
+  }
+  /* Desktop-only side padding override (≥1025px). */
+  @media screen and (min-width: 1025px) {
+    #shopify-section-{{ section.id }} .ff__wrap {
+      padding-left: {{ s.padding_h_left_desktop | default: 0 }}px;
+      padding-right: {{ s.padding_h_right_desktop | default: 24 }}px;
+    }
+  }
+  @media screen and (max-width: 767px) {
+    #shopify-section-{{ section.id }} .ff__wrap {
+      padding-top: {{ s.padding_top_mobile | default: s.padding_v | default: 60 }}px;
+      padding-bottom: {{ s.padding_bottom_mobile | default: s.padding_v | default: 60 }}px;
+    }
+  }
+
+  /* ── Left column ── */
+  #shopify-section-{{ section.id }} .ff__left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  #shopify-section-{{ section.id }} .ff__text {
+    display: flex;
+    flex-direction: column;
+    gap: {{ s.text_gap }}px;
+  }
+  #shopify-section-{{ section.id }} .ff__heading {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 28px;
+    letter-spacing: 0;
+    text-align: left;
+    text-transform: {{ s.heading_case | default: 'uppercase' }};
+    color: {{ s.heading_color | default: s.text_color }};
+    margin: 0;
+    max-width: {{ s.text_max_width }}px;
+  }
+  #shopify-section-{{ section.id }} .ff__divider {
+    width: 93px;
+    height: 0;
+    border: none;
+    border-top: 1px solid {{ s.divider_color }};
+    margin: 0;
+    opacity: 1;
+  }
+  #shopify-section-{{ section.id }} .ff__desc {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 18px;
+    line-height: 24px;
+    letter-spacing: 0;
+    text-align: left;
+    text-transform: {{ s.description_case | default: 'none' }};
+    color: {{ s.description_color | default: s.text_color }};
+    margin: 0;
+    max-width: {{ s.text_max_width }}px;
+  }
+
+  /* ── Right column — 2x2 image grid ── */
+  #shopify-section-{{ section.id }} .ff__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: {{ s.image_gap }}px;
+  }
+  #shopify-section-{{ section.id }} .ff__img-wrap {
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+  }
+  #shopify-section-{{ section.id }} .ff__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  #shopify-section-{{ section.id }} .ff__img--placeholder {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: #d9d9d9;
+  }
+
+
+  /* ── Mobile ── */
+  @media screen and (max-width: 767px) {
+    #shopify-section-{{ section.id }},
+    #shopify-section-{{ section.id }} .ff {
+      padding-left: 0;
+      padding-right: 0;
+      margin-left: 0;
+      margin-right: 0;
+    }
+    #shopify-section-{{ section.id }} .ff__wrap {
+      grid-template-columns: 1fr;
+      gap: 40px;
+      max-width: 100%;
+      padding-left: {{ s.padding_h_left_mobile | default: 0 }}px;
+      padding-right: {{ s.padding_h_right_mobile | default: 0 }}px;
+    }
+    #shopify-section-{{ section.id }} .ff__heading,
+    #shopify-section-{{ section.id }} .ff__desc {
+      max-width: 100%;
+    }
+    #shopify-section-{{ section.id }} .ff__heading {
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 20px;
+      line-height: 24px;
+      letter-spacing: 0;
+    }
+    #shopify-section-{{ section.id }} .ff__desc {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 20px;
+      letter-spacing: 0;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Fragrance Feature",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.overlay"]
+  },
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Default text color (fallback)",
+      "info": "Used for heading and description when no individual color is set below.",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "info": "Leave empty to fall back to the default text color above."
+    },
+    {
+      "type": "select",
+      "id": "heading_case",
+      "label": "Heading case",
+      "default": "uppercase",
+      "options": [
+        { "value": "uppercase", "label": "UPPERCASE" },
+        { "value": "lowercase", "label": "lowercase" },
+        { "value": "capitalize", "label": "Capitalize Each Word" },
+        { "value": "none", "label": "As typed" }
+      ]
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description color",
+      "info": "Leave empty to fall back to the default text color above."
+    },
+    {
+      "type": "select",
+      "id": "description_case",
+      "label": "Description case",
+      "default": "none",
+      "options": [
+        { "value": "none", "label": "As typed" },
+        { "value": "uppercase", "label": "UPPERCASE" },
+        { "value": "lowercase", "label": "lowercase" },
+        { "value": "capitalize", "label": "Capitalize Each Word" }
+      ]
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider line color",
+      "default": "#111111"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "label": "Max content width",
+      "default": 1200,
+      "min": 800,
+      "max": 2400,
+      "step": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_v",
+      "label": "Vertical padding (legacy — used as fallback)",
+      "info": "Use Padding top / Padding bottom below for independent control. This stays as a fallback so existing instances don't shift.",
+      "default": 80,
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding top — Desktop",
+      "default": 80,
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding bottom — Desktop",
+      "default": 80,
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top — Mobile",
+      "default": 60,
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom — Mobile",
+      "default": 60,
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_h_left",
+      "label": "Left padding",
+      "default": 0,
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_h_right",
+      "label": "Right padding",
+      "default": 24,
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_h_left_desktop",
+      "label": "Left padding (desktop ≥1025px)",
+      "info": "Desktop-only override. Mobile/tablet uses Left padding above.",
+      "default": 0,
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_h_right_desktop",
+      "label": "Right padding (desktop ≥1025px)",
+      "info": "Desktop-only override. Mobile/tablet uses Right padding above.",
+      "default": 24,
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_h_left_mobile",
+      "label": "Left padding (mobile)",
+      "default": 0,
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_h_right_mobile",
+      "label": "Right padding (mobile)",
+      "default": 0,
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "left_col_pct",
+      "label": "Left column width",
+      "default": 35,
+      "min": 30,
+      "max": 60,
+      "step": 1,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Gap between columns",
+      "default": 60,
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Function + performance are the core of our products, but fragrance is the secret sauce."
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "We've enlisted some of the top fragrance houses in the world to re-imagine personal care bringing premium, elevated scents at everyday value. We go through numerous rounds of iterations with the top 'noses' in the industry refining our scents until we land on something to obsess over."
+    },
+    {
+      "type": "range",
+      "id": "text_max_width",
+      "label": "Text max width",
+      "default": 420,
+      "min": 200,
+      "max": 700,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "text_gap",
+      "label": "Gap between text elements",
+      "default": 20,
+      "min": 4,
+      "max": 60,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Images"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image 1 (top left)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image 2 (top right)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_3",
+      "label": "Image 3 (bottom left)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_4",
+      "label": "Image 4 (bottom right)"
+    },
+    {
+      "type": "range",
+      "id": "image_gap",
+      "label": "Gap between images",
+      "default": 0,
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing"
+    },
+    {
+      "type": "checkbox",
+      "id": "reset_spacing",
+      "label": "Remove section spacing",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Section margin (supports negative for overlap)"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Margin top — Desktop",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margin bottom — Desktop",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margin top — Mobile",
+      "default": 0,
+      "min": -120,
+      "max": 200,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margin bottom — Mobile",
+      "default": 0,
+      "min": -120,
+      "max": 200,
+      "step": 4,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Fragrance Feature"
+    }
+  ]
+}
+{% endschema %}

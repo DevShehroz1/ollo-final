@@ -1,0 +1,222 @@
+{%- liquid
+  assign sec_st = section.settings
+  if sec_st.reset_spacing
+    assign reset_spacing = ' remove_spacing'
+  endif
+-%}
+{%- capture style -%}
+  --section-pt: {{ sec_st.padding_top }}; --section-pb: {{ sec_st.padding_bottom }};
+{%- endcapture -%}
+
+<section
+  class="section founder-quote{{ reset_spacing }}"
+  style="{{ style | strip | strip_newlines }}; background-color: {{ sec_st.bg_color }};"
+>
+  <div class="founder-quote__inner">
+    {%- if sec_st.image != blank -%}
+      <div class="founder-quote__image">
+        <img
+          src="{{ sec_st.image | image_url: width: 644 }}"
+          alt="{{ sec_st.image.alt | default: sec_st.attribution }}"
+          width="322"
+          height="300"
+          loading="lazy"
+        >
+      </div>
+    {%- endif -%}
+
+    {%- if sec_st.quote != blank -%}
+      <h2 class="founder-quote__text" style="color: {{ sec_st.text_color }};">
+        {{ sec_st.quote | escape }}
+      </h2>
+    {%- endif -%}
+
+    {%- if sec_st.attribution != blank -%}
+      {%- assign attr_html = sec_st.attribution | escape -%}
+      {%- assign attr_html = attr_html | replace: ' and ', '<span class="founder-quote__and"> and </span>' -%}
+      {%- assign attr_html = attr_html | replace: ' And ', '<span class="founder-quote__and"> And </span>' -%}
+      {%- assign attr_html = attr_html | replace: ' AND ', '<span class="founder-quote__and"> AND </span>' -%}
+      <p class="founder-quote__attribution" style="color: {{ sec_st.attribution_color }};">
+        {{ attr_html }}
+      </p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% style %}
+  #shopify-section-{{ section.id }} .founder-quote__inner {
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 30px;
+  }
+  #shopify-section-{{ section.id }} .founder-quote__image {
+    margin: 0 0 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: visible;
+  }
+  #shopify-section-{{ section.id }} .founder-quote__image img {
+    width: 322px;
+    height: 300px;
+    object-fit: cover;
+    object-position: center 20%;
+    display: block;
+    transform: rotate(10deg);
+  }
+  #shopify-section-{{ section.id }} .founder-quote__text {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 40px;
+    line-height: 50px;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    text-align: center;
+    margin: 0 0 30px 0;
+  }
+  #shopify-section-{{ section.id }} .founder-quote__attribution {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 26px;
+    letter-spacing: -0.4px;
+    text-transform: uppercase;
+    text-align: center;
+    margin: 0;
+  }
+  #shopify-section-{{ section.id }} .founder-quote__and {
+    color: {{ sec_st.and_color | default: '#8980C4' }};
+  }
+  @media screen and (max-width: 767px) {
+    #shopify-section-{{ section.id }} .founder-quote__and {
+      display: block;
+    }
+    #shopify-section-{{ section.id }} .founder-quote__inner {
+      padding: 60px 20px;
+    }
+    #shopify-section-{{ section.id }} .founder-quote__image {
+      margin: 0 0 40px;
+    }
+    #shopify-section-{{ section.id }} .founder-quote__image img {
+      width: 220px;
+      height: 205px;
+    }
+    #shopify-section-{{ section.id }} .founder-quote__text {
+      font-size: 26px;
+      line-height: 34px;
+      margin: 0 0 20px 0;
+    }
+    #shopify-section-{{ section.id }} .founder-quote__attribution {
+      font-size: 18px;
+      line-height: 22px;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Founder Quote",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.overlay"]
+  },
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Quote color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "attribution_color",
+      "label": "Attribution color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "and_color",
+      "label": "\"AND\" word color",
+      "info": "The word \"and\" between the two founder names. Renders on its own line on mobile.",
+      "default": "#8980C4"
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "range",
+      "id": "image_rotation",
+      "label": "Image rotation",
+      "min": -45,
+      "max": 45,
+      "step": 1,
+      "unit": "deg",
+      "default": -6
+    },
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "textarea",
+      "id": "quote",
+      "label": "Quote",
+      "default": "\"Most things we use every day were never really questioned. Summr started when we finally did\""
+    },
+    {
+      "type": "text",
+      "id": "attribution",
+      "label": "Attribution",
+      "default": "Deepika Manjunath and Sudarshan CV"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "reset_spacing",
+      "label": "Remove section spacing",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Founder Quote"
+    }
+  ]
+}
+{% endschema %}
