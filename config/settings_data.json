@@ -277,6 +277,24 @@
           "button_link_color": "#111111",
           "button_link_hover_color": "#111111"
         }
+      },
+      "scheme-ad797966-f3b4-43c4-a6fd-c13804ac2096": {
+        "settings": {
+          "background": "#bfced6",
+          "background_gradient": "",
+          "primary_color": "#d0473e",
+          "text_color": "#444444",
+          "heading_color": "#111111",
+          "border_color": "#ebebeb",
+          "btn_primary_color": "#ffffff",
+          "btn_primary_background": "#111111",
+          "btn_primary_hover_color": "#ffffff",
+          "btn_primary_hover_background": "#000000",
+          "btn_outline_color": "#111111",
+          "btn_outline_border_color": "#111111",
+          "button_link_color": "#111111",
+          "button_link_hover_color": "#111111"
+        }
       }
     }
   },
