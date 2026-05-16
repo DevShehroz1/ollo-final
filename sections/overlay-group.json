@@ -10,6 +10,68 @@
 {
   "name": "t:sections.overlay_group.name",
   "type": "custom.overlay",
-  "sections": {},
-  "order": []
+  "sections": {
+    "newsletter_welcome_popup": {
+      "type": "newsletter-popup",
+      "settings": {
+        "show": "show_homepage",
+        "show_on_mobile": true,
+        "width": 640,
+        "newsletter_heading": "Get 10% off the little wardrobe",
+        "short_description": "Drop your email — we'll send your code and the first-look on every new drop.",
+        "newsletter_email_placeholder": "Enter your email",
+        "newsletter_button_label": "Send My Code",
+        "more_info": "<p>No spam — unsubscribe anytime. By signing up you agree to our privacy policy.</p>",
+        "newsletter_banner": "",
+        "banner_width": 36.5
+      }
+    },
+    "exit_intent_popup": {
+      "type": "before-you-leave",
+      "settings": {
+        "show_time": 30,
+        "banner": "",
+        "sub_heading": "Wait — one more thing",
+        "content_heading": "Take 10% off before you go",
+        "description": "<p>Use the code below at checkout. Free shipping over ₹999, free 30-day exchanges on every order.</p>",
+        "code": "STAY10",
+        "color_scheme": "",
+        "recommended_heading": "Parents are also loving",
+        "collection": "bestsellers",
+        "recommended_button_label": "Shop Now"
+      }
+    },
+    "first_order_promotion": {
+      "type": "promotion-popup",
+      "settings": {
+        "show_promotion_select": "show_promotion_homepage",
+        "show_promotion_mobile": false,
+        "promotion_code": "LITTLE15",
+        "promotion_width": 690,
+        "promotion_sub_title": "First time at Ollo?",
+        "promotion_title": "Get 15% off your first order",
+        "promotion_content": "<p>Welcome to the Ollo family. Use the code at checkout and enjoy free shipping over ₹999.</p>",
+        "promotion_banner": "",
+        "banner_width": 36.5
+      }
+    },
+    "social_proof_orders": {
+      "type": "fake-order",
+      "settings": {
+        "show_fake_order": true,
+        "disable_mobile": true,
+        "fake_product": "bestsellers",
+        "fake_user": "Priya from Bengaluru\nAarav from Mumbai\nMeera from Delhi\nKaran from Pune\nRiya from Hyderabad\nAnita from Chennai\nNeha from Jaipur\nRohan from Kolkata\nAanya from Ahmedabad\nIsha from Lucknow",
+        "text_verify": "Verified order",
+        "delay_time": 8,
+        "display_time": 5
+      }
+    }
+  },
+  "order": [
+    "newsletter_welcome_popup",
+    "exit_intent_popup",
+    "first_order_promotion",
+    "social_proof_orders"
+  ]
 }

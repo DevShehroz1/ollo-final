@@ -55,29 +55,48 @@
     "announcement_bar_yheVNk": {
       "type": "announcement-bar",
       "blocks": {
-        "announcement_3Jg3Qc": {
+        "ann_shipping": {
           "type": "announcement",
           "settings": {
-            "text": "Free Shipping on all order above 2999",
-            "icon": "none",
-            "icon_image": "shopify://shop_images/starstud_1.webp",
+            "text": "Free shipping on every order over ₹999",
+            "icon": "star",
             "icon_image_size": 20,
             "countdown_deadline": ""
           }
         },
-        "announcement_nCGKRL": {
+        "ann_promo": {
           "type": "announcement",
           "settings": {
-            "text": "Welcome to our store",
-            "icon": "none",
+            "text": "First order? Get 15% off with code LITTLE15",
+            "icon": "dot",
+            "icon_image_size": 20,
+            "countdown_deadline": ""
+          }
+        },
+        "ann_returns": {
+          "type": "announcement",
+          "settings": {
+            "text": "Wrong size? Free 30-day exchange — no questions",
+            "icon": "star",
+            "icon_image_size": 20,
+            "countdown_deadline": ""
+          }
+        },
+        "ann_organic": {
+          "type": "announcement",
+          "settings": {
+            "text": "100% GOTS-certified organic cotton, safe on every skin",
+            "icon": "dot",
             "icon_image_size": 20,
             "countdown_deadline": ""
           }
         }
       },
       "block_order": [
-        "announcement_3Jg3Qc",
-        "announcement_nCGKRL"
+        "ann_shipping",
+        "ann_promo",
+        "ann_returns",
+        "ann_organic"
       ],
       "name": "t:sections.announcement-bar.name",
       "settings": {
