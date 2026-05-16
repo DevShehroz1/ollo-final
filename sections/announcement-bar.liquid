@@ -39,6 +39,12 @@
     announcement-bar :where(.swiper-arrow:hover) {
       background-color: transparent;
     }
+    announcement-bar .announcement__bar-icon-image img {
+      width: var(--icon-size, 20px);
+      height: var(--icon-size, 20px);
+      object-fit: contain;
+      display: block;
+    }
     announcement-bar countdown-timer{
       {% if section_st.font_weight == 'subheading_weight' %}--countdown-text-weight: var(--subheading-weight, 600);--heading-weight: var(--subheading-weight, 600);{% elsif section_st.font_weight == 'heading_weight' %}--countdown-text-weight: var(--heading-weight, 600);--heading-weight: var(--heading-weight, 600);{% else %}--countdown-text-weight: var(--body-weight, 600);--heading-weight: var(--body-weight, 600){% endif %}
     }
@@ -79,16 +85,24 @@
                   assign block_st = block.settings
                 -%}
                 {%- if block_st.text != blank -%}
+                  {%- assign has_block_icon = false -%}
+                  {%- if block_st.icon != 'none' or block_st.icon_image != blank -%}
+                    {%- assign has_block_icon = true -%}
+                  {%- endif -%}
                   <div
-                    class="announcement__bar-message mx-auto flex-nowrap flex{% if section_st.icon_between_item != 'none' or block_st.icon != 'none' %} gap{% endif %} content-center whitespace-nowrap"
+                    class="announcement__bar-message mx-auto flex-nowrap flex{% if section_st.icon_between_item != 'none' or has_block_icon %} gap{% endif %} content-center whitespace-nowrap"
                   >
-                    {% if block_st.icon == 'dot' %}
+                    {%- if block_st.icon == 'image' and block_st.icon_image != blank -%}
+                      <span class="announcement__bar-icon-image inline-flex align-center" style="--icon-size: {{ block_st.icon_image_size }}px;">
+                        {{ block_st.icon_image | image_url: width: 80 | image_tag: loading: 'lazy', alt: '', width: block_st.icon_image_size, height: block_st.icon_image_size }}
+                      </span>
+                    {%- elsif block_st.icon == 'dot' -%}
                       {% render 'icon-dot' %}
-                    {% elsif block_st.icon == 'star' %}
+                    {%- elsif block_st.icon == 'star' -%}
                       {% render 'icon-star' %}
-                    {% elsif block_st.icon == 'hight_light' %}
+                    {%- elsif block_st.icon == 'hight_light' -%}
                       {% render 'icon-highlight' %}
-                    {% endif %}
+                    {%- endif -%}
                     <span class="grow">{{ block_st.text }}</span>
                     {% if block_st.countdown_deadline != blank %}
                       <div
@@ -127,15 +141,23 @@
               assign block_st = block.settings
             -%}
             {%- if block_st.text != blank -%}
+              {%- assign has_block_icon = false -%}
+              {%- if block_st.icon != 'none' or block_st.icon_image != blank -%}
+                {%- assign has_block_icon = true -%}
+              {%- endif -%}
               <div class="swiper-slide">
-                <div class="announcement__bar-message mx-auto flex-wrap px-20 flex justify-content-center{% if block_st.icon != 'none' %} gap{% endif %}">
-                  {% if block_st.icon == 'dot' %}
+                <div class="announcement__bar-message mx-auto flex-wrap px-20 flex justify-content-center{% if has_block_icon %} gap{% endif %}">
+                  {%- if block_st.icon == 'image' and block_st.icon_image != blank -%}
+                    <span class="announcement__bar-icon-image inline-flex align-center" style="--icon-size: {{ block_st.icon_image_size }}px;">
+                      {{ block_st.icon_image | image_url: width: 80 | image_tag: loading: 'lazy', alt: '', width: block_st.icon_image_size, height: block_st.icon_image_size }}
+                    </span>
+                  {%- elsif block_st.icon == 'dot' -%}
                     {% render 'icon-dot' %}
-                  {% elsif block_st.icon == 'star' %}
+                  {%- elsif block_st.icon == 'star' -%}
                     {% render 'icon-star' %}
-                  {% elsif block_st.icon == 'hight_light' %}
+                  {%- elsif block_st.icon == 'hight_light' -%}
                     {% render 'icon-highlight' %}
-                  {% endif %}
+                  {%- endif -%}
                   <span class="grow">{{ block_st.text }}</span>
                   {% if block_st.countdown_deadline != blank %}
                     <div
@@ -165,14 +187,22 @@
             assign block_st = block.settings
           -%}
           {%- if block_st.text != blank -%}
-            <div class="announcement__bar-message mx-auto flex-wrap flex justify-content-center{% if block_st.icon != 'none' %} gap{% endif %}">
-              {% if block_st.icon == 'dot' %}
+            {%- assign has_block_icon = false -%}
+            {%- if block_st.icon != 'none' or block_st.icon_image != blank -%}
+              {%- assign has_block_icon = true -%}
+            {%- endif -%}
+            <div class="announcement__bar-message mx-auto flex-wrap flex justify-content-center{% if has_block_icon %} gap{% endif %}">
+              {%- if block_st.icon == 'image' and block_st.icon_image != blank -%}
+                <span class="announcement__bar-icon-image inline-flex align-center" style="--icon-size: {{ block_st.icon_image_size }}px;">
+                  {{ block_st.icon_image | image_url: width: 80 | image_tag: loading: 'lazy', alt: '', width: block_st.icon_image_size, height: block_st.icon_image_size }}
+                </span>
+              {%- elsif block_st.icon == 'dot' -%}
                 {% render 'icon-dot' %}
-              {% elsif block_st.icon == 'star' %}
+              {%- elsif block_st.icon == 'star' -%}
                 {% render 'icon-star' %}
-              {% elsif block_st.icon == 'hight_light' %}
+              {%- elsif block_st.icon == 'hight_light' -%}
                 {% render 'icon-highlight' %}
-              {% endif %}
+              {%- endif -%}
               <span class="grow">{{ block_st.text }}</span>
               {% if block_st.countdown_deadline != blank %}
                 <div
@@ -459,10 +489,27 @@
             { "value": "none", "label": "None" },
             { "value": "dot", "label": "Dot" },
             { "value": "star", "label": "Star" },
-            { "value": "hight_light", "label": "Highlight" }
+            { "value": "hight_light", "label": "Highlight" },
+            { "value": "image", "label": "Custom image" }
           ],
           "default": "none",
           "label": "Icon"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Custom icon image",
+          "info": "Used when Icon is set to Custom image."
+        },
+        {
+          "type": "range",
+          "id": "icon_image_size",
+          "min": 12,
+          "max": 40,
+          "step": 1,
+          "unit": "px",
+          "default": 20,
+          "label": "Custom icon size"
         },
         {
           "type": "text",
