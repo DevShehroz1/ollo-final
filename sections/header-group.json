@@ -93,7 +93,7 @@
         "font_weight": "subheading_weight",
         "speed": 15,
         "space_between": 50,
-        "icon_between_item": "none",
+        "icon_between_item": "star",
         "change_every": 3,
         "padding_top": 12,
         "padding_bottom": 12
