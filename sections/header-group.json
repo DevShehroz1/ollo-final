@@ -61,15 +61,23 @@
             "text": "Welcome to our store",
             "countdown_deadline": ""
           }
+        },
+        "announcement_nCGKRL": {
+          "type": "announcement",
+          "settings": {
+            "text": "Welcome to our store",
+            "countdown_deadline": ""
+          }
         }
       },
       "block_order": [
-        "announcement_3Jg3Qc"
+        "announcement_3Jg3Qc",
+        "announcement_nCGKRL"
       ],
       "name": "t:sections.announcement-bar.name",
       "settings": {
         "section_width": "stretch_width",
-        "color_scheme": "",
+        "color_scheme": "scheme-4faf0e4d-27f4-4d02-bc51-617383bab1a9",
         "announcement_actions": "marquee",
         "show_close": false,
         "homepage_only": false,
