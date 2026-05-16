@@ -59,7 +59,8 @@
           "type": "announcement",
           "settings": {
             "text": "Free shipping on every order over 2999",
-            "icon": "star",
+            "icon": "image",
+            "icon_image": "shopify://shop_images/starstud_1.webp",
             "icon_image_size": 20,
             "countdown_deadline": ""
           }
@@ -68,7 +69,8 @@
           "type": "announcement",
           "settings": {
             "text": "Wrong size? Free 30-day exchange — no questions",
-            "icon": "star",
+            "icon": "image",
+            "icon_image": "shopify://shop_images/starstud_1.webp",
             "icon_image_size": 20,
             "countdown_deadline": ""
           }
@@ -77,7 +79,8 @@
           "type": "announcement",
           "settings": {
             "text": "100% GOTS-certified organic cotton, safe on every skin",
-            "icon": "dot",
+            "icon": "image",
+            "icon_image": "shopify://shop_images/starstud_1.webp",
             "icon_image_size": 20,
             "countdown_deadline": ""
           }
