@@ -80,8 +80,15 @@
                 -%}
                 {%- if block_st.text != blank -%}
                   <div
-                    class="announcement__bar-message mx-auto flex-nowrap flex{% if section_st.icon_between_item != 'none' %} gap{% endif %} content-center whitespace-nowrap"
+                    class="announcement__bar-message mx-auto flex-nowrap flex{% if section_st.icon_between_item != 'none' or block_st.icon != 'none' %} gap{% endif %} content-center whitespace-nowrap"
                   >
+                    {% if block_st.icon == 'dot' %}
+                      {% render 'icon-dot' %}
+                    {% elsif block_st.icon == 'star' %}
+                      {% render 'icon-star' %}
+                    {% elsif block_st.icon == 'hight_light' %}
+                      {% render 'icon-highlight' %}
+                    {% endif %}
                     <span class="grow">{{ block_st.text }}</span>
                     {% if block_st.countdown_deadline != blank %}
                       <div
@@ -121,7 +128,14 @@
             -%}
             {%- if block_st.text != blank -%}
               <div class="swiper-slide">
-                <div class="announcement__bar-message mx-auto flex-wrap px-20 flex justify-content-center">
+                <div class="announcement__bar-message mx-auto flex-wrap px-20 flex justify-content-center{% if block_st.icon != 'none' %} gap{% endif %}">
+                  {% if block_st.icon == 'dot' %}
+                    {% render 'icon-dot' %}
+                  {% elsif block_st.icon == 'star' %}
+                    {% render 'icon-star' %}
+                  {% elsif block_st.icon == 'hight_light' %}
+                    {% render 'icon-highlight' %}
+                  {% endif %}
                   <span class="grow">{{ block_st.text }}</span>
                   {% if block_st.countdown_deadline != blank %}
                     <div
@@ -151,7 +165,14 @@
             assign block_st = block.settings
           -%}
           {%- if block_st.text != blank -%}
-            <div class="announcement__bar-message mx-auto flex-wrap flex justify-content-center">
+            <div class="announcement__bar-message mx-auto flex-wrap flex justify-content-center{% if block_st.icon != 'none' %} gap{% endif %}">
+              {% if block_st.icon == 'dot' %}
+                {% render 'icon-dot' %}
+              {% elsif block_st.icon == 'star' %}
+                {% render 'icon-star' %}
+              {% elsif block_st.icon == 'hight_light' %}
+                {% render 'icon-highlight' %}
+              {% endif %}
               <span class="grow">{{ block_st.text }}</span>
               {% if block_st.countdown_deadline != blank %}
                 <div
@@ -430,6 +451,18 @@
           "id": "text",
           "default": "Welcome to our store",
           "label": "t:sections.announcement-bar.blocks.announcement.settings.text.label"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "dot", "label": "Dot" },
+            { "value": "star", "label": "Star" },
+            { "value": "hight_light", "label": "Highlight" }
+          ],
+          "default": "none",
+          "label": "Icon"
         },
         {
           "type": "text",
