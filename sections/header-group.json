@@ -93,7 +93,7 @@
       ],
       "name": "t:sections.announcement-bar.name",
       "settings": {
-        "section_width": "stretch_width",
+        "section_width": "fluid_container",
         "color_scheme": "scheme-ad797966-f3b4-43c4-a6fd-c13804ac2096",
         "announcement_actions": "marquee",
         "show_close": false,
