@@ -53,12 +53,12 @@
 }
 /*Product style setting*/
 .badge_shape_1 .t4s-product-badge > span {
-  height: 60px;
-  border-radius: 30px;
+  height: 36px;
+  border-radius: 18px;
 }
 .badge_shape_1 .is--listview .t4s-product .t4s-product-badge > span {
-  height: 50px;
-  min-width: 50px;
+  height: 32px;
+  min-width: 40px;
 }
 .badge_shape_3 .t4s-product-badge > span {
   border-radius: 4px;
@@ -359,13 +359,13 @@
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  min-width: 60px;
-  min-height: 24px;
-  font-size: 14px;
+  min-width: 44px;
+  min-height: 22px;
+  font-size: 12px;
   color: #fff;
   margin-bottom: 5px;
   word-break: break-word;
-  padding: 0 5px;
+  padding: 0 8px;
   line-height: 1;
   text-align: center;
 }
