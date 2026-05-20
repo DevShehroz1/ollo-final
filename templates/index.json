@@ -161,9 +161,10 @@
         "badge_77LYdk",
         "badge_9hGgiL"
       ],
+      "disabled": true,
       "name": "Trust icon bar",
       "settings": {
-        "bg_color": "#F3F4F3",
+        "bg_color": "#f3f4f3",
         "text_color": "#111111",
         "icon_size_desktop": 44,
         "icon_size_mobile": 36,
@@ -179,11 +180,66 @@
         "padding_bottom_mobile": 18,
         "padding_h_mobile": 16
       }
+    },
+    "slideshow_marquee_bar_8NLWcU": {
+      "type": "slideshow-marquee-bar",
+      "blocks": {
+        "item_enH8qz": {
+          "type": "item",
+          "settings": {
+            "text": "Learning That Feels Like Magic",
+            "icon": "dot"
+          }
+        },
+        "item_gr7V46": {
+          "type": "item",
+          "settings": {
+            "text": "Built for Curious Little Minds",
+            "icon": "dot"
+          }
+        },
+        "item_DGMkTY": {
+          "type": "item",
+          "settings": {
+            "text": "A Gift with Real Purpose",
+            "icon": "dot"
+          }
+        },
+        "item_tzNMJd": {
+          "type": "item",
+          "settings": {
+            "text": "Eco-Friendly & Endlessly Reusable",
+            "icon": "dot"
+          }
+        }
+      },
+      "block_order": [
+        "item_enH8qz",
+        "item_gr7V46",
+        "item_DGMkTY",
+        "item_tzNMJd"
+      ],
+      "name": "Slideshow Marquee Bar",
+      "settings": {
+        "section_width": "container",
+        "color_scheme": "scheme-4faf0e4d-27f4-4d02-bc51-617383bab1a9",
+        "bar_radius": 50,
+        "font_size": 14,
+        "vertical_padding": 18,
+        "space_between": 60,
+        "speed": 20,
+        "direction": "left",
+        "uppercase": false,
+        "show_mobile": true,
+        "padding_top": 10,
+        "padding_bottom": 10
+      }
     }
   },
   "order": [
     "slideshow_8KKtNU",
     "custom_liquid_pp6Cjh",
-    "trust_icon_bar_3terX6"
+    "trust_icon_bar_3terX6",
+    "slideshow_marquee_bar_8NLWcU"
   ]
 }
