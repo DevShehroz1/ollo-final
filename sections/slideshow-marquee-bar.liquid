@@ -10,9 +10,23 @@
   --bar-radius: {{ section_st.bar_radius }}px;
   --speed: {{ section_st.speed }}s;
   --col-gap: {{ section_st.space_between }}px;
-  {%- if section_st.margin_top_negative > 0 -%}margin-top: -{{ section_st.margin_top_negative }}px; position: relative; z-index: 2;{%- endif -%}
-  {%- if section_st.margin_bottom_negative > 0 -%}margin-bottom: -{{ section_st.margin_bottom_negative }}px; position: relative; z-index: 2;{%- endif -%}
 {%- endcapture -%}
+{%- style -%}
+  @media screen and (max-width: 767px) {
+    #{{ section.id }} {
+      margin-top: -{{ section_st.margin_top_negative_mobile }}px;
+      margin-bottom: -{{ section_st.margin_bottom_negative_mobile }}px;
+      {%- if section_st.margin_top_negative_mobile > 0 or section_st.margin_bottom_negative_mobile > 0 -%}position: relative; z-index: 2;{%- endif -%}
+    }
+  }
+  @media screen and (min-width: 768px) {
+    #{{ section.id }} {
+      margin-top: -{{ section_st.margin_top_negative_desktop }}px;
+      margin-bottom: -{{ section_st.margin_bottom_negative_desktop }}px;
+      {%- if section_st.margin_top_negative_desktop > 0 or section_st.margin_bottom_negative_desktop > 0 -%}position: relative; z-index: 2;{%- endif -%}
+    }
+  }
+{%- endstyle -%}
 
 {%- if section.blocks.size > 0 -%}
   <div
@@ -193,27 +207,51 @@
     },
     {
       "type": "header",
-      "content": "Negative margin (overlap)"
+      "content": "Negative margin — Desktop"
     },
     {
       "type": "range",
-      "id": "margin_top_negative",
+      "id": "margin_top_negative_desktop",
       "min": 0,
       "max": 80,
       "step": 2,
       "unit": "px",
       "default": 0,
-      "label": "Pull up (overlap section above)"
+      "label": "Pull up — desktop"
     },
     {
       "type": "range",
-      "id": "margin_bottom_negative",
+      "id": "margin_bottom_negative_desktop",
       "min": 0,
       "max": 80,
       "step": 2,
       "unit": "px",
       "default": 0,
-      "label": "Pull down (overlap section below)"
+      "label": "Pull down — desktop"
+    },
+    {
+      "type": "header",
+      "content": "Negative margin — Mobile"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_negative_mobile",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 0,
+      "label": "Pull up — mobile"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_negative_mobile",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 0,
+      "label": "Pull down — mobile"
     }
   ],
   "blocks": [
