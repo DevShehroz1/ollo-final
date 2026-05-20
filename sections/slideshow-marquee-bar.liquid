@@ -15,14 +15,13 @@
 {%- if section.blocks.size > 0 -%}
   <div
     id="{{ section.id }}"
-    class="slideshow-marquee-bar section{% if section_st.padding_top < 10 %} pt-min{% endif %}{% if section_st.padding_bottom < 10 %} pb-min{% endif %} remove_spacing{% if section_st.show_mobile == blank %} hidden block-xl{% else %} block{% endif %}"
+    class="slideshow-marquee-bar section{% if section_st.padding_top < 10 %} pt-min{% endif %}{% if section_st.padding_bottom < 10 %} pb-min{% endif %} remove_spacing {{ section_width }}{% if section_st.show_mobile == blank %} hidden block-xl{% else %} block{% endif %}"
     style="{{ style | strip | strip_newlines }}"
   >
-    <div class="{{ section_width }}" style="width: 100%;">
-      <div
-        class="slideshow-marquee-bar__pill color-{{ color_scheme }} gradient marquee flex overflow-hidden"
-        style="width: 100%; border-radius: var(--bar-radius); font-size: var(--font-size);{% if section_st.uppercase %} text-transform: uppercase;{% endif %}"
-      >
+    <div
+      class="slideshow-marquee-bar__pill color-{{ color_scheme }} gradient marquee flex overflow-hidden"
+      style="width: 100%; border-radius: var(--bar-radius); font-size: var(--font-size);{% if section_st.uppercase %} text-transform: uppercase;{% endif %}"
+    >
         {%- for i in (0..5) -%}
           <div class="flex animation-marquee{% if section_st.direction == 'right' %} right{% endif %}">
             {%- for block in section.blocks -%}
@@ -48,7 +47,6 @@
             {%- endfor -%}
           </div>
         {%- endfor -%}
-      </div>
     </div>
   </div>
 {%- endif -%}
@@ -80,7 +78,7 @@
           "label": "Full Width"
         }
       ],
-      "default": "full_width",
+      "default": "stretch_width",
       "label": "Section width"
     },
     {
@@ -96,7 +94,7 @@
       "max": 100,
       "step": 2,
       "unit": "px",
-      "default": 50,
+      "default": 16,
       "label": "Bar border radius"
     },
     {
