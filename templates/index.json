@@ -114,10 +114,76 @@
         "padding_bottom": 0,
         "reset_spacing": false
       }
+    },
+    "trust_icon_bar_3terX6": {
+      "type": "trust-icon-bar",
+      "blocks": {
+        "badge_NDPJUV": {
+          "type": "badge",
+          "settings": {
+            "heading": "30 Years in Business",
+            "link": ""
+          }
+        },
+        "badge_9PERpR": {
+          "type": "badge",
+          "settings": {
+            "heading": "Worldwide Shipping",
+            "link": ""
+          }
+        },
+        "badge_6mAXJp": {
+          "type": "badge",
+          "settings": {
+            "heading": "Visit our Melbourne Store",
+            "link": ""
+          }
+        },
+        "badge_77LYdk": {
+          "type": "badge",
+          "settings": {
+            "heading": "Free Gift Wrapping",
+            "link": ""
+          }
+        },
+        "badge_9hGgiL": {
+          "type": "badge",
+          "settings": {
+            "heading": "100k+ Happy Customers",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "badge_NDPJUV",
+        "badge_9PERpR",
+        "badge_6mAXJp",
+        "badge_77LYdk",
+        "badge_9hGgiL"
+      ],
+      "name": "Trust icon bar",
+      "settings": {
+        "bg_color": "#F3F4F3",
+        "text_color": "#111111",
+        "icon_size_desktop": 44,
+        "icon_size_mobile": 36,
+        "icon_label_gap": 14,
+        "heading_size_desktop": 16,
+        "heading_size_mobile": 16,
+        "gap_desktop": 24,
+        "autorotate_seconds": 4,
+        "padding_top_desktop": 28,
+        "padding_bottom_desktop": 28,
+        "padding_h_desktop": 32,
+        "padding_top_mobile": 18,
+        "padding_bottom_mobile": 18,
+        "padding_h_mobile": 16
+      }
     }
   },
   "order": [
     "slideshow_8KKtNU",
-    "custom_liquid_pp6Cjh"
+    "custom_liquid_pp6Cjh",
+    "trust_icon_bar_3terX6"
   ]
 }
