@@ -1,0 +1,270 @@
+{{ 'marquee.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign section_st = section.settings
+  assign section_width = section_st.section_width
+  assign color_scheme = section_st.color_scheme
+-%}
+{%- capture style -%}
+  --section-pt: {{ section_st.padding_top }}; --section-pb: {{ section_st.padding_bottom }};
+  --font-size: {{ section_st.font_size }}px;
+  --bar-radius: {{ section_st.bar_radius }}px;
+  --speed: {{ section_st.speed }}s;
+  --col-gap: {{ section_st.space_between }}px;
+{%- endcapture -%}
+
+{%- if section.blocks.size > 0 -%}
+  <div
+    id="{{ section.id }}"
+    class="slideshow-marquee-bar section{% if section_st.padding_top < 10 %} pt-min{% endif %}{% if section_st.padding_bottom < 10 %} pb-min{% endif %} remove_spacing{% if section_st.show_mobile == blank %} hidden block-xl{% else %} block{% endif %}"
+    style="{{ style | strip | strip_newlines }}"
+  >
+    <div class="{{ section_width }}">
+      <div
+        class="slideshow-marquee-bar__pill color-{{ color_scheme }} gradient marquee flex overflow-hidden w-full"
+        style="border-radius: var(--bar-radius); font-size: var(--font-size);{% if section_st.uppercase %} text-transform: uppercase;{% endif %}"
+      >
+        {%- for i in (0..5) -%}
+          <div class="flex animation-marquee{% if section_st.direction == 'right' %} right{% endif %}">
+            {%- for block in section.blocks -%}
+              {%- liquid
+                assign block_st = block.settings
+              -%}
+              {%- if block_st.text != blank -%}
+                <div
+                  class="slideshow-marquee-bar__item flex content-center whitespace-nowrap align-center"
+                  style="padding-block: {{ section_st.vertical_padding }}px; padding-inline: var(--col-gap);"
+                  {{ block.shopify_attributes }}
+                >
+                  {%- if block_st.icon == 'dot' -%}
+                    <span class="slideshow-marquee-bar__sep" aria-hidden="true" style="margin-inline-end: var(--col-gap);">&#8226;</span>
+                  {%- elsif block_st.icon == 'star' -%}
+                    <span class="slideshow-marquee-bar__sep" aria-hidden="true" style="margin-inline-end: var(--col-gap);">&#9733;</span>
+                  {%- elsif block_st.icon == 'dash' -%}
+                    <span class="slideshow-marquee-bar__sep" aria-hidden="true" style="margin-inline-end: var(--col-gap);">&#8212;</span>
+                  {%- endif -%}
+                  <span>{{ block_st.text }}</span>
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Slideshow Marquee Bar",
+  "tag": "section",
+  "class": "slideshow-marquee-bar-section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "options": [
+        {
+          "value": "container",
+          "label": "Container"
+        },
+        {
+          "value": "fluid_container",
+          "label": "Fluid Container"
+        },
+        {
+          "value": "stretch_width",
+          "label": "Stretch"
+        },
+        {
+          "value": "full_width",
+          "label": "Full Width"
+        }
+      ],
+      "default": "container",
+      "label": "Section width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "default-color-scheme"
+    },
+    {
+      "type": "range",
+      "id": "bar_radius",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 50,
+      "label": "Bar border radius"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14,
+      "label": "Font size"
+    },
+    {
+      "type": "range",
+      "id": "vertical_padding",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 18,
+      "label": "Bar height (vertical padding)"
+    },
+    {
+      "type": "range",
+      "id": "space_between",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 60,
+      "label": "Space between items"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "min": 5,
+      "max": 60,
+      "step": 1,
+      "unit": "s",
+      "default": 20,
+      "label": "Scroll speed"
+    },
+    {
+      "type": "select",
+      "id": "direction",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left (default)"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left",
+      "label": "Scroll direction"
+    },
+    {
+      "type": "checkbox",
+      "id": "uppercase",
+      "label": "Uppercase text",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_mobile",
+      "label": "Show on mobile",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Section spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 10,
+      "label": "Padding top"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 10,
+      "label": "Padding bottom"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Marquee item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "default": "Your text here",
+          "label": "Text"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Separator icon",
+          "default": "dot",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "dot",
+              "label": "Dot •"
+            },
+            {
+              "value": "star",
+              "label": "Star ★"
+            },
+            {
+              "value": "dash",
+              "label": "Dash —"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Slideshow Marquee Bar",
+      "category": "Promotional",
+      "blocks": [
+        {
+          "type": "item",
+          "settings": {
+            "text": "Learning That Feels Like Magic",
+            "icon": "dot"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "text": "Built for Curious Little Minds",
+            "icon": "dot"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "text": "A Gift with Real Purpose",
+            "icon": "dot"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "text": "Eco-Friendly & Endlessly Reusable",
+            "icon": "dot"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
