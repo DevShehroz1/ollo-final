@@ -232,7 +232,9 @@
         "uppercase": false,
         "show_mobile": true,
         "padding_top": 10,
-        "padding_bottom": 10
+        "padding_bottom": 10,
+        "margin_top_negative": 38,
+        "margin_bottom_negative": 0
       }
     }
   },
