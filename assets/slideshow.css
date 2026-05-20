@@ -256,16 +256,21 @@
   }
 }
 @media (min-width: 768px) {
-  .slideshow .sec__inner.h-custom[style*="--aspect-ratio-dk"] {
+  .slideshow .sec__inner[style*="--aspect-ratio-dk"] {
     min-height: unset !important;
+    height: auto !important;
     position: relative;
     overflow: hidden;
   }
-  .slideshow .sec__inner.h-custom[style*="--aspect-ratio-dk"]::before {
+  .slideshow .sec__inner[style*="--aspect-ratio-dk"]::before {
     content: "";
     display: block;
     height: 0;
-    padding-top: calc(100% / var(--aspect-ratio-dk));
+    padding-top: calc(100% / (0 + var(--aspect-ratio-dk)));
     pointer-events: none;
+  }
+  .slideshow .sec__inner[style*="--aspect-ratio-dk"] .banner__media {
+    min-height: unset !important;
+    height: 100% !important;
   }
 }
