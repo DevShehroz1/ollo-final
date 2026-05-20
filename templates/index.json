@@ -221,7 +221,7 @@
       ],
       "name": "Slideshow Marquee Bar",
       "settings": {
-        "section_width": "container",
+        "section_width": "full_width",
         "color_scheme": "scheme-4faf0e4d-27f4-4d02-bc51-617383bab1a9",
         "bar_radius": 50,
         "font_size": 14,
