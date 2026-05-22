@@ -1,0 +1,232 @@
+{%- liquid
+  assign section_st = section.settings
+  assign color_scheme = section_st.color_scheme | default: '1'
+  if section_st.reset_spacing
+    assign reset_spacing = ' remove_spacing'
+  endif
+-%}
+{%- capture style -%}
+  --section-pt: {{ section_st.padding_top }}; --section-pb: {{ section_st.padding_bottom }}
+{%- endcapture -%}
+
+<style>
+  #sec-top-categories-{{ section.id }} {
+    text-align: center;
+  }
+  #sec-top-categories-{{ section.id }} .sec__tc-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 50px;
+    box-sizing: border-box;
+  }
+  #sec-top-categories-{{ section.id }} .sec__tc-emoji {
+    font-size: 3.2rem;
+    line-height: 1;
+    margin-bottom: 4px;
+    display: block;
+  }
+  #sec-top-categories-{{ section.id }} .sec__tc-heading {
+    font-size: clamp(2.8rem, 4vw, 4rem);
+    font-weight: 800;
+    color: #1e2d6b;
+    margin: 0 0 10px;
+    line-height: 1.15;
+  }
+  #sec-top-categories-{{ section.id }} .sec__tc-subheading {
+    font-size: 1.5rem;
+    color: #6b7280;
+    margin: 0 0 40px;
+    line-height: 1.5;
+  }
+  #sec-top-categories-{{ section.id }} .sec__tc-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+  }
+  #sec-top-categories-{{ section.id }} .sec__tc-capsule {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 160px;
+    height: 65px;
+    background-color: #f0f0ed;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #1e2d6b;
+    text-transform: uppercase;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+    white-space: nowrap;
+  }
+  #sec-top-categories-{{ section.id }} .sec__tc-capsule:hover {
+    background-color: #1e2d6b;
+    color: #ffffff;
+    transform: translateY(-2px);
+  }
+  @media (max-width: 767px) {
+    #sec-top-categories-{{ section.id }} .sec__tc-inner {
+      padding: 0 20px;
+    }
+    #sec-top-categories-{{ section.id }} .sec__tc-capsule {
+      width: 140px;
+      height: 58px;
+      font-size: 1.2rem;
+    }
+    #sec-top-categories-{{ section.id }} .sec__tc-subheading {
+      margin-bottom: 28px;
+    }
+  }
+  @media (max-width: 480px) {
+    #sec-top-categories-{{ section.id }} .sec__tc-grid {
+      gap: 10px;
+    }
+    #sec-top-categories-{{ section.id }} .sec__tc-capsule {
+      width: 130px;
+      height: 54px;
+      font-size: 1.15rem;
+    }
+  }
+</style>
+
+<div
+  id="sec-top-categories-{{ section.id }}"
+  class="section{% if section_st.padding_top < 30 %} pt-min{% endif %}{% if section_st.padding_bottom < 30 %} pb-min{% endif %} sec__top-categories color-{{ color_scheme }} gradient{{ reset_spacing }}"
+  style="{{ style | strip | strip_newlines }}"
+>
+  <div class="sec__tc-inner">
+    {%- if section_st.emoji != blank -%}
+      <span class="sec__tc-emoji">{{ section_st.emoji }}</span>
+    {%- endif -%}
+    {%- if section_st.heading != blank -%}
+      <h2 class="sec__tc-heading">{{ section_st.heading }}</h2>
+    {%- endif -%}
+    {%- if section_st.subheading != blank -%}
+      <p class="sec__tc-subheading">{{ section_st.subheading }}</p>
+    {%- endif -%}
+
+    <div class="sec__tc-grid">
+      {%- for block in section.blocks -%}
+        {%- assign bk = block.settings -%}
+        {%- if bk.label != blank -%}
+          <a
+            href="{{ bk.url | default: '#' }}"
+            class="sec__tc-capsule"
+            {{ block.shopify_attributes }}
+          >{{ bk.label }}</a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Top Categories",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.overlay"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "emoji",
+      "label": "Emoji (above heading)",
+      "default": "☀️"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Top Categories"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Explore styles for every stage of childhood from newborn to trendy teen looks!"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "1",
+      "options": [
+        { "value": "1", "label": "Scheme 1" },
+        { "value": "2", "label": "Scheme 2" },
+        { "value": "3", "label": "Scheme 3" }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "reset_spacing",
+      "label": "Remove section spacing",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 60,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category capsule",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "New Born"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Collection link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Top Categories",
+      "blocks": [
+        { "type": "category", "settings": { "label": "New Born" } },
+        { "type": "category", "settings": { "label": "0-3 Months" } },
+        { "type": "category", "settings": { "label": "3-6 Months" } },
+        { "type": "category", "settings": { "label": "6-9 Months" } },
+        { "type": "category", "settings": { "label": "9-12 Months" } },
+        { "type": "category", "settings": { "label": "12-18 Months" } },
+        { "type": "category", "settings": { "label": "18-24 Months" } },
+        { "type": "category", "settings": { "label": "2-3 Years" } },
+        { "type": "category", "settings": { "label": "3-4 Years" } },
+        { "type": "category", "settings": { "label": "4-5 Years" } },
+        { "type": "category", "settings": { "label": "5-6 Years" } },
+        { "type": "category", "settings": { "label": "7-8 Years" } },
+        { "type": "category", "settings": { "label": "9-10 Years" } },
+        { "type": "category", "settings": { "label": "10-12 Years" } },
+        { "type": "category", "settings": { "label": "12-14 Years" } },
+        { "type": "category", "settings": { "label": "16-18 Years" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
