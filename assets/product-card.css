@@ -2,19 +2,37 @@
   --shadow: 3px 3px 5px 0px rgba(0, 0, 0, 0.02);
   --col-width: 30%;
 }
+/* product-item card (products-grid section) */
 .product-grid .product-item__media--ratio {
-  --aspect-ratio: 0.6;
+  --aspect-ratio: 0.55;
   background-color: #f8f8f8;
 }
 .product-grid .product-item__media--ratio .product-image {
-  object-fit: contain;
+  object-fit: contain !important;
+  object-position: center center;
 }
-/* t4s card system image fit (featured-collection, carousels, etc.) */
+
+/* t4s card system (featured-collection, carousels, etc.)
+   Root cause of clipping: the ::before padding-top falls back to 16/9
+   (landscape) when --aspect-ratio isn't set, making the container too short.
+   Fix: use aspect-ratio property directly and kill the ::before approach. */
 .t4s-product-img {
   background-color: #f8f8f8;
+  position: relative !important;
+  width: 100% !important;
+  aspect-ratio: 2 / 3 !important;
+  overflow: hidden !important;
+}
+.t4s-product-img::before {
+  display: none !important;
 }
 .t4s-product-img img.t4s-product-main-img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
   object-fit: contain !important;
+  object-position: center center !important;
 }
 @media (min-width: 992px) {
   .sec__products-grid .flex-cols {
