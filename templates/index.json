@@ -327,6 +327,151 @@
         "padding_top": 60,
         "padding_bottom": 60
       }
+    },
+    "top_categories_NwpkCi": {
+      "type": "top-categories",
+      "blocks": {
+        "category_TxAfHd": {
+          "type": "category",
+          "settings": {
+            "label": "New Born",
+            "url": ""
+          }
+        },
+        "category_caU3YD": {
+          "type": "category",
+          "settings": {
+            "label": "0-3 Months",
+            "url": ""
+          }
+        },
+        "category_zihL3R": {
+          "type": "category",
+          "settings": {
+            "label": "3-6 Months",
+            "url": ""
+          }
+        },
+        "category_NbRfcg": {
+          "type": "category",
+          "settings": {
+            "label": "6-9 Months",
+            "url": ""
+          }
+        },
+        "category_9rdcgN": {
+          "type": "category",
+          "settings": {
+            "label": "9-12 Months",
+            "url": ""
+          }
+        },
+        "category_EF6YP7": {
+          "type": "category",
+          "settings": {
+            "label": "12-18 Months",
+            "url": ""
+          }
+        },
+        "category_yWwq4b": {
+          "type": "category",
+          "settings": {
+            "label": "18-24 Months",
+            "url": ""
+          }
+        },
+        "category_AcabJ6": {
+          "type": "category",
+          "settings": {
+            "label": "2-3 Years",
+            "url": ""
+          }
+        },
+        "category_BWyyP7": {
+          "type": "category",
+          "settings": {
+            "label": "3-4 Years",
+            "url": ""
+          }
+        },
+        "category_KNfBqy": {
+          "type": "category",
+          "settings": {
+            "label": "4-5 Years",
+            "url": ""
+          }
+        },
+        "category_Mq8tLf": {
+          "type": "category",
+          "settings": {
+            "label": "5-6 Years",
+            "url": ""
+          }
+        },
+        "category_HJ8NGh": {
+          "type": "category",
+          "settings": {
+            "label": "7-8 Years",
+            "url": ""
+          }
+        },
+        "category_P4xChP": {
+          "type": "category",
+          "settings": {
+            "label": "9-10 Years",
+            "url": ""
+          }
+        },
+        "category_QjYWXy": {
+          "type": "category",
+          "settings": {
+            "label": "10-12 Years",
+            "url": ""
+          }
+        },
+        "category_aBBdBi": {
+          "type": "category",
+          "settings": {
+            "label": "12-14 Years",
+            "url": ""
+          }
+        },
+        "category_jfmRc3": {
+          "type": "category",
+          "settings": {
+            "label": "16-18 Years",
+            "url": ""
+          }
+        }
+      },
+      "block_order": [
+        "category_TxAfHd",
+        "category_caU3YD",
+        "category_zihL3R",
+        "category_NbRfcg",
+        "category_9rdcgN",
+        "category_EF6YP7",
+        "category_yWwq4b",
+        "category_AcabJ6",
+        "category_BWyyP7",
+        "category_KNfBqy",
+        "category_Mq8tLf",
+        "category_HJ8NGh",
+        "category_P4xChP",
+        "category_QjYWXy",
+        "category_aBBdBi",
+        "category_jfmRc3"
+      ],
+      "name": "Top Categories",
+      "settings": {
+        "emoji": "☀️",
+        "heading": "Top Categories",
+        "subheading": "Explore styles for every stage of childhood from newborn to trendy teen looks!",
+        "color_scheme": "1",
+        "reset_spacing": false,
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
     }
   },
   "order": [
@@ -334,6 +479,7 @@
     "trust_icon_bar_3terX6",
     "slideshow_marquee_bar_8NLWcU",
     "products_grid_gLYXxk",
-    "why_choose_us_QzHMH6"
+    "why_choose_us_QzHMH6",
+    "top_categories_NwpkCi"
   ]
 }
