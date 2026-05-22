@@ -4,6 +4,15 @@
 }
 .product-grid .product-item__media--ratio {
   --aspect-ratio: 0.6;
+  background-color: #f8f8f8;
+}
+.product-grid .product-item__media--ratio .product-image {
+  object-fit: contain;
+}
+@media (min-width: 992px) {
+  .sec__products-grid .flex-cols {
+    --col-desktop: 3 !important;
+  }
 }
 @media (min-width: 768px) {
   .product-item__wrapper {
