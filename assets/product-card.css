@@ -2,14 +2,17 @@
   --shadow: 3px 3px 5px 0px rgba(0, 0, 0, 0.02);
   --col-width: 30%;
 }
-/* product-item card (products-grid section) */
+/* product-item card (products-grid section)
+   --aspect-ratio is set inline in Liquid so !important is required to override it. */
 .product-grid .product-item__media--ratio {
-  --aspect-ratio: 0.55;
+  --aspect-ratio: 0.55 !important;
   background-color: #f8f8f8;
 }
-.product-grid .product-item__media--ratio .product-image {
+.product-grid .product-item__media--ratio .product-image,
+.product-grid .product-item__media--ratio .first-image,
+.product-grid .product-item__media--ratio .secondary-image {
   object-fit: contain !important;
-  object-position: center center;
+  object-position: center center !important;
 }
 
 /* t4s card system (featured-collection, carousels, etc.)
