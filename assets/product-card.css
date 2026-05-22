@@ -2,6 +2,9 @@
   --shadow: 3px 3px 5px 0px rgba(0, 0, 0, 0.02);
   --col-width: 30%;
 }
+.product-grid .product-item__media--ratio {
+  --aspect-ratio: 0.6;
+}
 @media (min-width: 768px) {
   .product-item__wrapper {
     --btn-padding-y: 1.4rem;
