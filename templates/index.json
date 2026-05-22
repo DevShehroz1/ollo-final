@@ -176,28 +176,28 @@
           "type": "item",
           "settings": {
             "text": "Learning That Feels Like Magic",
-            "icon": "dot"
+            "icon": "star"
           }
         },
         "item_gr7V46": {
           "type": "item",
           "settings": {
             "text": "Built for Curious Little Minds",
-            "icon": "dot"
+            "icon": "star"
           }
         },
         "item_DGMkTY": {
           "type": "item",
           "settings": {
             "text": "A Gift with Real Purpose",
-            "icon": "dot"
+            "icon": "star"
           }
         },
         "item_tzNMJd": {
           "type": "item",
           "settings": {
             "text": "Eco-Friendly & Endlessly Reusable",
-            "icon": "dot"
+            "icon": "star"
           }
         }
       },
@@ -213,8 +213,8 @@
         "color_scheme": "scheme-501072de-d6e5-49cc-b071-41503a2e2410",
         "bar_radius": 16,
         "font_size": 14,
-        "vertical_padding": 18,
-        "space_between": 60,
+        "vertical_padding": 12,
+        "space_between": 20,
         "speed": 20,
         "direction": "left",
         "uppercase": false,
