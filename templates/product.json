@@ -1,12 +1,12 @@
 /*
-* ------------------------------------------------------------
-* IMPORTANT: The contents of this file are auto-generated.
-*
-* This file may be updated by the Shopify admin theme editor
-* or related systems. Please exercise caution as any changes
-* made to this file may be overwritten.
-* ------------------------------------------------------------
-*/
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "breadcrumb": {
@@ -22,13 +22,11 @@
       "blocks": {
         "badges_RwfTMp": {
           "type": "badges",
-          "settings": {
-          }
+          "settings": {}
         },
         "title_G6tU8U": {
           "type": "title",
-          "settings": {
-          }
+          "settings": {}
         },
         "review_and_sold_AAbJC9": {
           "type": "review_and_sold",
@@ -41,8 +39,7 @@
         },
         "price_VJ4N8m": {
           "type": "price",
-          "settings": {
-          }
+          "settings": {}
         },
         "short_description_9BGxVm": {
           "type": "short_description",
@@ -55,11 +52,11 @@
           "settings": {
             "delivery_design": "vertical",
             "delivery_content_icon": "truck",
-            "delivery_content": "<p>Estimate delivery times:<strong> 3-5 days International.<\/strong><\/p>",
+            "delivery_content": "<p>Estimate delivery times:<strong> 3-5 days International.</strong></p>",
             "discount_content_icon": "discount",
-            "discount_content": "<p>Use code \"<strong>WELCOME15<\/strong>\" for discount 15% on your first order.<\/p>",
+            "discount_content": "<p>Use code \"<strong>WELCOME15</strong>\" for discount 15% on your first order.</p>",
             "return_content_icon": "free_shipping",
-            "return_content": "<p>Free shipping & returns: <strong>On all orders over $150.<\/strong><\/p>"
+            "return_content": "<p>Free shipping & returns: <strong>On all orders over $150.</strong></p>"
           }
         },
         "live_view_rzDP6G": {
@@ -113,13 +110,11 @@
         },
         "model_size_XM7z6E": {
           "type": "model_size",
-          "settings": {
-          }
+          "settings": {}
         },
         "pickup_avaiability_cyVydQ": {
           "type": "pickup_avaiability",
-          "settings": {
-          }
+          "settings": {}
         },
         "product_grouped_6epkNf": {
           "type": "product_grouped",
@@ -157,7 +152,6 @@
           "type": "trust_badge",
           "settings": {
             "message": "Guarantee Safe Checkout:",
-            "trust_badge_image": "shopify:\/\/shop_images\/payment.png",
             "image_width": 340
           }
         },
@@ -173,7 +167,7 @@
           "type": "collapsible_row",
           "settings": {
             "heading": "Shipping and Returns",
-            "content": "<p>We offer fast and reliable shipping for all our clothing items. Orders are processed within <strong>1-2 business days<\/strong> and shipped via standard delivery, which typically takes 3-5 business days.<\/p><p>Express shipping options are also available at checkout for an additional fee, ensuring your fashion essentials arrive even sooner. Enjoy <strong>free shipping<\/strong> on orders<strong> over $150<\/strong>. For any questions regarding your order, please contact our customer service team for assistance.<\/p>",
+            "content": "<p>We offer fast and reliable shipping for all our clothing items. Orders are processed within <strong>1-2 business days</strong> and shipped via standard delivery, which typically takes 3-5 business days.</p><p>Express shipping options are also available at checkout for an additional fee, ensuring your fashion essentials arrive even sooner. Enjoy <strong>free shipping</strong> on orders<strong> over $150</strong>. For any questions regarding your order, please contact our customer service team for assistance.</p>",
             "use_product_description": false
           }
         },
@@ -181,7 +175,7 @@
           "type": "collapsible_row",
           "settings": {
             "heading": "Return Policies",
-            "content": "<p>Provided the conditions in our refund policy have been met, refunds will be processed using the original form of payment. You can return an item purchased online by posting it to us. Please contact customer service for return address. Please note that delivery costs will be excluded from the refund unless goods are returned in accordance with your statutory rights (e.g. they are faulty or not as ordered).<\/p><ul><li>The items with the original receipt are returned within 30 days of purchase.\u2028<\/li><li>Items must be in the original condition as purchased with all labels\/tickets attached.<\/li><\/ul><p>Provided the conditions in our refund policy have been met, refunds will be processed using the original form of payment. You can return an item purchased online by posting it to us. Please contact customer service for return address. Please note that delivery costs will be excluded from the refund unless goods are returned in accordance with your statutory rights (e.g. they are faulty or not as ordered).<\/p>",
+            "content": "<p>Provided the conditions in our refund policy have been met, refunds will be processed using the original form of payment. You can return an item purchased online by posting it to us. Please contact customer service for return address. Please note that delivery costs will be excluded from the refund unless goods are returned in accordance with your statutory rights (e.g. they are faulty or not as ordered).</p><ul><li>The items with the original receipt are returned within 30 days of purchase. </li><li>Items must be in the original condition as purchased with all labels/tickets attached.</li></ul><p>Provided the conditions in our refund policy have been met, refunds will be processed using the original form of payment. You can return an item purchased online by posting it to us. Please contact customer service for return address. Please note that delivery costs will be excluded from the refund unless goods are returned in accordance with your statutory rights (e.g. they are faulty or not as ordered).</p>",
             "use_product_description": false
           }
         },
@@ -194,6 +188,12 @@
             "show_navigation": false,
             "show_pagination": true,
             "enable_quick_add": false
+          }
+        },
+        "custom_liquid_zxhWCz": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "<div>\n  <div class=\"usp-container\">\n  <div class=\"usp-item\">\n    <div class=\"usp-icon\">\n      <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\">\n        <rect x=\"1\" y=\"3\" width=\"15\" height=\"13\"></rect>\n        <polygon points=\"16 8 20 8 23 11 23 16 16 16 16 8\"></polygon>\n        <circle cx=\"5.5\" cy=\"18.5\" r=\"2.5\"></circle>\n        <circle cx=\"18.5\" cy=\"18.5\" r=\"2.5\"></circle>\n      </svg>\n    </div>\n    <div class=\"usp-text\">\n      <strong>Free Shipping</strong>\n      <span>On all orders </span>\n    </div>\n  </div>\n\n  <div class=\"usp-item\">\n    <div class=\"usp-icon\">\n      <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\">\n        <path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"></path>\n        <path d=\"M3 3v5h5\"></path>\n        <path d=\"M12 7v5l4 2\"></path>\n      </svg>\n    </div>\n    <div class=\"usp-text\">\n      <strong>7 Days Return</strong>\n      <span>No questions asked</span>\n    </div>\n  </div>\n\n  <div class=\"usp-item\">\n    <div class=\"usp-icon\">\n      <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\">\n        <rect x=\"3\" y=\"11\" width=\"18\" height=\"11\" rx=\"2\" ry=\"2\"></rect>\n        <path d=\"M7 11V7a5 5 0 0 1 10 0v4\"></path>\n      </svg>\n    </div>\n    <div class=\"usp-text\">\n      <strong>100% Secured</strong>\n      <span>SSL Certified</span>\n    </div>\n  </div>\n\n  <div class=\"usp-item\">\n    <div class=\"usp-icon\">\n      <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\">\n        <circle cx=\"12\" cy=\"12\" r=\"10\"></circle>\n        <polyline points=\"12 6 12 12 16 14\"></polyline>\n      </svg>\n    </div>\n    <div class=\"usp-text\">\n      <strong>Delivery Time</strong>\n      <span>Estimate: 2-3 Days</span>\n    </div>\n  </div>\n</div>\n\n<style>\n.usp-container {\n  display: grid;\n  grid-template-columns: repeat(2, 1fr); /* Creates two equal columns */\n  gap: 15px;\n  padding: 20px;\n  background: #fafafa;\n  border: 1px solid #e5e7eb;\n  border-radius: 12px;\n  max-width: 450px; /* Increased to accommodate two columns */\n}\n\n.usp-item {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-start;\n  gap: 5px;\n}\n\n.usp-icon {\n  width: 28px;\n  height: 28px;\n  color: #059669; /* Emerald Green */\n  background: #ecfdf5; /* Soft green background circle */\n  padding: 6px;\n  border-radius: 50%;\n  flex-shrink: 0;\n}\n\n.usp-text {\n  display: flex;\n  flex-direction: column;\n}\n\n.usp-text strong {\n  font-size: 13px;\n  color: #111827;\n  font-weight: 700;\n  line-height: 1.4;\n}\n\n.usp-text span {\n  font-size: 11px;\n  color: #6b7280;\n  margin-top: 4px;\n}\n\n/* Mobile: Revert to 1 column on very narrow screens */\n@media (max-width: 350px) {\n  .usp-container {\n    grid-template-columns: 1fr;\n  }\n}\n</style>\n</div>\n\n\n\n  </div>\n</div>\n\n\n\n</div>\n\n\n\n\n\n\n      \n    \n  </div>\n\n  \n  \n\n</div>"
           }
         }
       },
@@ -220,7 +220,8 @@
         "collapsible_row_m3g6f8",
         "collapsible_row_eLaQpR",
         "collapsible_row_DA4FUC",
-        "complementary_products_Wip9YG"
+        "complementary_products_Wip9YG",
+        "custom_liquid_zxhWCz"
       ],
       "settings": {
         "section_width": "container",
@@ -263,18 +264,7 @@
     },
     "1716793714ce89e457": {
       "type": "apps",
-      "blocks": {
-        "judge_me_reviews_review_widget_KFVR47": {
-          "type": "shopify:\/\/apps\/judge-me-reviews\/blocks\/review_widget\/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
-          "settings": {
-          }
-        }
-      },
-      "block_order": [
-        "judge_me_reviews_review_widget_KFVR47"
-      ],
-      "settings": {
-      }
+      "settings": {}
     },
     "divider_TKLM6L": {
       "type": "divider",
