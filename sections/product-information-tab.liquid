@@ -71,6 +71,7 @@
                       {% render block %}
                     {%- when 'description' -%}
                       {{ product.description }}
+                      {%- render 'product-usp' -%}
                     {%- when 'review' -%}
                       <div id="shopify-product-reviews" data-id="{{ product.id }}">
                         {{ product.metafields.spr.reviews }}

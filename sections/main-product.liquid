@@ -394,6 +394,7 @@
                   {% if block_st.use_product_description == true %}
                     {%- if product != blank -%}
                       {{ product.description }}
+                      {%- render 'product-usp' -%}
                     {%- else -%}
                       {{ 'onboarding.default_description' | t }}
                     {% endif %}
