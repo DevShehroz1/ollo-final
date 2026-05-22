@@ -464,9 +464,9 @@
       ],
       "name": "Top Categories",
       "settings": {
-        "emoji": "☀️",
-        "heading": "Top Categories",
-        "subheading": "Explore styles for every stage of childhood from newborn to trendy teen looks!",
+        "emoji": "",
+        "heading": "Shop by Size",
+        "subheading": "Explore size for every stage of childhood from newborn to trendy teen looks!",
         "color_scheme": "1",
         "reset_spacing": false,
         "padding_top": 60,
