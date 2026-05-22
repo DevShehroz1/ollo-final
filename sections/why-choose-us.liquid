@@ -11,21 +11,26 @@
 {%- endcapture -%}
 
 <style>
+  #sec-why-choose-us-{{ section.id }} .sec__wcu-inner {
+    width: 100%;
+    padding: 0 50px;
+    box-sizing: border-box;
+  }
   #sec-why-choose-us-{{ section.id }} .sec__wcu-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 16px;
   }
-  #sec-why-choose-us-{{ section.id }} .sec__wcu-card--1 {
-    grid-column: span 2;
-  }
+  /* Row 1: two equal cards */
+  #sec-why-choose-us-{{ section.id }} .sec__wcu-card--1,
   #sec-why-choose-us-{{ section.id }} .sec__wcu-card--2 {
-    grid-column: span 1;
+    grid-column: span 3;
   }
+  /* Row 2: three equal cards */
   #sec-why-choose-us-{{ section.id }} .sec__wcu-card--3,
   #sec-why-choose-us-{{ section.id }} .sec__wcu-card--4,
   #sec-why-choose-us-{{ section.id }} .sec__wcu-card--5 {
-    grid-column: span 1;
+    grid-column: span 2;
   }
   #sec-why-choose-us-{{ section.id }} .sec__wcu-card {
     border-radius: 16px;
@@ -50,7 +55,7 @@
     stroke-linejoin: round;
   }
   #sec-why-choose-us-{{ section.id }} .sec__wcu-heading {
-    font-size: clamp(2rem, 2.8vw, 2.8rem);
+    font-size: clamp(2rem, 2.2vw, 2.6rem);
     font-weight: 700;
     line-height: 1.2;
     margin: 0;
@@ -67,7 +72,30 @@
     text-align: center;
     margin: 0 0 36px;
   }
-  @media (max-width: 767px) {
+  /* Tablet: keep 2-column row 1, stack row 2 as 2 cols */
+  @media (min-width: 600px) and (max-width: 991px) {
+    #sec-why-choose-us-{{ section.id }} .sec__wcu-inner {
+      padding: 0 24px;
+    }
+    #sec-why-choose-us-{{ section.id }} .sec__wcu-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    #sec-why-choose-us-{{ section.id }} .sec__wcu-card--1,
+    #sec-why-choose-us-{{ section.id }} .sec__wcu-card--2 {
+      grid-column: span 1;
+    }
+    #sec-why-choose-us-{{ section.id }} .sec__wcu-card--3,
+    #sec-why-choose-us-{{ section.id }} .sec__wcu-card--4,
+    #sec-why-choose-us-{{ section.id }} .sec__wcu-card--5 {
+      grid-column: span 1;
+    }
+  }
+  /* Mobile: single column */
+  @media (max-width: 599px) {
+    #sec-why-choose-us-{{ section.id }} .sec__wcu-inner {
+      padding: 0 16px;
+    }
     #sec-why-choose-us-{{ section.id }} .sec__wcu-grid {
       grid-template-columns: 1fr;
       gap: 12px;
@@ -83,14 +111,6 @@
       padding: 22px 22px 26px;
     }
   }
-  @media (min-width: 768px) and (max-width: 991px) {
-    #sec-why-choose-us-{{ section.id }} .sec__wcu-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    #sec-why-choose-us-{{ section.id }} .sec__wcu-card--1 {
-      grid-column: span 2;
-    }
-  }
 </style>
 
 <div
@@ -98,7 +118,7 @@
   class="section{% if section_st.padding_top < 30 %} pt-min{% endif %}{% if section_st.padding_bottom < 30 %} pb-min{% endif %} sec__why-choose-us color-{{ color_scheme }} gradient{{ reset_spacing }}"
   style="{{ style | strip | strip_newlines }}"
 >
-  <div class="{{ section_width }}">
+  <div class="sec__wcu-inner">
     {%- if section_st.heading != blank -%}
       <h2 class="sec__wcu-title">{{ section_st.heading }}</h2>
     {%- endif -%}
@@ -139,17 +159,6 @@
       "id": "heading",
       "label": "Section heading",
       "default": "Why Parents Choose Us"
-    },
-    {
-      "type": "select",
-      "id": "section_width",
-      "label": "Section width",
-      "default": "container",
-      "options": [
-        { "value": "container", "label": "Container" },
-        { "value": "fluid_container", "label": "Fluid container" },
-        { "value": "full_width", "label": "Full width" }
-      ]
     },
     {
       "type": "select",
