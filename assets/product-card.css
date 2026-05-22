@@ -9,6 +9,13 @@
 .product-grid .product-item__media--ratio .product-image {
   object-fit: contain;
 }
+/* t4s card system image fit (featured-collection, carousels, etc.) */
+.t4s-product-img {
+  background-color: #f8f8f8;
+}
+.t4s-product-img img.t4s-product-main-img {
+  object-fit: contain !important;
+}
 @media (min-width: 992px) {
   .sec__products-grid .flex-cols {
     --col-desktop: 3 !important;

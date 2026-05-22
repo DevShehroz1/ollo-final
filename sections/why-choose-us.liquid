@@ -1,0 +1,288 @@
+{%- liquid
+  assign section_st = section.settings
+  assign section_width = section_st.section_width | default: 'container'
+  assign color_scheme = section_st.color_scheme | default: '1'
+  if section_st.reset_spacing
+    assign reset_spacing = ' remove_spacing'
+  endif
+-%}
+{%- capture style -%}
+  --section-pt: {{ section_st.padding_top }}; --section-pb: {{ section_st.padding_bottom }}
+{%- endcapture -%}
+
+<style>
+  #sec-why-choose-us-{{ section.id }} .sec__wcu-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  #sec-why-choose-us-{{ section.id }} .sec__wcu-card--1 {
+    grid-column: span 2;
+  }
+  #sec-why-choose-us-{{ section.id }} .sec__wcu-card--2 {
+    grid-column: span 1;
+  }
+  #sec-why-choose-us-{{ section.id }} .sec__wcu-card--3,
+  #sec-why-choose-us-{{ section.id }} .sec__wcu-card--4,
+  #sec-why-choose-us-{{ section.id }} .sec__wcu-card--5 {
+    grid-column: span 1;
+  }
+  #sec-why-choose-us-{{ section.id }} .sec__wcu-card {
+    border-radius: 16px;
+    padding: 28px 32px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  #sec-why-choose-us-{{ section.id }} .sec__wcu-icon {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 6px;
+    opacity: 0.9;
+  }
+  #sec-why-choose-us-{{ section.id }} .sec__wcu-icon svg {
+    width: 36px;
+    height: 36px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  #sec-why-choose-us-{{ section.id }} .sec__wcu-heading {
+    font-size: clamp(2rem, 2.8vw, 2.8rem);
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0;
+  }
+  #sec-why-choose-us-{{ section.id }} .sec__wcu-desc {
+    font-size: 1.5rem;
+    line-height: 1.6;
+    margin: 0;
+    opacity: 0.92;
+  }
+  #sec-why-choose-us-{{ section.id }} .sec__wcu-title {
+    font-size: clamp(2.4rem, 3.5vw, 3.6rem);
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 36px;
+  }
+  @media (max-width: 767px) {
+    #sec-why-choose-us-{{ section.id }} .sec__wcu-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    #sec-why-choose-us-{{ section.id }} .sec__wcu-card--1,
+    #sec-why-choose-us-{{ section.id }} .sec__wcu-card--2,
+    #sec-why-choose-us-{{ section.id }} .sec__wcu-card--3,
+    #sec-why-choose-us-{{ section.id }} .sec__wcu-card--4,
+    #sec-why-choose-us-{{ section.id }} .sec__wcu-card--5 {
+      grid-column: span 1;
+    }
+    #sec-why-choose-us-{{ section.id }} .sec__wcu-card {
+      padding: 22px 22px 26px;
+    }
+  }
+  @media (min-width: 768px) and (max-width: 991px) {
+    #sec-why-choose-us-{{ section.id }} .sec__wcu-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    #sec-why-choose-us-{{ section.id }} .sec__wcu-card--1 {
+      grid-column: span 2;
+    }
+  }
+</style>
+
+<div
+  id="sec-why-choose-us-{{ section.id }}"
+  class="section{% if section_st.padding_top < 30 %} pt-min{% endif %}{% if section_st.padding_bottom < 30 %} pb-min{% endif %} sec__why-choose-us color-{{ color_scheme }} gradient{{ reset_spacing }}"
+  style="{{ style | strip | strip_newlines }}"
+>
+  <div class="{{ section_width }}">
+    {%- if section_st.heading != blank -%}
+      <h2 class="sec__wcu-title">{{ section_st.heading }}</h2>
+    {%- endif -%}
+
+    <div class="sec__wcu-grid">
+      {%- for block in section.blocks -%}
+        {%- assign block_st = block.settings -%}
+        <div
+          class="sec__wcu-card sec__wcu-card--{{ forloop.index }}"
+          style="background-color: {{ block_st.bg_color }}; color: {{ block_st.text_color }};"
+          {{ block.shopify_attributes }}
+        >
+          {%- if block_st.icon_svg != blank -%}
+            <div class="sec__wcu-icon">{{ block_st.icon_svg }}</div>
+          {%- endif -%}
+          {%- if block_st.heading != blank -%}
+            <div class="sec__wcu-heading">{{ block_st.heading }}</div>
+          {%- endif -%}
+          {%- if block_st.description != blank -%}
+            <p class="sec__wcu-desc">{{ block_st.description }}</p>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Why Choose Us",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.overlay"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section heading",
+      "default": "Why Parents Choose Us"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "default": "container",
+      "options": [
+        { "value": "container", "label": "Container" },
+        { "value": "fluid_container", "label": "Fluid container" },
+        { "value": "full_width", "label": "Full width" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "1",
+      "options": [
+        { "value": "1", "label": "Scheme 1" },
+        { "value": "2", "label": "Scheme 2" },
+        { "value": "3", "label": "Scheme 3" }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "reset_spacing",
+      "label": "Remove section spacing",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 60,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature_card",
+      "name": "Feature card",
+      "settings": [
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color",
+          "default": "#E8A020"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text color",
+          "default": "#1a1a1a"
+        },
+        {
+          "type": "html",
+          "id": "icon_svg",
+          "label": "Icon SVG",
+          "default": "<svg viewBox='0 0 24 24'><polyline points='20 6 9 17 4 12'></polyline></svg>"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "4,800+"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Happy families trust us for their children's everyday wardrobe — and thousands more discover us every month."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Why Choose Us",
+      "blocks": [
+        {
+          "type": "feature_card",
+          "settings": {
+            "bg_color": "#E8A020",
+            "text_color": "#1a1a1a",
+            "icon_svg": "<svg viewBox='0 0 24 24'><polyline points='20 6 9 17 4 12'></polyline></svg>",
+            "heading": "4,800+",
+            "description": "Happy families trust us for their children's everyday wardrobe — and thousands more discover us every month."
+          }
+        },
+        {
+          "type": "feature_card",
+          "settings": {
+            "bg_color": "#D94030",
+            "text_color": "#ffffff",
+            "icon_svg": "<svg viewBox='0 0 24 24'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'></path></svg>",
+            "heading": "OEKO-TEX® Certified Safe",
+            "description": "Every fabric is independently tested and certified free from harmful chemicals — gentle enough for sensitive young skin, safe for all-day wear."
+          }
+        },
+        {
+          "type": "feature_card",
+          "settings": {
+            "bg_color": "#3B82D4",
+            "text_color": "#ffffff",
+            "icon_svg": "<svg viewBox='0 0 24 24'><path d='M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z'></path></svg>",
+            "heading": "Fits Through Every Growth Spurt",
+            "description": "Flexible waistbands and stretch-fit designs built for how kids actually move — no uncomfortable tightness, just pure all-day comfort."
+          }
+        },
+        {
+          "type": "feature_card",
+          "settings": {
+            "bg_color": "#4A8C3F",
+            "text_color": "#ffffff",
+            "icon_svg": "<svg viewBox='0 0 24 24'><polyline points='1 4 1 10 7 10'></polyline><polyline points='23 20 23 14 17 14'></polyline><path d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15'></path></svg>",
+            "heading": "Machine-Wash Tough",
+            "description": "Reinforced stitching and colorfast dyes that stay bright and strong wash after wash — no fading, no shrinking, no disappointment."
+          }
+        },
+        {
+          "type": "feature_card",
+          "settings": {
+            "bg_color": "#7B4DB8",
+            "text_color": "#ffffff",
+            "icon_svg": "<svg viewBox='0 0 24 24'><path d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z'></path></svg>",
+            "heading": "Free Returns, Always",
+            "description": "Unsure about the size? Order with zero risk — free exchanges and returns, no questions asked, ever."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
