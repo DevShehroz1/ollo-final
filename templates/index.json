@@ -109,7 +109,7 @@
         "badge_NDPJUV": {
           "type": "badge",
           "settings": {
-            "heading": "30 Years in Business",
+            "heading": "Dressing Little Ones Since 2010",
             "link": ""
           }
         },
@@ -123,7 +123,7 @@
         "badge_6mAXJp": {
           "type": "badge",
           "settings": {
-            "heading": "Visit our Melbourne Store",
+            "heading": "Visit our Kids' Boutique",
             "link": ""
           }
         },
@@ -137,7 +137,7 @@
         "badge_9hGgiL": {
           "type": "badge",
           "settings": {
-            "heading": "100k+ Happy Customers",
+            "heading": "100k+ Happy Little Customers",
             "link": ""
           }
         }
@@ -233,7 +233,7 @@
       "settings": {
         "section_width": "fluid_container",
         "color_scheme": "",
-        "heading": "Shop The Best sellers",
+        "heading": "Shop Our Kids' Best-Sellers",
         "description": "",
         "header_size": "medium",
         "header_alignment": "center",

@@ -37,7 +37,7 @@
         "subheading_aXhCec": {
           "type": "subheading",
           "settings": {
-            "subheading": "Welcome to Glozin",
+            "subheading": "Welcome to Ollo Kids",
             "font_size": 15,
             "font_weight": "heading_weight",
             "uppercase": false,
@@ -47,7 +47,7 @@
         "heading_LbN4kp": {
           "type": "heading",
           "settings": {
-            "heading": "Best Store<br> Available to Everyone!",
+            "heading": "Kids' Clothing<br> Built for Every Adventure!",
             "font_size": 50,
             "font_weight": "heading_weight",
             "uppercase": false,
@@ -57,7 +57,7 @@
         "description_4JjTUX": {
           "type": "description",
           "settings": {
-            "description": "<p>Over 15 years of experience, we have meticulously curated collections that transcend fleeting trends, <br\/>embodying a timeless elegance that resonates with our discerning clientele.<\/p>",
+            "description": "<p>Over 15 years dressing little ones, we've curated kids' collections that go beyond fleeting trends — <br\/>built for comfort, made to last, and loved by families everywhere.<\/p>",
             "font_size": 15,
             "font_weight": "body_weight",
             "spacing_bottom": 10
@@ -121,8 +121,8 @@
             "starting_number": 10,
             "ending_number": 53,
             "unit": "k",
-            "heading": "Products for Sale",
-            "description": "<p>That's why we strive to offer a diverse range of products that cater to all styles.<\/p>"
+            "heading": "Kids' Outfits Sold",
+            "description": "<p>From newborn essentials to teen styles — a diverse range for every age, every stage.<\/p>"
           }
         },
         "counter_jQdJhG": {
@@ -131,8 +131,8 @@
             "starting_number": 0,
             "ending_number": 8.5,
             "unit": "k",
-            "heading": "Happy Customer",
-            "description": "<p>We pride ourselves on creating great products and experiences with our valued customers.<\/p>"
+            "heading": "Happy Families",
+            "description": "<p>Families who trust Ollo Kids for their little ones' everyday wardrobe — and tell their friends.<\/p>"
           }
         },
         "counter_FmWY3q": {
@@ -141,8 +141,8 @@
             "starting_number": 0,
             "ending_number": 13,
             "unit": "k",
-            "heading": "Partner Brand",
-            "description": "<p>Partner with brands that share our values, striving to protect our environment.<\/p>"
+            "heading": "Trusted Kids' Brands",
+            "description": "<p>We partner with kids' brands that share our values — safer fabrics and a lighter footprint on the planet.<\/p>"
           }
         }
       },
@@ -201,7 +201,7 @@
         "heading_izj8pi": {
           "type": "heading",
           "settings": {
-            "heading": "Our Peculiar Things",
+            "heading": "What Makes Us Different",
             "font_size": 36,
             "font_weight": "heading_weight",
             "uppercase": false,
@@ -211,7 +211,7 @@
         "description_Jpw6Dw": {
           "type": "description",
           "settings": {
-            "description": "<p>Our fashion products are characterized by innovative and on—trend designs. We pride ourselves in pushing the <br\/>boundaries of conventional fashion, delivering new, bold and captivating styles.<\/p>",
+            "description": "<p>Our kids' pieces are designed to be playful, comfortable and durable. We push past throw-away fashion to <br\/>deliver pieces that survive scraped knees, jam stains and growth spurts.<\/p>",
             "font_size": 15,
             "font_weight": "body_weight",
             "spacing_bottom": 10
@@ -247,8 +247,8 @@
             "image": "shopify:\/\/shop_images\/about_banner_1.jpg",
             "image_link": "",
             "subheading": "",
-            "heading": "Cultural Standards",
-            "description": "<p>We are committed to setting high ethical standards in production and ensuring mindful manufacturing through audits, training and education.<\/p>",
+            "heading": "Safer for Kids",
+            "description": "<p>We hold every supplier to ethical, kid-safe standards — OEKO-TEX dyes, audited factories, fair wages and no shortcuts on safety.<\/p>",
             "first_button_label": "",
             "first_button_link": "",
             "first_button_type": "link",
@@ -281,7 +281,7 @@
             "image_link": "",
             "subheading": "",
             "heading": "Designed to Last",
-            "description": "<p>From traditional tailoring to the most informal pieces. Our Glozin collections feature the latest trends with the maximum comfort.<\/p>",
+            "description": "<p>From school uniforms to weekend playwear, every Ollo Kids piece is built around real movement — comfort, stretch and reinforced stitching.<\/p>",
             "first_button_label": "",
             "first_button_link": "",
             "first_button_type": "link",
@@ -313,8 +313,8 @@
             "image": "shopify:\/\/shop_images\/about_banner_3.jpg",
             "image_link": "",
             "subheading": "",
-            "heading": "Freedom for Everyone",
-            "description": "<p>The designs have been created adopting the current trends, while leaving room for personal expression among young people.<\/p>",
+            "heading": "Room to Be a Kid",
+            "description": "<p>Our designs follow what kids actually love — bold colors, playful prints and plenty of room for their own personality to shine.<\/p>",
             "first_button_label": "",
             "first_button_link": "",
             "first_button_type": "link",
@@ -371,7 +371,7 @@
         "description_NKGpBk": {
           "type": "description",
           "settings": {
-            "description": "<p><em>\" Glozin will become an example of the responsible business model by doing business with kindness, profit and bringing practical and long—term values to customers, employees, partners, the community for the environment and for shareholders. \"<\/em><\/p>",
+            "description": "<p><em>\" Ollo Kids exists to make childhood a little better — through clothes that are kinder to children, kinder to families and kinder to the planet they'll grow up on. \"<\/em><\/p>",
             "font_size": 18,
             "font_weight": "body_weight",
             "spacing_bottom": 15
@@ -380,7 +380,7 @@
         "subheading_RLCEF7": {
           "type": "subheading",
           "settings": {
-            "subheading": "Carie—Gosée Hera",
+            "subheading": "The Ollo Kids Team",
             "font_size": 16,
             "font_weight": "heading_weight",
             "uppercase": false,
@@ -390,7 +390,7 @@
         "description_jRcfa7": {
           "type": "description",
           "settings": {
-            "description": "<p>CEO and Founder Glozin Store<\/p>",
+            "description": "<p>Founders, Ollo Kids<\/p>",
             "font_size": 14,
             "font_weight": "body_weight",
             "spacing_bottom": 0
@@ -435,8 +435,8 @@
             "vertical_align": "center",
             "image_link": "",
             "subheading": "Our Factories",
-            "heading": "The Best Product",
-            "description": "<p>We spend a lot of time finding the best factories around the world—the same <br\/>factories that make your favorite designer brands. We visit them regularly and <br\/>build strong personal relationships with the owners. Each factory is audited for<br\/> compliance to assess factors such as fair wages.<\/p>",
+            "heading": "Made With Kids in Mind",
+            "description": "<p>We work with the same trusted factories that make your favorite premium kids' brands. <br\/>We visit them regularly, build real relationships with the owners, and audit every facility<br\/> for fair wages and child-safe production standards.<\/p>",
             "first_button_label": "Learn More",
             "first_button_link": "shopify:\/\/collections\/best-seller",
             "first_button_type": "primary",
@@ -487,10 +487,10 @@
             "vertical_align": "center",
             "image_link": "",
             "subheading": "Our Products",
-            "heading": "Timeless Products",
-            "description": "<p>At Glozin, we’re not big on trends. We want you to wear our pieces for years,<br\/> even decades, to come. That’s why we source the finest materials and factories<br\/> for our timeless products— like our Grade-A cashmere sweaters, Italian shoes, <br\/>and Peruvian Pima tees.<\/p>",
+            "heading": "Built for Hand-Me-Downs",
+            "description": "<p>At Ollo Kids, we're not big on disposable fashion. We want our pieces to live through<br\/> siblings, cousins and neighbours' kids. That's why we source the finest kid-safe materials<br\/> — soft Pima cotton tees, durable denim, and stretch-knit basics built for play.<\/p>",
             "first_button_label": "Learn More",
-            "first_button_link": "shopify:\/\/collections\/activewear",
+            "first_button_link": "shopify:\/\/collections\/best-seller",
             "first_button_type": "primary",
             "second_button_label": "",
             "second_button_link": "",
@@ -562,7 +562,7 @@
         "heading_NxNJtH": {
           "type": "heading",
           "settings": {
-            "heading": "Expanding Horizons",
+            "heading": "Growing With Your Kids",
             "font_size": 36,
             "font_weight": "heading_weight",
             "uppercase": false,
@@ -572,7 +572,7 @@
         "description_3VEKaL": {
           "type": "description",
           "settings": {
-            "description": "<p>At Glozin, our work culture is deeply rooted in collaboration, innovation and passion. We believe that a positive and<br\/> inclusive work environment is the foundation for creativity and success.<\/p>",
+            "description": "<p>At Ollo Kids, we listen to the families we dress every day. Every new collection is shaped by real feedback from real<br\/> parents and the little ones who actually wear our clothes.<\/p>",
             "font_size": 15,
             "font_weight": "body_weight",
             "spacing_bottom": 10
