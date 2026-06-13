@@ -15,15 +15,15 @@
         "slider_item_jiLA39": {
           "type": "slider_item",
           "settings": {
-            "image": "shopify://shop_images/tabeena.jpg",
-            "image_mobile": "shopify://shop_images/Banner_2_mobile.jpg",
+            "image": "shopify://shop_images/WhatsApp_Image_2026-06-11_at_20.36.02.jpg",
+            "image_mobile": "shopify://shop_images/Frame_1430102672.png",
             "overlay_opacity": 0,
             "slider_effect": "effect_zoomout",
             "subheading": "",
             "heading": "",
             "description": "",
             "first_button_label": "",
-            "first_button_link": "shopify://collections/best-seller",
+            "first_button_link": "shopify://collections/frontpage",
             "first_button_style": false,
             "second_button_label": "",
             "second_button_link": "",
@@ -43,8 +43,8 @@
         "slider_item_6gxfVA": {
           "type": "slider_item",
           "settings": {
-            "image": "shopify://shop_images/tabeena-1.jpg",
-            "image_mobile": "shopify://shop_images/Banner_2_mobile-1.jpg",
+            "image": "shopify://shop_images/WhatsApp_Image_2026-06-11_at_20.36.03.jpg",
+            "image_mobile": "shopify://shop_images/Frame_1430102670.png",
             "overlay_opacity": 0,
             "slider_effect": "effect_zoomout",
             "subheading": "",
