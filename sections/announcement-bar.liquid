@@ -39,11 +39,23 @@
     announcement-bar :where(.swiper-arrow:hover) {
       background-color: transparent;
     }
+    announcement-bar .announcement__bar-icon-image {
+      flex: 0 0 auto;
+      width: var(--icon-size, 20px);
+      height: var(--icon-size, 20px);
+    }
     announcement-bar .announcement__bar-icon-image img {
       width: var(--icon-size, 20px);
       height: var(--icon-size, 20px);
       object-fit: contain;
       display: block;
+    }
+    announcement-bar .announcement__bar-message {
+      column-gap: 8px;
+    }
+    announcement-bar .announcement__bar-message > .grow {
+      flex: 1 1 auto;
+      min-width: 0;
     }
     announcement-bar countdown-timer{
       {% if section_st.font_weight == 'subheading_weight' %}--countdown-text-weight: var(--subheading-weight, 600);--heading-weight: var(--subheading-weight, 600);{% elsif section_st.font_weight == 'heading_weight' %}--countdown-text-weight: var(--heading-weight, 600);--heading-weight: var(--heading-weight, 600);{% else %}--countdown-text-weight: var(--body-weight, 600);--heading-weight: var(--body-weight, 600){% endif %}
