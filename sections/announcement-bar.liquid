@@ -57,6 +57,12 @@
       flex: 1 1 auto;
       min-width: 0;
     }
+    announcement-bar .announcement__bar-message > svg,
+    announcement-bar .announcement__bar-message > img {
+      flex: 0 0 auto;
+      display: inline-block;
+      vertical-align: middle;
+    }
     announcement-bar countdown-timer{
       {% if section_st.font_weight == 'subheading_weight' %}--countdown-text-weight: var(--subheading-weight, 600);--heading-weight: var(--subheading-weight, 600);{% elsif section_st.font_weight == 'heading_weight' %}--countdown-text-weight: var(--heading-weight, 600);--heading-weight: var(--heading-weight, 600);{% else %}--countdown-text-weight: var(--body-weight, 600);--heading-weight: var(--body-weight, 600){% endif %}
     }
