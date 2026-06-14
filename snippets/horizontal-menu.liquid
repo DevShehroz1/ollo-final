@@ -66,6 +66,68 @@
             <path fill="currentColor" d="M1.09 1.822a.52.52 0 0 1-.178-.396c0-.164.06-.306.178-.424A.557.557 0 0 1 1.5.838c.164 0 .3.055.41.164L5 4.092l3.09-3.09A.557.557 0 0 1 8.5.838c.164 0 .3.055.41.164.119.118.178.26.178.424a.52.52 0 0 1-.178.396l-3.5 3.5A.535.535 0 0 1 5 5.5c-.164 0-.3-.06-.41-.178l-3.5-3.5Z"/>
           </symbol>
         </svg>
+        {%- comment -%} Hardcoded Tiny Beats menu — overrides Shopify linklist. {%- endcomment -%}
+        <li class="level0 single">
+          <menu-item class="relative static-1025 flex justify-between align-center border-bottom border-bottom-1025-0 header-color">
+            <a class="no-underline py-10 relative lh-normal inline-flex min-h-55 min-h-1025-50 align-center{% if theme_st.menu_font == 'heading_font' %} heading-style{% endif %}{% if uppercase_first %} uppercase{% endif %}" href="{{ routes.root_url }}" aria-label="Home">
+              <span>Home</span>
+            </a>
+          </menu-item>
+        </li>
+        <li class="level0 menu-parent dropdown-menu">
+          <menu-item class="relative static-1025 flex justify-between align-center border-bottom border-bottom-1025-0 header-color">
+            <a class="no-underline py-10 relative lh-normal inline-flex min-h-55 min-h-1025-50 align-center{% if theme_st.menu_font == 'heading_font' %} heading-style{% endif %}{% if uppercase_first %} uppercase{% endif %}" href="{{ routes.collections_url }}/frontpage" aria-label="Shop Kids">
+              <span>Shop Kids</span>
+            </a>
+            <open-children-toggle class="inline-flex flex-end align-center ms-5{% if section_st.redirect_to_link == blank %} absolute inset-0 static-1025{% else %} touch-target-mb{% endif %}">
+              <svg class="icon-down hidden block-1025" width="10" height="6"><use href="#icon-arrow-down" /></svg>
+              {% if settings.rtl %}
+                <svg class="icon-down block hidden-1025" width="6" height="11"><use href="#icon-back" /></svg>
+              {% else %}
+                <svg class="icon-down block hidden-1025" width="6" height="11"><use href="#icon-next" /></svg>
+              {% endif %}
+            </open-children-toggle>
+          </menu-item>
+          <div class="submenu invisible-1025 absolute transition gradient color-default">
+            <div class="hidden-1025 grey-bg px-30 border-bottom flex gap-15 align-center justify-between{% if theme_st.menu_font == 'heading_font' %} heading-style{% endif %}">
+              <back-menu class="py-10 min-h-55 min-h-1025-50 inline-flex gap-20 align-center fs-big-1 heading-style" role="link">
+                {% if settings.rtl %}
+                  <svg width="6" height="11" fill="none"><use href="#icon-next" /></svg>
+                {% else %}
+                  <svg width="6" height="11" fill="none"><use href="#icon-back" /></svg>
+                {% endif %}
+                Shop Kids
+              </back-menu>
+              <close-menu class="close-menu lh-1 ms-10">
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><use href="#icon-close" /></svg>
+              </close-menu>
+            </div>
+            <ul class="subchildmenu list-unstyled px-30 px-1025-0">
+              <li class="menu-link level-1">
+                <menu-item class="relative static-1025 flex justify-between align-center border-bottom border-bottom-1025-0">
+                  <a class="menu_item-link no-underline py-10 py-1025-5 min-h-55 min-h-1025-unset inline-flex align-center" href="{{ routes.collections_url }}/frontpage" aria-label="Boys">
+                    <span class="smooth-padding-hover transition">Boys</span>
+                  </a>
+                </menu-item>
+              </li>
+              <li class="menu-link level-1">
+                <menu-item class="relative static-1025 flex justify-between align-center border-bottom border-bottom-1025-0">
+                  <a class="menu_item-link no-underline py-10 py-1025-5 min-h-55 min-h-1025-unset inline-flex align-center" href="{{ routes.collections_url }}/frontpage" aria-label="Girls">
+                    <span class="smooth-padding-hover transition">Girls</span>
+                  </a>
+                </menu-item>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="level0 single">
+          <menu-item class="relative static-1025 flex justify-between align-center border-bottom border-bottom-1025-0 header-color">
+            <a class="no-underline py-10 relative lh-normal inline-flex min-h-55 min-h-1025-50 align-center{% if theme_st.menu_font == 'heading_font' %} heading-style{% endif %}{% if uppercase_first %} uppercase{% endif %}" href="/pages/contact" aria-label="Contact Us">
+              <span>Contact Us</span>
+            </a>
+          </menu-item>
+        </li>
+        {% if false %}
         {%- for link in section_st.mega_menu.links -%}
           {%- liquid
             assign last_block = null
@@ -457,6 +519,7 @@
             </li>
           {% endif %}
         {%- endfor -%}
+        {% endif %}
         {%- if recently_viewed -%}
           <li class="level0 hidden-1025">
             <a
