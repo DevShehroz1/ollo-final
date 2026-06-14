@@ -1,0 +1,553 @@
+{%- liquid
+  assign st = section.settings
+-%}
+
+<style>
+  #fh-{{ section.id }} {
+    background: {{ st.bg_color | default: '#C8D3EC' }};
+    color: {{ st.text_color | default: '#1a1a1a' }};
+    padding-top: {{ st.padding_top_desktop | default: 64 }}px;
+    padding-bottom: {{ st.padding_bottom_desktop | default: 64 }}px;
+    margin-top: {{ st.margin_top_desktop | default: 0 }}px;
+    margin-bottom: {{ st.margin_bottom_desktop | default: 0 }}px;
+  }
+  #fh-{{ section.id }} .fh__inner {
+    width: 100%;
+    max-width: {{ st.max_width | default: 1400 }}px;
+    margin: 0 auto;
+    padding: 0 {{ st.side_padding | default: 24 }}px;
+    box-sizing: border-box;
+  }
+  #fh-{{ section.id }} .fh__head {
+    text-align: center;
+    margin: 0 auto {{ st.head_gap | default: 40 }}px;
+    max-width: {{ st.head_max_width | default: 1100 }}px;
+  }
+  #fh-{{ section.id }} .fh__eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: {{ st.eyebrow_size | default: 13 }}px;
+    line-height: 1.3;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 0;
+    color: inherit;
+  }
+  #fh-{{ section.id }} .fh__heading {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: {{ st.heading_size_desktop | default: 36 }}px;
+    line-height: 1.25;
+    letter-spacing: 0;
+    margin: 0 0 16px;
+    color: inherit;
+  }
+  #fh-{{ section.id }} .fh__layout {
+    display: grid;
+    grid-template-columns: 1fr {{ st.image_width_desktop | default: 460 }}px 1fr;
+    gap: {{ st.column_gap | default: 40 }}px;
+    align-items: center;
+  }
+  #fh-{{ section.id }} .fh__col {
+    display: flex;
+    flex-direction: column;
+    gap: {{ st.feature_gap | default: 36 }}px;
+  }
+  #fh-{{ section.id }} .fh__col--right {
+    align-items: flex-start;
+  }
+  #fh-{{ section.id }} .fh__feature {
+    display: grid;
+    grid-template-columns: {{ st.icon_size_desktop | default: 56 }}px 1fr;
+    gap: 18px;
+    align-items: start;
+  }
+  #fh-{{ section.id }} .fh__feature-icon {
+    width: {{ st.icon_size_desktop | default: 56 }}px;
+    height: {{ st.icon_size_desktop | default: 56 }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: {{ st.icon_color | default: '#19a974' }};
+  }
+  #fh-{{ section.id }} .fh__feature-icon img {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+    object-fit: contain;
+  }
+  #fh-{{ section.id }} .fh__feature-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 1.3;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 0 0 8px;
+    color: inherit;
+  }
+  #fh-{{ section.id }} .fh__feature-desc {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.45;
+    color: inherit;
+    margin: 0;
+  }
+  #fh-{{ section.id }} .fh__image {
+    width: 100%;
+    border-radius: {{ st.image_radius | default: 0 }}px;
+    overflow: hidden;
+    aspect-ratio: {{ st.image_aspect | default: '4 / 5' }};
+    background: rgba(0,0,0,0.04);
+    position: relative;
+  }
+  #fh-{{ section.id }} .fh__image img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  @media (max-width: 900px) {
+    #fh-{{ section.id }} {
+      padding-top: {{ st.padding_top_mobile | default: 40 }}px;
+      padding-bottom: {{ st.padding_bottom_mobile | default: 40 }}px;
+      margin-top: {{ st.margin_top_mobile | default: 0 }}px;
+      margin-bottom: {{ st.margin_bottom_mobile | default: 0 }}px;
+    }
+    #fh-{{ section.id }} .fh__heading {
+      font-size: {{ st.heading_size_mobile | default: 22 }}px;
+      line-height: 1.3;
+    }
+    #fh-{{ section.id }} .fh__head {
+      margin-bottom: 28px;
+    }
+    #fh-{{ section.id }} .fh__layout {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+    #fh-{{ section.id }} .fh__col {
+      gap: 24px;
+    }
+    /* On mobile show image first, then features */
+    #fh-{{ section.id }} .fh__image-wrap { order: 1; }
+    #fh-{{ section.id }} .fh__col--left  { order: 2; }
+    #fh-{{ section.id }} .fh__col--right { order: 3; }
+    #fh-{{ section.id }} .fh__feature {
+      grid-template-columns: {{ st.icon_size_mobile | default: 44 }}px 1fr;
+      gap: 14px;
+    }
+    #fh-{{ section.id }} .fh__feature-icon {
+      width: {{ st.icon_size_mobile | default: 44 }}px;
+      height: {{ st.icon_size_mobile | default: 44 }}px;
+    }
+  }
+</style>
+
+<section id="fh-{{ section.id }}">
+  <div class="fh__inner">
+    {%- if st.eyebrow != blank or st.heading != blank -%}
+      <div class="fh__head">
+        {%- if st.heading != blank -%}
+          <h2 class="fh__heading">{{ st.heading }}</h2>
+        {%- endif -%}
+        {%- if st.eyebrow != blank -%}
+          <p class="fh__eyebrow">{{ st.eyebrow }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- liquid
+      assign left_blocks  = ''
+      assign right_blocks = ''
+      for block in section.blocks
+        if block.type == 'feature'
+          if block.settings.column == 'right'
+            assign right_blocks = right_blocks | append: block.id | append: ','
+          else
+            assign left_blocks = left_blocks | append: block.id | append: ','
+          endif
+        endif
+      endfor
+      assign left_ids  = left_blocks  | split: ','
+      assign right_ids = right_blocks | split: ','
+    -%}
+
+    <div class="fh__layout">
+      <div class="fh__col fh__col--left">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'feature' and block.settings.column != 'right' -%}
+            {%- assign b = block.settings -%}
+            <div class="fh__feature" {{ block.shopify_attributes }}>
+              <div class="fh__feature-icon">
+                {%- if b.icon != blank -%}
+                  {{ b.icon | image_url: width: 200 | image_tag: alt: b.title, loading: 'lazy' }}
+                {%- endif -%}
+              </div>
+              <div class="fh__feature-text">
+                {%- if b.title != blank -%}<p class="fh__feature-title">{{ b.title }}</p>{%- endif -%}
+                {%- if b.description != blank -%}<p class="fh__feature-desc">{{ b.description }}</p>{%- endif -%}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      <div class="fh__image-wrap">
+        <div class="fh__image">
+          {%- if st.image != blank -%}
+            {{ st.image | image_url: width: 1200 | image_tag: alt: st.heading, loading: 'lazy' }}
+          {%- endif -%}
+        </div>
+      </div>
+
+      <div class="fh__col fh__col--right">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'feature' and block.settings.column == 'right' -%}
+            {%- assign b = block.settings -%}
+            <div class="fh__feature" {{ block.shopify_attributes }}>
+              <div class="fh__feature-icon">
+                {%- if b.icon != blank -%}
+                  {{ b.icon | image_url: width: 200 | image_tag: alt: b.title, loading: 'lazy' }}
+                {%- endif -%}
+              </div>
+              <div class="fh__feature-text">
+                {%- if b.title != blank -%}<p class="fh__feature-title">{{ b.title }}</p>{%- endif -%}
+                {%- if b.description != blank -%}<p class="fh__feature-desc">{{ b.description }}</p>{%- endif -%}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Feature Highlights",
+  "tag": "section",
+  "class": "feature-highlights-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "DEODORANT FOR MODERN, ACTIVE LIFE"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "A powerful 2-in-1 deodorant and premium fragrance for daily wear and on-the-go freshness"
+    },
+    {
+      "type": "header",
+      "content": "Center image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Center image"
+    },
+    {
+      "type": "select",
+      "id": "image_aspect",
+      "label": "Image aspect ratio",
+      "options": [
+        { "value": "1 / 1",  "label": "Square (1:1)" },
+        { "value": "4 / 5",  "label": "Portrait (4:5)" },
+        { "value": "3 / 4",  "label": "Portrait (3:4)" },
+        { "value": "2 / 3",  "label": "Tall (2:3)" },
+        { "value": "16 / 9", "label": "Landscape (16:9)" }
+      ],
+      "default": "4 / 5"
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "label": "Image border radius (px)",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "image_width_desktop",
+      "label": "Image width – Desktop (px)",
+      "min": 280,
+      "max": 720,
+      "step": 10,
+      "default": 460
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#C8D3EC"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon tint (used if icons are SVG with currentColor)",
+      "default": "#19a974"
+    },
+    {
+      "type": "range",
+      "id": "icon_size_desktop",
+      "label": "Icon size – Desktop (px)",
+      "min": 24,
+      "max": 120,
+      "step": 2,
+      "default": 56,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "icon_size_mobile",
+      "label": "Icon size – Mobile (px)",
+      "min": 20,
+      "max": 96,
+      "step": 2,
+      "default": 44,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size",
+      "label": "Eyebrow size (px)",
+      "min": 10,
+      "max": 22,
+      "step": 1,
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "heading_size_desktop",
+      "label": "Heading size – Desktop (px)",
+      "min": 18,
+      "max": 56,
+      "step": 1,
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Heading size – Mobile (px)",
+      "min": 14,
+      "max": 32,
+      "step": 1,
+      "default": 22
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width (px)",
+      "min": 800,
+      "max": 1600,
+      "step": 20,
+      "default": 1400
+    },
+    {
+      "type": "range",
+      "id": "side_padding",
+      "label": "Side padding (px)",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "head_max_width",
+      "label": "Heading block max width (px)",
+      "min": 400,
+      "max": 1400,
+      "step": 20,
+      "default": 1100
+    },
+    {
+      "type": "range",
+      "id": "head_gap",
+      "label": "Gap below heading (px)",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Gap between columns (px)",
+      "min": 12,
+      "max": 100,
+      "step": 2,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "feature_gap",
+      "label": "Gap between features in a column (px)",
+      "min": 12,
+      "max": 140,
+      "step": 2,
+      "default": 56
+    },
+    {
+      "type": "header",
+      "content": "Padding & margin – Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Top padding – Desktop (px)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Bottom padding – Desktop (px)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Top margin – Desktop (px)",
+      "min": -100,
+      "max": 100,
+      "step": 4,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Bottom margin – Desktop (px)",
+      "min": -100,
+      "max": 100,
+      "step": 4,
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Padding & margin – Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top padding – Mobile (px)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom padding – Mobile (px)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Top margin – Mobile (px)",
+      "min": -80,
+      "max": 80,
+      "step": 4,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Bottom margin – Mobile (px)",
+      "min": -80,
+      "max": 80,
+      "step": 4,
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "limit": 12,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon (small image)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "ODOR FIGHTING"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Powerful deodorizing and prebiotic ingredients trap odor, keeping you odor-free all day"
+        },
+        {
+          "type": "select",
+          "id": "column",
+          "label": "Column",
+          "options": [
+            { "value": "left",  "label": "Left" },
+            { "value": "right", "label": "Right" }
+          ],
+          "default": "left"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Feature Highlights",
+      "blocks": [
+        { "type": "feature", "settings": { "title": "ODOR FIGHTING",     "description": "Powerful deodorizing and prebiotic ingredients trap odor, keeping you odor-free all day", "column": "left" } },
+        { "type": "feature", "settings": { "title": "ALUMINUM-FREE",     "description": "Allows your body to breathe and sweat naturally while keeping you smelling your best", "column": "left" } },
+        { "type": "feature", "settings": { "title": "NO STAIN OR RESIDUE", "description": "No flakes, residue, or stains with our baking soda- and starch-free formula", "column": "left" } },
+        { "type": "feature", "settings": { "title": "PREMIUM SCENTS",    "description": "We outspend the competition 2-3X creating long-lasting, modern, fresh scents that rival luxury fragrances", "column": "right" } },
+        { "type": "feature", "settings": { "title": "CRUELTY-FREE",      "description": "OffCourt products and ingredients are never tested on animals", "column": "right" } },
+        { "type": "feature", "settings": { "title": "VEGAN",             "description": "Ingredients and fragrances are vegan and gluten-free", "column": "right" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

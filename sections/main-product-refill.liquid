@@ -1,0 +1,1727 @@
+<style>
+  .refill-product-section {
+    padding: 40px 0;
+  }
+  .refill-product__grid {
+    display: grid;
+    grid-template-columns: {{ section.settings.media_col_fr | default: 115 | divided_by: 100.0 }}fr {{ section.settings.info_col_fr | default: 100 | divided_by: 100.0 }}fr;
+    gap: {{ section.settings.grid_gap | default: 32 }}px;
+    align-items: stretch;
+  }
+
+  /* ---- MEDIA LEFT ---- */
+  /* Thumbnails on the left, main image on the right inside the media column. */
+  .refill-product__media-col {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+  /* When the product has only one media (no thumbnail rail), the main image
+     must take the full media column — otherwise CSS Grid drops it into the
+     first 80px track and the image effectively disappears on desktop. */
+  .refill-product__media-col--single {
+    grid-template-columns: 1fr;
+  }
+  .refill-product__main-image {
+    border-radius: {{ section.settings.main_image_radius | default: 15 }}px;
+    overflow: hidden;
+    background: #f3f3f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: {{ section.settings.main_image_size_pct | default: 100 }}%;
+    {%- if section.settings.main_image_height_px and section.settings.main_image_height_px > 0 -%}
+    height: {{ section.settings.main_image_height_px }}px;
+    {%- else -%}
+    aspect-ratio: 1 / 1;
+    height: auto;
+    {%- endif -%}
+    min-height: 0;
+    margin-left: 0;
+    margin-right: auto;
+    position: relative;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .refill-product__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.85);
+    color: #1a1a1a;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
+    -webkit-appearance: none;
+    appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    padding: 0;
+  }
+  .refill-product__arrow:hover { background: #ffffff; }
+  .refill-product__arrow:active { transform: translateY(-50%) scale(0.95); }
+  .refill-product__arrow svg { width: 18px; height: 18px; display: block; }
+  .refill-product__arrow--prev { left: 12px; }
+  .refill-product__arrow--next { right: 12px; }
+  .refill-product__dots {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    gap: 8px;
+    z-index: 2;
+    padding: 6px 10px;
+    border-radius: 999px;
+  }
+  .refill-product__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.18);
+    transition: background 0.2s, transform 0.2s;
+  }
+  .refill-product__dot.active {
+    background: #BFCED6;
+    transform: scale(1.15);
+  }
+
+  .refill-product__main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    /* Smooth crossfade when goTo() swaps the src — img.swapping fades the
+       outgoing frame to 0; load handler removes the class to fade back in. */
+    transition: opacity 0.28s ease, transform 0.28s ease;
+    opacity: 1;
+    transform: scale(1);
+  }
+  .refill-product__main-image img.is-swapping {
+    opacity: 0;
+    transform: scale(1.015);
+  }
+
+  .refill-product__thumbnails {
+    display: flex;
+    flex-direction: column;
+    gap: {{ section.settings.thumbnail_gap_px | default: 8 }}px;
+  }
+
+  .refill-product__thumbnail {
+    width: 80px;
+    height: {{ section.settings.thumbnail_height_px | default: 80 }}px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #f0f0f0;
+    cursor: pointer;
+    border: 2px solid transparent;
+    flex-shrink: 0;
+    transition: border-color 0.2s;
+  }
+
+  .refill-product__thumbnail.active,
+  .refill-product__thumbnail:hover {
+    border-color: #000;
+  }
+
+  .refill-product__thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ---- INFO RIGHT ---- */
+  .refill-product__info {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .refill-product__title-price-row {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  /* Small uppercase eyebrow above the title (e.g. "REFILLABLE DEODORANT POD") */
+  .refill-product__eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 1.3;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 0;
+    color: #000;
+  }
+
+  /* Title + side badge row */
+  .refill-product__title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 0;
+  }
+  .refill-product__title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 36px;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    text-align: left;
+    margin: 0;
+    color: #000;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .refill-product__title-badge {
+    flex: 0 0 auto;
+    align-self: flex-start;
+    background: #BFCED6;
+    color: #000;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 1.3;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* Live-view counter — sits above the eyebrow/title as a small social-proof
+     line. Uses the global <live-view> custom element from main-product.js. */
+  .refill-product__live-view {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #1a1a1a;
+  }
+  .refill-product__live-view live-view { font-size: 13px; }
+
+  /* Review + sold strip — Judge.me badge + 🔥 X sold in last Y hours.
+     Renders between the price and the short description. Single line,
+     tight bottom margin so the short description hugs underneath. */
+  .refill-product__review-sold {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 16px;
+    margin: 0 0 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #1a1a1a;
+    white-space: nowrap;
+  }
+  .refill-product__review-sold .product-reviews { margin: 0; white-space: nowrap; }
+  .refill-product__review-sold sold-product { font-size: 13px; white-space: nowrap; }
+  .refill-product__review-sold > * { flex: 0 0 auto; }
+
+  /* Custom Liquid block wrapper — gives merchant-supplied markup the same
+     horizontal rhythm as the surrounding info column. */
+  .refill-product__custom-liquid {
+    margin: 0 0 22px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #1a1a1a;
+  }
+  .refill-product__custom-liquid:empty { display: none; }
+
+  /* Short description (rendered from product metafield custom.short) */
+  .refill-product__short {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 22px;
+    letter-spacing: 0;
+    text-align: left;
+    margin: 4px 0 22px;
+    color: #1a1a1a;
+    white-space: pre-line;
+  }
+  .refill-product__short strong,
+  .refill-product__short b { font-weight: 700; }
+  .refill-product__short em,
+  .refill-product__short i { font-style: italic; }
+  .refill-product__short p { margin: 0 0 8px; }
+  .refill-product__short p:last-child { margin-bottom: 0; }
+
+  /* Scent label + value (label hardcoded, value from custom.scent metafield) */
+  .refill-product__scent {
+    margin: 0 0 20px;
+    text-align: left;
+  }
+  .refill-product__scent-label {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.3;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    color: #000;
+    margin: 0 0 6px;
+  }
+  .refill-product__scent-value {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 22px;
+    letter-spacing: 0;
+    color: #000;
+    margin: 0;
+  }
+  .refill-product__scent-value em,
+  .refill-product__scent-value i,
+  .refill-product__scent-value p:nth-child(n+2) { font-style: italic; }
+  .refill-product__scent-value strong,
+  .refill-product__scent-value b { font-weight: 700; font-style: italic; }
+  .refill-product__scent-value em,
+  .refill-product__scent-value i { font-style: italic; }
+  .refill-product__scent-value p { margin: 0 0 4px; }
+  .refill-product__scent-value p:last-child { margin-bottom: 0; }
+  .refill-product__scent-tagline {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #1a1a1a;
+    margin: 2px 0 0;
+  }
+
+  .refill-product__price-wrap {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 28px;
+    letter-spacing: 0;
+    text-align: left;
+    margin: 0;
+    color: #000;
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+  .refill-product__price-current {
+    color: #000;
+  }
+
+  .refill-product__price-compare {
+    opacity: 0.45;
+    font-size: 16px;
+    text-decoration: line-through;
+    color: #000;
+  }
+
+  .refill-product__inventory {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 24px;
+    letter-spacing: 0;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    margin: 0 0 24px;
+  }
+
+  /* "You selected: Case • Scent" summary — populated client-side from
+     localStorage written by case-selector + scent-selector. Hidden until
+     at least one selection is present. */
+  .refill-product__selection-summary {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0;
+    color: #000;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px;
+    margin: 0 0 16px;
+    padding: 10px 14px;
+    background-color: #EDEEF2;
+    border-radius: 8px;
+  }
+  /* The class sets display:flex, which would otherwise override the
+     browser's UA `[hidden] { display: none }`, leaving an empty
+     "You selected:" pill visible before any selection is made. */
+  .refill-product__selection-summary[hidden] {
+    display: none;
+  }
+  .refill-product__selection-label {
+    font-weight: 500;
+  }
+  .refill-product__selection-value {
+    font-weight: 400;
+  }
+  /* Separator is shown by JS only when both case and scent are present. */
+  .refill-product__selection-sep {
+    color: rgba(0, 0, 0, 0.4);
+    display: none;
+  }
+
+  .refill-product__inventory-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #b8c0d8;
+    flex-shrink: 0;
+    position: relative;
+    animation: refill-pulse 2s ease-in-out infinite;
+    box-shadow: 0 0 0 0 rgba(184, 192, 216, 0.7);
+  }
+
+  @keyframes refill-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(184, 192, 216, 0.7); }
+    50%  { box-shadow: 0 0 0 7px rgba(184, 192, 216, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(184, 192, 216, 0); }
+  }
+
+  /* Variant swatches */
+  .refill-product__variants {
+    margin-bottom: 24px;
+  }
+
+  .refill-product__variant-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 24px;
+    letter-spacing: 0;
+    margin-bottom: 10px;
+    text-align: left;
+    color: #444;
+  }
+
+  .refill-product__swatches {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .refill-product__swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    transition: outline-color 0.2s;
+    padding: 0;
+    opacity: 0.55;
+    filter: saturate(0.4) brightness(1.15);
+  }
+
+  .refill-product__swatch.active,
+  .refill-product__swatch:hover {
+    outline-color: #000;
+    opacity: 1;
+    filter: saturate(0.4) brightness(1.15);
+  }
+
+  /* Buy row */
+  .refill-product__buy-row {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+    margin-bottom: 10px;
+  }
+
+  .refill-product__quantity {
+    display: flex !important;
+    align-items: center !important;
+    border: 1.5px solid #000 !important;
+    border-radius: 5px !important;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
+    height: 50px !important;
+    background: #fff !important;
+    padding: 0 !important;
+    gap: 0 !important;
+  }
+
+  .refill-product__qty-btn {
+    all: unset !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 36px !important;
+    height: 100% !important;
+    font-size: 16px !important;
+    cursor: pointer !important;
+    color: #000 !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    flex-shrink: 0 !important;
+  }
+
+  .refill-product__qty-btn:hover {
+    background: #f5f5f5 !important;
+  }
+
+  .refill-product__qty-input {
+    all: unset !important;
+    width: 36px !important;
+    text-align: center !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 16px !important;
+    color: #000 !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100% !important;
+  }
+
+  .refill-product__cta {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 50px;
+    background: #A098D7;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 1.2;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 0 32px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .refill-product__cta:hover {
+    background: #8278C9;
+    color: #ffffff;
+  }
+  .refill-product__cta:focus,
+  .refill-product__cta:active {
+    color: #ffffff;
+  }
+  /* Make the buy row span the info column so the wider ATC has room. */
+  .refill-product__buy-row {
+    width: 100%;
+  }
+
+  /* Buy Now — full-width secondary CTA with price + arrow */
+  .refill-product__buynow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    width: 100%;
+    height: 52px;
+    margin: 0 0 24px;
+    padding: 0 22px;
+    background: #1a1a1a;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .refill-product__buynow:hover {
+    background: #000;
+  }
+  .refill-product__buynow:active {
+    transform: translateY(1px);
+  }
+  .refill-product__buynow-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .refill-product__buynow-sep {
+    opacity: 0.5;
+    font-weight: 400;
+  }
+  .refill-product__buynow-price {
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .refill-product__buynow-arrow {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+  .refill-product__buynow:hover .refill-product__buynow-arrow {
+    transform: translateX(3px);
+  }
+
+  /* Accordion Tabs */
+  .refill-product__tabs {
+    border-top: none;
+    text-align: left;
+  }
+
+  .refill-product__tab {
+    border-bottom: 1px solid #000;
+  }
+
+  .refill-product__tab-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    cursor: pointer;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    /* iOS Safari shows a blue tap-highlight + treats <button> text as
+       link-blue on some sites. Force black + transparent tap color. */
+    color: #000;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    appearance: none;
+    font: inherit;
+  }
+  .refill-product__tab-header:focus,
+  .refill-product__tab-header:active,
+  .refill-product__tab-header:hover {
+    color: #000;
+    background: none;
+  }
+
+  .refill-product__tab-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 18px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #000;
+  }
+
+  .refill-product__tab-icon {
+    font-size: 22px;
+    line-height: 1;
+    transition: transform 0.25s;
+    flex-shrink: 0;
+    color: #000;
+  }
+
+  .refill-product__tab.is-open .refill-product__tab-icon {
+    transform: rotate(45deg);
+  }
+
+  .refill-product__tab-body {
+    display: none;
+    padding: 0 0 20px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #1a1a1a;
+  }
+  /* Normalise everything pulled from product.description (which carries
+     its own inline font-size, h2/h3, blank <p>, big <strong>, etc.) so
+     the description tab matches every other tab visually. Preserve the
+     merchant's original CASE — don't force uppercase. */
+  .refill-product__tab-body h1,
+  .refill-product__tab-body h2,
+  .refill-product__tab-body h3,
+  .refill-product__tab-body h4,
+  .refill-product__tab-body h5,
+  .refill-product__tab-body h6 {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    line-height: 1.5 !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+    color: #1a1a1a !important;
+    margin: 10px 0 4px !important;
+    padding: 0 !important;
+  }
+  .refill-product__tab-body h1:first-child,
+  .refill-product__tab-body h2:first-child,
+  .refill-product__tab-body h3:first-child,
+  .refill-product__tab-body h4:first-child,
+  .refill-product__tab-body h5:first-child,
+  .refill-product__tab-body h6:first-child {
+    margin-top: 0 !important;
+  }
+  .refill-product__tab-body p,
+  .refill-product__tab-body li,
+  .refill-product__tab-body span,
+  .refill-product__tab-body div {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+    color: #1a1a1a !important;
+    font-weight: 400 !important;
+  }
+  .refill-product__tab-body p { margin: 0 0 8px !important; }
+  .refill-product__tab-body p:last-child { margin-bottom: 0 !important; }
+  .refill-product__tab-body p:empty,
+  .refill-product__tab-body p > br:only-child { display: none !important; }
+  .refill-product__tab-body strong,
+  .refill-product__tab-body b { font-weight: 500 !important; font-size: inherit !important; text-transform: none !important; color: #1a1a1a !important; }
+  .refill-product__tab-body em,
+  .refill-product__tab-body i { font-style: italic; font-size: inherit !important; text-transform: none !important; }
+  .refill-product__tab-body img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 10px 0;
+    border-radius: 8px;
+  }
+  .refill-product__tab-body ul {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0;
+  }
+  .refill-product__tab-body ol {
+    padding-left: 22px;
+    margin: 8px 0;
+  }
+  .refill-product__tab-body ul li {
+    position: relative;
+    padding-left: 22px;
+    margin: 0 0 6px !important;
+    font-weight: 400 !important;
+  }
+  .refill-product__tab-body ol li {
+    margin: 0 0 6px !important;
+    font-weight: 400 !important;
+  }
+  .refill-product__tab-body ul li:last-child,
+  .refill-product__tab-body ol li:last-child { margin-bottom: 0 !important; }
+  .refill-product__tab-body ul li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 9px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #A098D7;
+  }
+
+  .refill-product__tab.is-open .refill-product__tab-body {
+    display: block;
+  }
+
+  @media (max-width: 768px) {
+    #section-{{ section.id }}.refill-product-section {
+      box-sizing: border-box !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      overflow-x: hidden !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    #section-{{ section.id }} .refill-product__grid {
+      grid-template-columns: 1fr !important;
+      gap: 20px !important;
+      width: 100% !important;
+      min-width: 0 !important;
+    }
+    #section-{{ section.id }} .refill-product__media-col,
+    #section-{{ section.id }} .refill-product__info {
+      min-width: 0 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    /* Mobile: stack as a single column with the MAIN IMAGE on top and
+       a horizontal thumbnail strip BELOW the image. Force the main image
+       wrap to fill its column edge-to-edge so the image is full-width
+       (the section already has a small mobile side margin via
+       side_margin_mobile). */
+    #section-{{ section.id }} .refill-product__media-col {
+      grid-template-columns: 1fr !important;
+      gap: 12px !important;
+    }
+    /* Mobile: lock main image to a consistent 1:1 square so every product
+       renders at the same size regardless of source image dimensions. */
+    #section-{{ section.id }} .refill-product__main-image {
+      order: 1 !important;
+      width: 100% !important;
+      margin: 0 !important;
+      aspect-ratio: 1 / 1 !important;
+      height: auto !important;
+      border-radius: 0 !important;
+      background: #f3f3f5 !important;
+    }
+    /* Show arrows + dot pagination only on mobile, hide thumbnail strip. */
+    #section-{{ section.id }} .refill-product__arrow {
+      display: flex !important;
+    }
+    #section-{{ section.id }} .refill-product__dots {
+      display: flex !important;
+    }
+    #section-{{ section.id }} .refill-product__thumbnails {
+      display: none !important;
+    }
+    #section-{{ section.id }} .refill-product__main-image img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+    }
+    #section-{{ section.id }} .refill-product__thumbnails {
+      order: 2 !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 0 12px 4px !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+    }
+    #section-{{ section.id }} .refill-product__thumbnails::-webkit-scrollbar {
+      display: none;
+    }
+    /* Re-pad the info column so text isn't flush against the screen edges
+       even though the section root is now padding: 0 on mobile. */
+    #section-{{ section.id }} .refill-product__info {
+      text-align: left !important;
+      padding-left: 16px !important;
+      padding-right: 16px !important;
+    }
+    #section-{{ section.id }} .refill-product__title-price-row {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      justify-content: flex-start !important;
+      gap: 8px !important;
+      margin-bottom: 10px !important;
+    }
+    #section-{{ section.id }} .refill-product__title {
+      font-family: 'Inter', sans-serif !important;
+      font-weight: 400 !important;
+      font-size: 20px !important;
+      line-height: 24px !important;
+      letter-spacing: 0 !important;
+      text-transform: uppercase !important;
+      text-align: left !important;
+      margin: 0 !important;
+    }
+    #section-{{ section.id }} .refill-product__price-wrap {
+      font-family: 'Inter', sans-serif !important;
+      font-weight: 400 !important;
+      font-size: 24px !important;
+      line-height: 28px !important;
+      letter-spacing: 0 !important;
+      text-align: left !important;
+      margin: 0 !important;
+      justify-content: flex-start !important;
+    }
+    #section-{{ section.id }} .refill-product__price-current {
+      font-size: 24px !important;
+    }
+    #section-{{ section.id }} .refill-product__price-compare {
+      font-size: 18px !important;
+    }
+    #section-{{ section.id }} .refill-product__description {
+      font-size: 13px !important;
+      line-height: 1.55 !important;
+      text-align: left !important;
+      margin-bottom: 14px !important;
+    }
+    #section-{{ section.id }} .refill-product__variants {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      gap: 10px !important;
+      margin-bottom: 16px !important;
+    }
+    #section-{{ section.id }} .refill-product__variant-label {
+      margin: 0 !important;
+      font-family: 'Inter', sans-serif !important;
+      font-weight: 400 !important;
+      font-size: 20px !important;
+      line-height: 24px !important;
+      letter-spacing: 0 !important;
+      text-align: left !important;
+      white-space: nowrap !important;
+    }
+    #section-{{ section.id }} .refill-product__swatches {
+      justify-content: flex-start !important;
+      flex-wrap: nowrap !important;
+    }
+    #section-{{ section.id }} .refill-product__swatch {
+      width: 30px !important;
+      height: 30px !important;
+      min-width: 30px !important;
+      min-height: 30px !important;
+      border-radius: 50% !important;
+      padding: 0 !important;
+      box-sizing: border-box !important;
+    }
+    #section-{{ section.id }} .refill-product__inventory {
+      font-family: 'Inter', sans-serif !important;
+      font-weight: 400 !important;
+      font-size: 20px !important;
+      line-height: 24px !important;
+      letter-spacing: 0 !important;
+      justify-content: flex-start !important;
+      text-align: left !important;
+      margin-bottom: 20px !important;
+    }
+    #section-{{ section.id }} .refill-product__inventory-dot {
+      width: 10px !important;
+      height: 10px !important;
+    }
+    #section-{{ section.id }} .refill-product__buy-row {
+      display: grid !important;
+      grid-template-columns: 110px 1fr !important;
+      gap: 20px !important;
+      width: 100% !important;
+      max-width: 335px !important;
+      height: 50px !important;
+      margin: 0 0 10px !important;
+      align-items: center !important;
+    }
+    #section-{{ section.id }} .refill-product__quantity {
+      width: 110px !important;
+      max-width: 110px !important;
+      height: 50px !important;
+      border-radius: 5px !important;
+      border: 1px solid #000 !important;
+    }
+    #section-{{ section.id }} .refill-product__qty-btn {
+      width: 28px !important;
+      font-size: 16px !important;
+    }
+    #section-{{ section.id }} .refill-product__qty-input {
+      width: 34px !important;
+      font-size: 14px !important;
+    }
+    #section-{{ section.id }} .refill-product__cta {
+      width: 100% !important;
+      height: 50px !important;
+      border-radius: 5px !important;
+      background: #A098D7 !important;
+      color: #ffffff !important;
+      font-size: 14px !important;
+      padding: 0 !important;
+      box-sizing: border-box !important;
+    }
+    #section-{{ section.id }} .refill-product__buynow {
+      height: 50px !important;
+      padding: 0 18px !important;
+      font-size: 13px !important;
+      margin: 0 0 20px !important;
+      justify-content: center !important;
+    }
+    #section-{{ section.id }} .refill-product__buynow-arrow {
+      width: 18px !important;
+      height: 18px !important;
+    }
+    #section-{{ section.id }} .refill-product__tab-header {
+      font-size: 14px !important;
+      padding: 14px 0 !important;
+    }
+    #section-{{ section.id }} .refill-product__tab-body {
+      font-size: 13px !important;
+    }
+  }
+</style>
+
+{%- liquid
+  assign selected_variant = product.selected_or_first_available_variant
+  # Main image = the product's first/featured media (the original image
+  # set in Shopify). Variant's featured_media still wins when a variant
+  # is selected.
+  assign main_media = product.featured_media | default: product.media.first
+  assign selected_media = selected_variant.featured_media | default: main_media
+  assign low_threshold = section.settings.low_inventory_threshold | default: 10
+  assign show_low_inventory = false
+  if selected_variant.inventory_management == 'shopify' and selected_variant.inventory_quantity > 0 and selected_variant.inventory_quantity <= low_threshold
+    assign show_low_inventory = true
+  endif
+-%}
+
+<div id="section-{{ section.id }}" class="refill-product-section" style="padding-left: {{ section.settings.padding_horizontal }}px; padding-right: {{ section.settings.padding_horizontal }}px;">
+  <div style="max-width: {{ section.settings.max_width }}px; margin: 0 auto;">
+    {%- form 'product', product, id: 'refill-product-form', class: 'refill-product__form' -%}
+      <input type="hidden" name="id" value="{{ selected_variant.id }}" id="refill-variant-id">
+
+      <div class="refill-product__grid">
+
+        <!-- LEFT: Media (thumbnails column + main image) -->
+        <div class="refill-product__media-col{% if product.media.size <= 1 %} refill-product__media-col--single{% endif %}">
+          {%- if product.media.size > 1 -%}
+            <div class="refill-product__thumbnails">
+              {%- for media in product.media -%}
+                <div
+                  class="refill-product__thumbnail{% if media == selected_media %} active{% endif %}"
+                  data-src="{{ media | image_url: width: 900 }}"
+                  data-media-id="{{ media.id }}"
+                  role="button"
+                  tabindex="0"
+                  aria-label="{{ media.alt | default: product.title | escape }}"
+                >
+                  <img
+                    src="{{ media | image_url: width: 150 }}"
+                    alt="{{ media.alt | default: product.title | escape }}"
+                    width="150"
+                    height="150"
+                    loading="lazy"
+                  >
+                </div>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+
+          <div class="refill-product__main-image" id="refill-main-image-{{ section.id }}">
+            {%- if selected_media -%}
+              <img
+                id="refill-featured-img"
+                src="{{ selected_media | image_url: width: 900 }}"
+                alt="{{ selected_media.alt | default: product.title | escape }}"
+                width="900"
+                height="900"
+                loading="eager"
+              >
+            {%- else -%}
+              {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            {%- endif -%}
+            {%- if product.media.size > 1 -%}
+              <button type="button" class="refill-product__arrow refill-product__arrow--prev" aria-label="Previous image">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <button type="button" class="refill-product__arrow refill-product__arrow--next" aria-label="Next image">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <div class="refill-product__dots" aria-hidden="true">
+                {%- assign total_media = product.media.size -%}
+                {%- for i in (1..total_media) -%}
+                  <span class="refill-product__dot{% if forloop.first %} active{% endif %}"></span>
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+          </div>
+
+        </div>
+
+        <!-- RIGHT: Info -->
+        <div class="refill-product__info">
+
+          {%- comment -%}
+            Live-view counter — sits ABOVE the eyebrow/title. Same widget
+            as the main-product `live_view` block; <live-view> re-rolls a
+            random number between min and max every <interval> seconds and
+            replaces the literal [count] placeholder in the message.
+          {%- endcomment -%}
+          {%- if section.settings.show_live_view and section.settings.live_view_content != blank -%}
+            <div class="refill-product__live-view">
+              <svg width="22" height="18" viewBox="0 0 30 25" fill="none" aria-hidden="true">
+                <rect width="30" height="25" y=".001" fill="#111" rx="3"/>
+                <path fill="#fff" d="m8.563 12.339.153-.28c.101-.194.25-.431.444-.71.127-.178.267-.369.42-.572a8.86 8.86 0 0 1 .532-.634c.246-.263.517-.525.813-.788.304-.262.635-.503.99-.723.432-.271.906-.491 1.422-.66A5.076 5.076 0 0 1 15 7.705c.592 0 1.147.089 1.663.267.516.169.99.389 1.422.66.355.22.681.461.977.723.305.263.58.525.826.788.194.211.368.423.52.634.161.204.305.394.432.572.195.279.343.516.444.71l.152.28c.043.085.064.17.064.254 0 .084-.021.16-.064.228l-.152.292c-.101.187-.25.424-.444.711-.127.178-.271.373-.432.584a8.1 8.1 0 0 1-.52.622c-.246.263-.52.525-.826.787a7.126 7.126 0 0 1-.977.724c-.432.27-.906.49-1.422.66a5.31 5.31 0 0 1-1.663.254 5.31 5.31 0 0 1-1.663-.254c-.516-.17-.99-.39-1.422-.66a7.827 7.827 0 0 1-.99-.724 12.092 12.092 0 0 1-.813-.787 11.09 11.09 0 0 1-.533-.622l-.419-.584a9.18 9.18 0 0 1-.444-.71l-.153-.293a.49.49 0 0 1 0-.482Zm6.437-3.542a4.27 4.27 0 0 0-1.333.203 5.256 5.256 0 0 0-1.168.546 6.269 6.269 0 0 0-.85.622 9.134 9.134 0 0 0-1.194 1.27 11.2 11.2 0 0 0-.38.52 5.4 5.4 0 0 0-.242.355c-.06.102-.114.19-.166.267l.166.28c.05.077.106.171.165.28.068.102.149.221.243.356.11.16.237.334.38.52.144.187.3.373.47.559.22.237.461.47.724.698.262.229.546.44.85.635.364.22.754.402 1.168.546a4.39 4.39 0 0 0 1.346.203 4.27 4.27 0 0 0 1.333-.203 6.022 6.022 0 0 0 1.18-.546c.305-.195.589-.406.851-.635a9.52 9.52 0 0 0 .724-.698c.17-.186.326-.373.47-.559.143-.186.27-.36.38-.52.094-.135.17-.254.229-.356.068-.11.127-.203.178-.279l-.178-.267a3.087 3.087 0 0 0-.229-.355 11.2 11.2 0 0 0-.38-.52 9.134 9.134 0 0 0-1.194-1.27 6.269 6.269 0 0 0-.85-.622A5.178 5.178 0 0 0 16.333 9 4.269 4.269 0 0 0 15 8.797Zm2.171 3.783c0 .305-.06.588-.178.85-.11.263-.262.492-.457.686a2.143 2.143 0 0 1-1.536.635c-.296 0-.58-.055-.85-.165a2.294 2.294 0 0 1-.686-.47 2.296 2.296 0 0 1-.47-.685 2.178 2.178 0 0 1-.165-.85c0-.297.055-.576.165-.839.119-.262.275-.49.47-.685.194-.195.423-.347.685-.457a2.1 2.1 0 0 1 1.689 0 2.084 2.084 0 0 1 1.155 1.142c.119.263.178.542.178.838Z"/>
+              </svg>
+              <live-view
+                data-min="{{ section.settings.live_view_min }}"
+                data-max="{{ section.settings.live_view_max }}"
+                data-interval="{{ section.settings.live_view_interval }}"
+                data-message="{{ section.settings.live_view_content | escape }}"
+                class="heading-color lh-normal"
+              ></live-view>
+            </div>
+          {%- endif -%}
+
+          <div class="refill-product__title-price-row">
+            {%- if section.settings.eyebrow_label != blank -%}
+              <p class="refill-product__eyebrow">{{ section.settings.eyebrow_label }}</p>
+            {%- endif -%}
+            <div class="refill-product__title-row">
+              <h1 class="refill-product__title">{{ product.title }}</h1>
+              {%- if section.settings.badge_text != blank -%}
+                {%- assign badge_bg = product.metafields.custom.badge_color | default: '#BFCED6' -%}
+                <span class="refill-product__title-badge" style="background-color: {{ badge_bg }};">{{ section.settings.badge_text }}</span>
+              {%- endif -%}
+            </div>
+            <div class="refill-product__price-wrap" id="refill-price">
+              {%- if selected_variant.compare_at_price > selected_variant.price -%}
+                <span class="refill-product__price-compare">{{ selected_variant.compare_at_price | money }}</span>
+              {%- endif -%}
+              <span class="refill-product__price-current">{{ selected_variant.price | money }}</span>
+            </div>
+          </div>
+
+          {%- comment -%}
+            Review (Judge.me badge) + fake sold strip — placed between the
+            price and the short description. Pools feed <sold-product>
+            which picks one value at random per render. Capped at 40 sold
+            / 24 hours per user requirement.
+          {%- endcomment -%}
+          {%- if section.settings.show_review or section.settings.show_sold_products -%}
+            {%- assign sold_pool = '2,3,5,7,8,11,13,16,19,21,24,27,29,32,35,37,40' -%}
+            {%- assign hours_pool = '2,4,6,8,10,12,14,16,18,20,22,24' -%}
+            <div class="refill-product__review-sold review_sold">
+              {%- if section.settings.show_review -%}
+                {%- render 'review', product: product -%}
+              {%- endif -%}
+              {%- if section.settings.show_sold_products -%}
+                <div class="flex gap-5 align-center">
+                  <span aria-hidden="true" style="font-size: 14px; line-height: 1;">🔥</span>
+                  <sold-product
+                    class="primary-color"
+                    data-sold="{{ sold_pool }}"
+                    data-hours="{{ hours_pool }}"
+                    data-message="{{ 'products.product.fake_sold' | t }}"
+                  ></sold-product>
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
+          {%- comment -%}
+            Short description — reads from custom.short_desc (active key),
+            with legacy fallbacks to custom.short_description and
+            custom.short. Supports plain Multi-line text and Rich text via
+            metafield_tag.
+          {%- endcomment -%}
+          {%- assign pdp_short = product.metafields.custom.short_desc -%}
+          {%- if pdp_short == blank -%}
+            {%- assign pdp_short = product.metafields.custom.short_description -%}
+          {%- endif -%}
+          {%- if pdp_short == blank -%}
+            {%- assign pdp_short = product.metafields.custom.short -%}
+          {%- endif -%}
+          {%- if pdp_short != blank -%}
+            <div class="refill-product__short">
+              {{ pdp_short | metafield_tag }}
+            </div>
+          {%- endif -%}
+
+          {%- comment -%}
+            Scent — same dual handling. The merchant's rich-text typically
+            contains 1–2 paragraphs (scent name + tagline); CSS below
+            styles them.
+          {%- endcomment -%}
+          {%- if product.metafields.custom.scent != blank -%}
+            <div class="refill-product__scent">
+              <span class="refill-product__scent-label">{{ section.settings.scent_label | default: 'SCENT' }}</span>
+              <div class="refill-product__scent-value">
+                {{ product.metafields.custom.scent | metafield_tag }}
+              </div>
+            </div>
+          {%- endif -%}
+
+          {%- comment -%}
+            Hidden inputs preserved so case + scent localStorage selections still
+            flow into cart line-item-properties from the case-selector / scent-selector
+            sections, even though the visible "You selected:" recap is removed.
+          {%- endcomment -%}
+          <input type="hidden" name="properties[Case]" id="refill-prop-case" form="refill-product-form" value="">
+          <input type="hidden" name="properties[Scent]" id="refill-prop-scent" form="refill-product-form" value="">
+
+          <div class="refill-product__buy-row">
+            <div class="refill-product__quantity">
+              <button type="button" class="refill-product__qty-btn" id="refill-qty-minus" aria-label="Decrease">−</button>
+              <input
+                id="refill-qty"
+                class="refill-product__qty-input"
+                type="text"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                name="quantity"
+                value="1"
+                aria-label="Quantity"
+              >
+              <button type="button" class="refill-product__qty-btn" id="refill-qty-plus" aria-label="Increase">+</button>
+            </div>
+            <button type="submit" name="add" class="refill-product__cta">
+              ADD TO CART
+            </button>
+          </div>
+
+          <button type="button" class="refill-product__buynow" id="refill-buynow-{{ section.id }}" aria-label="Buy now">
+            <span class="refill-product__buynow-text">
+              <span class="refill-product__buynow-label">Buy Now</span>
+              <span class="refill-product__buynow-sep">·</span>
+              <span class="refill-product__buynow-price" id="refill-buynow-price-{{ section.id }}">{{ selected_variant.price | money }}</span>
+            </span>
+            <svg class="refill-product__buynow-arrow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+
+          {%- comment -%}
+            Custom Liquid blocks — render any merchant-supplied Liquid/HTML
+            (badges, trust icons, embedded apps, etc.) above the tabs. Each
+            block is rendered in its block_order position.
+          {%- endcomment -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'custom_liquid' and block.settings.custom_liquid != blank -%}
+              <div class="refill-product__custom-liquid" {{ block.shopify_attributes }}>
+                {{ block.settings.custom_liquid }}
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+
+          <div class="refill-product__tabs">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'tab' -%}
+                {%- assign tab_title_lower = block.settings.title | downcase -%}
+                {%- assign is_ingredients_tab = false -%}
+                {%- if tab_title_lower contains 'ingredient' -%}
+                  {%- assign is_ingredients_tab = true -%}
+                {%- endif -%}
+                <div class="refill-product__tab" {{ block.shopify_attributes }}>
+                  <button type="button" class="refill-product__tab-header" aria-expanded="false">
+                    <span class="refill-product__tab-title">{{ block.settings.title }}</span>
+                    <span class="refill-product__tab-icon" aria-hidden="true">+</span>
+                  </button>
+                  <div class="refill-product__tab-body">
+                    {%- if block.settings.use_product_description and product.description != blank -%}
+                      {{ product.description }}
+                    {%- elsif is_ingredients_tab and product.metafields.custom.ingredients != blank -%}
+                      {{ product.metafields.custom.ingredients | metafield_tag }}
+                    {%- elsif block.settings.content != blank -%}
+                      {{ block.settings.content }}
+                    {%- elsif block.settings.page != blank -%}
+                      {{ pages[block.settings.page].content }}
+                    {%- else -%}
+                      <p>Content coming soon.</p>
+                    {%- endif -%}
+                  </div>
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+
+        </div>
+      </div>
+    {%- endform -%}
+  </div>
+</div>
+
+<script>
+(function () {
+  var productVariants = {{ product.variants | json }};
+
+  // Read case + scent selections written by case-selector / scent-selector,
+  // surface them in the "You selected" line, and stuff them into hidden
+  // line-item-property inputs so they flow into the order.
+  function readSelection(key) {
+    try {
+      var raw = localStorage.getItem(key);
+      if (!raw) return null;
+      var parsed = JSON.parse(raw);
+      if (parsed && typeof parsed.name === 'string' && parsed.name.length) return parsed.name;
+    } catch (e) {}
+    return null;
+  }
+  var caseName = readSelection('glozin_selected_case');
+  var scentName = readSelection('glozin_selected_scent');
+  var casePropInput = document.getElementById('refill-prop-case');
+  var scentPropInput = document.getElementById('refill-prop-scent');
+  if (casePropInput) casePropInput.value = caseName || '';
+  if (scentPropInput) scentPropInput.value = scentName || '';
+
+  // Media gallery — thumbnails, arrows, and swipe
+  (function () {
+    var sectionRoot = document.getElementById('section-{{ section.id }}');
+    if (!sectionRoot) return;
+    var thumbs = Array.prototype.slice.call(sectionRoot.querySelectorAll('.refill-product__thumbnail'));
+    var img = document.getElementById('refill-featured-img');
+    if (!img) return;
+
+    // Build the slide list from the thumbnails — each thumbnail now
+    // represents one product media (including the first), so slides
+    // index 1:1 with thumbs. { src, thumbEl } per slide.
+    var slides = thumbs.map(function (t) { return { src: t.dataset.src, thumbEl: t }; });
+    if (slides.length === 0) {
+      // Single-image product: fall back to the rendered main image.
+      slides = [{ src: img.src, thumbEl: null }];
+    }
+    var currentIndex = 0;
+
+    var dots = Array.prototype.slice.call(sectionRoot.querySelectorAll('.refill-product__dot'));
+
+    function goTo(i) {
+      if (i < 0) i = slides.length - 1;
+      if (i >= slides.length) i = 0;
+      currentIndex = i;
+      // Smooth crossfade: fade the current frame out, swap src, fade back in.
+      img.classList.add('is-swapping');
+      var nextSrc = slides[i].src;
+      var preload = new Image();
+      preload.onload = function () {
+        img.src = nextSrc;
+        // Allow paint, then drop the swap class to fade the new frame in.
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () { img.classList.remove('is-swapping'); });
+        });
+      };
+      preload.onerror = function () { img.classList.remove('is-swapping'); };
+      preload.src = nextSrc;
+      thumbs.forEach(function (t) { t.classList.remove('active'); });
+      if (slides[i].thumbEl) slides[i].thumbEl.classList.add('active');
+      dots.forEach(function (d, di) { d.classList.toggle('active', di === i); });
+    }
+
+    thumbs.forEach(function (t, idx) {
+      t.addEventListener('click', function () { goTo(idx); });
+      t.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goTo(idx); }
+      });
+    });
+
+    var prevBtn = sectionRoot.querySelector('.refill-product__arrow--prev');
+    var nextBtn = sectionRoot.querySelector('.refill-product__arrow--next');
+    if (prevBtn) prevBtn.addEventListener('click', function () { goTo(currentIndex - 1); });
+    if (nextBtn) nextBtn.addEventListener('click', function () { goTo(currentIndex + 1); });
+
+    // Touch swipe on the main image
+    var imageWrap = document.getElementById('refill-main-image-{{ section.id }}');
+    if (imageWrap && slides.length > 1) {
+      var startX = 0, startY = 0, dx = 0, dy = 0, swiping = false;
+      imageWrap.addEventListener('touchstart', function (e) {
+        if (e.touches.length !== 1) return;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        dx = 0; dy = 0; swiping = true;
+      }, { passive: true });
+      imageWrap.addEventListener('touchmove', function (e) {
+        if (!swiping || e.touches.length !== 1) return;
+        dx = e.touches[0].clientX - startX;
+        dy = e.touches[0].clientY - startY;
+      }, { passive: true });
+      imageWrap.addEventListener('touchend', function () {
+        if (!swiping) return;
+        swiping = false;
+        if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+          if (dx < 0) goTo(currentIndex + 1);
+          else goTo(currentIndex - 1);
+        }
+      });
+    }
+  })();
+
+  // Quantity
+  document.getElementById('refill-qty-minus').addEventListener('click', function () {
+    var input = document.getElementById('refill-qty');
+    var v = parseInt(input.value) || 1;
+    if (v > 1) input.value = v - 1;
+  });
+  document.getElementById('refill-qty-plus').addEventListener('click', function () {
+    var input = document.getElementById('refill-qty');
+    input.value = (parseInt(input.value) || 1) + 1;
+  });
+
+  // Accordion
+  document.querySelectorAll('#section-{{ section.id }} .refill-product__tab-header').forEach(function (header) {
+    header.addEventListener('click', function () {
+      var tab = this.closest('.refill-product__tab');
+      var isOpen = tab.classList.contains('is-open');
+      document.querySelectorAll('#section-{{ section.id }} .refill-product__tab').forEach(function (t) { t.classList.remove('is-open'); });
+      if (!isOpen) tab.classList.add('is-open');
+    });
+  });
+
+  // Variant picker is removed (color-selector swatches no longer rendered).
+  // The hidden variant ID stays at the default (selected_or_first_available_variant)
+  // and only changes if you re-introduce a picker later.
+
+  // Buy Now — add the current selection to cart, then redirect straight to checkout.
+  var buyNow = document.getElementById('refill-buynow-{{ section.id }}');
+  if (buyNow) {
+    buyNow.addEventListener('click', function () {
+      var form = document.getElementById('refill-product-form');
+      if (!form) return;
+      var fd = new FormData(form);
+      buyNow.disabled = true;
+      buyNow.style.opacity = '0.75';
+      fetch('/cart/add.js', { method: 'POST', body: fd })
+        .then(function (res) {
+          if (res.ok) {
+            window.location.href = '/checkout';
+          } else {
+            buyNow.disabled = false;
+            buyNow.style.opacity = '';
+          }
+        })
+        .catch(function () {
+          buyNow.disabled = false;
+          buyNow.style.opacity = '';
+        });
+    });
+  }
+})();
+
+// Mobile buy row: force exact sizes via inline styles so no app CSS can override
+(function applyMobileBuyRow() {
+  if (window.innerWidth > 768) return;
+  var root = document.getElementById('section-{{ section.id }}');
+  if (!root) return;
+  var buyRow = root.querySelector('.refill-product__buy-row');
+  var qty    = root.querySelector('.refill-product__quantity');
+  var cta    = root.querySelector('.refill-product__cta');
+  if (buyRow) {
+    buyRow.style.setProperty('display',               'grid',       'important');
+    buyRow.style.setProperty('grid-template-columns', '110px 1fr',  'important');
+    buyRow.style.setProperty('gap',                   '20px',       'important');
+    buyRow.style.setProperty('width',                 '100%',       'important');
+    buyRow.style.setProperty('max-width',             '335px',      'important');
+    buyRow.style.setProperty('height',                '50px',       'important');
+    buyRow.style.setProperty('margin',                '0 0 10px',   'important');
+    buyRow.style.setProperty('align-items',           'center',     'important');
+  }
+  if (qty) {
+    qty.style.setProperty('width',         '110px',        'important');
+    qty.style.setProperty('max-width',     '110px',        'important');
+    qty.style.setProperty('height',        '50px',         'important');
+    qty.style.setProperty('border-radius', '5px',          'important');
+    qty.style.setProperty('border',        '1px solid #000','important');
+  }
+  if (cta) {
+    cta.style.setProperty('width',         '100%',    'important');
+    cta.style.setProperty('height',        '50px',    'important');
+    cta.style.setProperty('border-radius', '5px',     'important');
+    cta.style.setProperty('background',    '#A098D7', 'important');
+    cta.style.setProperty('color',         '#ffffff', 'important');
+    cta.style.setProperty('font-size',     '14px',    'important');
+    cta.style.setProperty('padding',       '0',       'important');
+    cta.style.setProperty('box-sizing',    'border-box','important');
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Refill Product",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Section max width (px)",
+      "min": 600,
+      "max": 1600,
+      "step": 20,
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Gap between media & info columns (px)",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "media_col_fr",
+      "label": "Media column width",
+      "info": "Relative width of the left (media) column. Larger value = wider media column.",
+      "min": 50,
+      "max": 200,
+      "step": 5,
+      "default": 115
+    },
+    {
+      "type": "range",
+      "id": "info_col_fr",
+      "label": "Info column width",
+      "info": "Relative width of the right (info) column. Larger value = wider info column.",
+      "min": 50,
+      "max": 200,
+      "step": 5,
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Side margins"
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Side margin – Desktop (px)",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "side_margin_mobile",
+      "label": "Side margin – Mobile (px)",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA Button Label",
+      "default": "ADD TO CART"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow_label",
+      "label": "Eyebrow text (above title)",
+      "info": "Small uppercase text shown above the product title.",
+      "default": "REFILLABLE DEODORANT POD"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Title badge text",
+      "info": "Small badge to the right of the title (e.g. \"45G\"). Leave empty to hide."
+    },
+    {
+      "type": "text",
+      "id": "scent_label",
+      "label": "Scent section label",
+      "default": "SCENT"
+    },
+    {
+      "type": "header",
+      "content": "Review & sold"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_review",
+      "label": "Show Judge.me review badge",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sold_products",
+      "label": "Show \"X sold in last Y hours\" badge",
+      "info": "Sold count is randomly picked between 2–40 and the window between 2–24 hours on every page load.",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Live-view counter"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_live_view",
+      "label": "Show live-view counter",
+      "info": "Sits above the title as a small \"X people are viewing this right now\" line.",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "live_view_min",
+      "label": "Minimum viewers",
+      "min": 1,
+      "max": 30,
+      "step": 1,
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "live_view_max",
+      "label": "Maximum viewers",
+      "min": 31,
+      "max": 80,
+      "step": 1,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "live_view_interval",
+      "label": "Re-roll interval (seconds)",
+      "min": 1,
+      "max": 60,
+      "step": 1,
+      "default": 10
+    },
+    {
+      "type": "textarea",
+      "id": "live_view_content",
+      "label": "Message",
+      "info": "Use [count] where the random number should appear.",
+      "default": "[count] people are viewing this right now"
+    },
+    {
+      "type": "range",
+      "id": "main_image_size_pct",
+      "label": "Main image size",
+      "info": "Percent of the main-image column. Lower values make the image smaller and add side margin.",
+      "default": 100,
+      "min": 50,
+      "max": 100,
+      "step": 1,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "main_image_radius",
+      "label": "Main image corner radius",
+      "default": 15,
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "main_image_height_px",
+      "label": "Main image height (px)",
+      "info": "0 = auto (matches the thumbnail column height). Set a value to lock the image to a specific pixel height.",
+      "default": 0,
+      "min": 0,
+      "max": 900,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "thumbnail_height_px",
+      "label": "Thumbnail height (px)",
+      "default": 80,
+      "min": 40,
+      "max": 160,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "thumbnail_gap_px",
+      "label": "Gap between thumbnails (px)",
+      "default": 8,
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "paragraph",
+      "content": "Short description renders from the product metafield custom.short (multi-line text). Scent renders from custom.scent (text). Both must be defined in Settings → Custom data → Products."
+    },
+    {
+      "type": "number",
+      "id": "low_inventory_threshold",
+      "label": "Low Inventory Threshold",
+      "default": 10
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Tab",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Tab Title",
+          "default": "Tab"
+        },
+        {
+          "type": "checkbox",
+          "id": "use_product_description",
+          "label": "Show product description",
+          "info": "Pulls the product's main Description from Shopify. Overrides Content and Page if checked.",
+          "default": false
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Tab Content"
+        },
+        {
+          "type": "page",
+          "id": "page",
+          "label": "Or link a page"
+        }
+      ]
+    },
+    {
+      "type": "custom_liquid",
+      "name": "Custom Liquid",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "liquid",
+          "id": "custom_liquid",
+          "label": "Custom Liquid",
+          "info": "Add any Liquid / HTML / scripts. Block renders directly above the tabs."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Refill Product",
+      "blocks": [
+        { "type": "tab", "settings": { "title": "TECHNICAL INFO" } },
+        { "type": "tab", "settings": { "title": "HOW TO APPLY" } },
+        { "type": "tab", "settings": { "title": "INGREDIENTS" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,457 @@
+{%- liquid
+  assign st = section.settings
+-%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  #review-card-{{ section.id }} {
+    padding-top: {{ st.padding_top_desktop | default: 40 }}px;
+    padding-bottom: {{ st.padding_bottom_desktop | default: 40 }}px;
+    margin-top: {{ st.margin_top_desktop | default: 0 }}px;
+    margin-bottom: {{ st.margin_bottom_desktop | default: 0 }}px;
+    background: transparent;
+  }
+  #review-card-{{ section.id }} .review-card__inner {
+    width: 100%;
+    max-width: {{ st.max_width | default: 980 }}px;
+    margin: 0 auto;
+    padding: 0 {{ st.side_padding | default: 20 }}px;
+    box-sizing: border-box;
+  }
+  /* Desktop-only alignment override: when set to "left", mirror the
+     product section's layout (max-width 1500, 16px h-padding, 1.15fr /
+     1fr grid with 32px gap) and span the card across the media column
+     only. This keeps the card visually aligned with the thumbnails-to-
+     main-image span on the refill PDP. Mobile keeps the default
+     full-width centered layout. */
+  @media (min-width: 768px) {
+    {%- if st.desktop_align == 'left' -%}
+    #review-card-{{ section.id }} {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+    #review-card-{{ section.id }} .review-card__inner {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 0;
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 32px;
+    }
+    #review-card-{{ section.id }} .review-card {
+      grid-column: 1;
+      width: 100%;
+    }
+    {%- endif -%}
+  }
+  #review-card-{{ section.id }} .review-card {
+    background: {{ st.bg_color | default: '#C6DCE8' }};
+    border-radius: {{ st.card_radius | default: 14 }}px;
+    padding: {{ st.card_padding | default: 36 }}px;
+    color: {{ st.text_color | default: '#1a1a1a' }};
+    text-align: left;
+    /* Apply the serif font at the card root so every descendant inherits
+       it — protects against any inner richtext markup that breaks the
+       per-class scope. */
+    font-family: 'EB Garamond', 'Times New Roman', Times, serif !important;
+  }
+  #review-card-{{ section.id }} .review-card * {
+    font-family: inherit !important;
+  }
+  #review-card-{{ section.id }} .review-card__stars {
+    display: flex;
+    gap: 4px;
+    margin: 0 0 18px;
+  }
+  #review-card-{{ section.id }} .review-card__star {
+    width: {{ st.star_size | default: 18 }}px;
+    height: {{ st.star_size | default: 18 }}px;
+    color: {{ st.star_color | default: '#000000' }};
+    display: inline-block;
+  }
+  #review-card-{{ section.id }} .review-card__quote {
+    font-family: 'EB Garamond', 'Times New Roman', Times, serif;
+    font-weight: 500;
+    font-size: {{ st.quote_size_desktop | default: 17 }}px;
+    line-height: 1.5;
+    letter-spacing: 0;
+    color: inherit;
+    margin: 0 0 22px;
+  }
+  /* EB Garamond <p> from the richtext setting inherits font-family from
+     .review-card * { inherit !important } but not font-weight — apply
+     it explicitly to the inner <p> too. */
+  #review-card-{{ section.id }} .review-card__quote p {
+    font-weight: 500;
+    margin: 0 0 12px;
+  }
+  #review-card-{{ section.id }} .review-card__quote p:last-child {
+    margin-bottom: 0;
+  }
+  #review-card-{{ section.id }} .review-card__author-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  #review-card-{{ section.id }} .review-card__author {
+    font-family: 'EB Garamond', 'Times New Roman', Times, serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0;
+    color: inherit;
+  }
+  #review-card-{{ section.id }} .review-card__verified {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'EB Garamond', 'Times New Roman', Times, serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: inherit;
+  }
+  #review-card-{{ section.id }} .review-card__check {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: {{ st.check_color | default: '#1a1a1a' }};
+    color: {{ st.bg_color | default: '#C6DCE8' }};
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  #review-card-{{ section.id }} .review-card__check svg {
+    width: 10px;
+    height: 10px;
+    display: block;
+  }
+
+  @media (max-width: 767.98px) {
+    #review-card-{{ section.id }} {
+      padding-top: {{ st.padding_top_mobile | default: 24 }}px;
+      padding-bottom: {{ st.padding_bottom_mobile | default: 24 }}px;
+      margin-top: {{ st.margin_top_mobile | default: 0 }}px;
+      margin-bottom: {{ st.margin_bottom_mobile | default: 0 }}px;
+    }
+    #review-card-{{ section.id }} .review-card {
+      padding: {{ st.card_padding_mobile | default: 22 }}px;
+      border-radius: {{ st.card_radius | default: 14 }}px;
+    }
+    #review-card-{{ section.id }} .review-card__quote {
+      font-size: {{ st.quote_size_mobile | default: 15 }}px;
+    }
+  }
+</style>
+
+<section id="review-card-{{ section.id }}">
+  <div class="review-card__inner">
+    <article class="review-card">
+      {%- if st.show_stars -%}
+        <div class="review-card__stars" aria-label="{{ st.rating | default: 5 }} out of 5 stars">
+          {%- for i in (1..5) -%}
+            <span class="review-card__star" aria-hidden="true">
+              <svg viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 1.5l2.62 5.31 5.86.85-4.24 4.13 1 5.83L10 14.88l-5.24 2.74 1-5.83L1.52 7.66l5.86-.85L10 1.5z"/>
+              </svg>
+            </span>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+      {%- if st.quote != blank -%}
+        {%- comment -%}
+          `quote` is a richtext setting, which renders <p>…</p>. Wrapping
+          it in another <p> creates nested <p> tags that the browser
+          auto-corrects by closing the outer <p> early — pushing the
+          actual text OUTSIDE .review-card__quote and breaking the
+          font-family scope. Use a <div> wrapper so the class survives.
+        {%- endcomment -%}
+        <div class="review-card__quote">{{ st.quote }}</div>
+      {%- endif -%}
+      <div class="review-card__author-row">
+        {%- if st.author != blank -%}
+          <span class="review-card__author">{{ st.author }}</span>
+        {%- endif -%}
+        {%- if st.show_verified -%}
+          <span class="review-card__verified">
+            <span class="review-card__check" aria-hidden="true">
+              <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2.5 6.2l2.4 2.3 4.6-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            {{ st.verified_label | default: 'Verified Review' }}
+          </span>
+        {%- endif -%}
+      </div>
+    </article>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Review Card",
+  "tag": "section",
+  "class": "review-card-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "richtext",
+      "id": "quote",
+      "label": "Quote",
+      "default": "<p>“I Look Forward to Putting On Deodorant! This stuff is seriously the best. I didn't think it was possible to create an experience out of a product so basic as deodorant but everything from the can to the amazing scent is perfect. Bravo OffCourt!”</p>"
+    },
+    {
+      "type": "text",
+      "id": "author",
+      "label": "Author / initials",
+      "default": "C.H."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_verified",
+      "label": "Show \"Verified Review\" badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "verified_label",
+      "label": "Verified label text",
+      "default": "Verified Review"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stars",
+      "label": "Show 5-star rating",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Card background",
+      "default": "#C6DCE8"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Star color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "check_color",
+      "label": "Verified check color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "header",
+      "content": "Desktop layout"
+    },
+    {
+      "type": "select",
+      "id": "desktop_align",
+      "label": "Desktop alignment",
+      "info": "\"Image column (left)\" pins the card to the left of the page at the chosen width — useful for sitting it under the product image. Mobile is always full-width.",
+      "options": [
+        { "value": "center", "label": "Centered" },
+        { "value": "left",   "label": "Image column (left)" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "desktop_max_width",
+      "label": "Desktop card width when left-aligned (px)",
+      "min": 360,
+      "max": 1000,
+      "step": 10,
+      "default": 700
+    },
+    {
+      "type": "range",
+      "id": "desktop_left_offset",
+      "label": "Desktop left offset when left-aligned (px)",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Sizing"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width (px)",
+      "min": 480,
+      "max": 1400,
+      "step": 20,
+      "default": 980
+    },
+    {
+      "type": "range",
+      "id": "side_padding",
+      "label": "Side padding (px)",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Card border radius (px)",
+      "min": 0,
+      "max": 32,
+      "step": 1,
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "label": "Card padding – Desktop (px)",
+      "min": 12,
+      "max": 80,
+      "step": 2,
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "card_padding_mobile",
+      "label": "Card padding – Mobile (px)",
+      "min": 12,
+      "max": 60,
+      "step": 2,
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "star_size",
+      "label": "Star size (px)",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "quote_size_desktop",
+      "label": "Quote size – Desktop (px)",
+      "min": 12,
+      "max": 26,
+      "step": 1,
+      "default": 17
+    },
+    {
+      "type": "range",
+      "id": "quote_size_mobile",
+      "label": "Quote size – Mobile (px)",
+      "min": 12,
+      "max": 22,
+      "step": 1,
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Padding & margin – Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Top padding – Desktop (px)",
+      "min": 0,
+      "max": 160,
+      "step": 2,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Bottom padding – Desktop (px)",
+      "min": 0,
+      "max": 160,
+      "step": 2,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Top margin – Desktop (px)",
+      "min": -100,
+      "max": 100,
+      "step": 2,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Bottom margin – Desktop (px)",
+      "min": -100,
+      "max": 100,
+      "step": 2,
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Padding & margin – Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top padding – Mobile (px)",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom padding – Mobile (px)",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Top margin – Mobile (px)",
+      "min": -80,
+      "max": 80,
+      "step": 2,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Bottom margin – Mobile (px)",
+      "min": -80,
+      "max": 80,
+      "step": 2,
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Review Card"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,793 @@
+{%- liquid
+  assign ps_collection = collections[section.settings.collection]
+  assign ps_limit = section.settings.products_limit | default: 4
+  assign ps_cols = section.settings.columns | default: 4
+-%}
+
+<style>
+  #ps-{{ section.id }} {
+    background: transparent;
+    padding-top: {{ section.settings.padding_top | default: 80 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | default: 80 }}px;
+    padding-left: {{ section.settings.side_margin_desktop | default: 0 }}px;
+    padding-right: {{ section.settings.side_margin_desktop | default: 0 }}px;
+  }
+  @media (max-width: 640px) {
+    #ps-{{ section.id }} {
+      padding-left: {{ section.settings.side_margin_mobile | default: 0 }}px;
+      padding-right: {{ section.settings.side_margin_mobile | default: 0 }}px;
+    }
+  }
+  #ps-{{ section.id }} .ps-inner {
+    max-width: {{ section.settings.max_width | default: 1200 }}px;
+    margin: 0 auto;
+    padding: 0 {{ section.settings.side_padding | default: 20 }}px;
+  }
+  #ps-{{ section.id }} .ps-heading {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 33.7px;
+    line-height: 38.25px;
+    letter-spacing: 0;
+    text-align: center;
+    text-transform: uppercase;
+    color: {{ section.settings.heading_color | default: '#1a1a1a' }};
+    margin: 0 0 {{ section.settings.heading_gap | default: 48 }}px;
+  }
+  #ps-{{ section.id }} .ps-grid {
+    display: grid;
+    /* minmax(0, 1fr) — `1fr` alone bottoms out at min-content, so a long
+       description or the 310px CTA can quietly stretch one column wider
+       than the others. minmax(0, 1fr) caps the floor at 0 and gives us
+       truly identical column widths, which is what the square wraps need. */
+    grid-template-columns: repeat({{ ps_cols }}, minmax(0, 1fr));
+    gap: {{ section.settings.card_gap | default: 20 }}px;
+    /* Explicit stretch so every card matches the row's tallest sibling.
+       Pairs with .ps-card height:100% + .ps-form margin-top:auto so
+       the CTA pills always sit at the same Y across all cards. */
+    align-items: stretch;
+  }
+  #ps-{{ section.id }} .ps-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    /* CSS Grid items default to min-width: auto, which lets long descriptions
+       or the 310px CTA push individual columns wider than 1fr. That breaks
+       the equal-image-size promise — the aspect-ratio 1:1 wrap then renders
+       at a different pixel size per card. Force true 1fr columns. */
+    min-width: 0;
+    padding-bottom: {{ section.settings.card_bottom_gap | default: 0 }}px;
+  }
+  #ps-{{ section.id }} .ps-img-wrap {
+    display: block;
+    position: relative;
+    width: 100%;
+    background: transparent;
+    border-radius: {{ section.settings.img_radius | default: 8 }}px;
+    overflow: hidden;
+    /* Classic padding-bottom 1:1 hack — more reliable across browsers
+       and sub-pixel rounding than `aspect-ratio`. `padding-bottom: 100%`
+       computes against the parent's content-box width, so as long as
+       every column is minmax(0, 1fr) the wraps are guaranteed identical
+       pixel height. Keep aspect-ratio as a belt-and-braces for browsers
+       that lay out before padding is resolved. */
+    height: 0 !important;
+    padding-bottom: 100% !important;
+    aspect-ratio: 1 / 1;
+    margin-bottom: 14px;
+    flex-shrink: 0;
+  }
+  #ps-{{ section.id }} .ps-img-wrap img {
+    position: absolute;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+    object-position: center;
+    /* Some product photos have soft white edges baked into the shot
+       (e.g. Second Skin, Peel Theory). Zooming the rendered image
+       slightly past 100% lets the wrap's overflow:hidden crop those
+       edges, making every card read as a solid colour block at the
+       same size. */
+    transform: scale({{ section.settings.img_zoom | default: 108 | divided_by: 100.0 }});
+    transform-origin: center;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+  #ps-{{ section.id }} .ps-img-wrap:hover img {
+    transform: scale({{ section.settings.img_zoom_hover | default: 112 | divided_by: 100.0 }});
+  }
+  #ps-{{ section.id }} .ps-img-placeholder {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.3;
+  }
+  #ps-{{ section.id }} .ps-title-wrap {
+    padding-bottom: 8px;
+    border-bottom: 1px solid #1e1e1e;
+    margin-bottom: 8px;
+    text-align: left;
+  }
+  #ps-{{ section.id }} .ps-description {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0;
+    text-align: left;
+    color: #4a4a4a;
+    margin: 0 0 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #ps-{{ section.id }} .ps-description p {
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #ps-{{ section.id }} .ps-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 18.2px;
+    letter-spacing: 0;
+    text-align: left;
+    text-transform: uppercase;
+    color: {{ section.settings.title_color | default: '#1a1a1a' }};
+    text-decoration: none;
+    display: block;
+  }
+  #ps-{{ section.id }} .ps-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 0;
+    min-height: 0;
+  }
+  #ps-{{ section.id }} .ps-swatches:empty {
+    display: none;
+  }
+  #ps-{{ section.id }} .ps-swatch {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(0,0,0,0.12);
+    cursor: pointer;
+    padding: 0;
+    display: inline-block;
+    transition: border-color 0.15s;
+  }
+  #ps-{{ section.id }} .ps-swatch.active,
+  #ps-{{ section.id }} .ps-swatch:hover {
+    border-color: #1a1a1a;
+  }
+  #ps-{{ section.id }} .ps-form {
+    margin-top: auto;
+    padding-top: 6px;
+  }
+  #ps-{{ section.id }} .ps-cta {
+    all: unset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 310px;
+    max-width: 100%;
+    height: 48.8px;
+    box-sizing: border-box;
+    background: #A098D7;
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 16.8px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-align: center;
+    border-radius: {{ section.settings.btn_radius | default: 5 }}px;
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s;
+  }
+  #ps-{{ section.id }} .ps-cta:hover { background: #8278C9; }
+  #ps-{{ section.id }} .ps-cta-dot { opacity: 0.6; }
+
+  /* Desktop: clamp the card line to a fixed 2-line box so cards stay
+     uniform height regardless of how long the description is. */
+  #ps-{{ section.id }} .ps-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 2.8em;
+    line-height: 1.4;
+    font-size: 14px;
+    color: #1a1a1a;
+    margin-bottom: 14px;
+  }
+  #ps-{{ section.id }} .ps-description p { margin: 0; }
+  #ps-{{ section.id }} .ps-description ul,
+  #ps-{{ section.id }} .ps-description ol { margin: 0; padding-left: 18px; }
+
+  @media (max-width: 900px) {
+    #ps-{{ section.id }} .ps-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ── Mobile carousel ── */
+  @media (max-width: 640px) {
+    #ps-{{ section.id }} .ps-inner {
+      padding-left: 0;
+      padding-right: 0;
+    }
+    #ps-{{ section.id }} .ps-heading {
+      font-size: 24px;
+      line-height: 28px;
+      padding: 0 20px;
+    }
+    #ps-{{ section.id }} .ps-grid {
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      grid-template-columns: unset !important;
+      overflow-x: scroll;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      gap: 12px;
+      padding: 0 16px 8px;
+      /* Stretch (not start) so every card matches the tallest sibling's
+         height. Combined with .ps-card height:100% + .ps-form margin-top:auto
+         (already set in the base styles), this pushes the CTA pill to the
+         same Y on every card — otherwise differing title-wrap or swatch
+         presence per product leaves CTAs at different heights. */
+      align-items: stretch;
+    }
+    #ps-{{ section.id }} .ps-grid::-webkit-scrollbar { display: none; }
+    #ps-{{ section.id }} .ps-card {
+      /* 62vw shows the active card + a clear ~30% peek of the next, so the
+         carousel reads as "swipeable" at a glance. 78vw made one card swallow
+         the viewport with barely a sliver of the next. Cap at 260px so the
+         card never balloons on tablets/large phones. */
+      flex: 0 0 62vw;
+      max-width: 260px;
+      min-width: 0;
+      scroll-snap-align: start;
+    }
+    #ps-{{ section.id }} .ps-cta {
+      width: 100%;
+      max-width: 100%;
+    }
+    /* Normalise every card's content height so CTAs land on the same
+       baseline without relying on `align-items: stretch` + `height:100%`
+       (that chain is flaky in horizontal scroll containers — the
+       percentage falls back to auto when the parent's height is
+       indefinite, so cards collapse to their own content). Forcing a
+       1-line title + hiding swatches gives every card the same
+       structure: image + 1-line title + 1-line description + form. */
+    #ps-{{ section.id }} .ps-title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #ps-{{ section.id }} .ps-swatches {
+      display: none !important;
+    }
+    /* Shopify renders `product.description` as rich text — often wrapped
+       in one or more `<p>` blocks. The outer `.ps-description { nowrap }`
+       can't clamp those because each `<p>` is a block element with its
+       own line, so a product with a 2-paragraph description silently
+       takes 2 lines of vertical space and pushes its CTA down vs. a
+       product with a 1-paragraph description. Lock the description
+       container to a fixed 1-line box on mobile so the height is
+       identical regardless of inner markup. */
+    #ps-{{ section.id }} .ps-description {
+      height: 16px;
+      max-height: 16px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    /* Dots */
+    #ps-{{ section.id }} .ps-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 16px;
+    }
+    #ps-{{ section.id }} .ps-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #d0d0d0;
+      transition: background 0.2s, transform 0.2s;
+      cursor: pointer;
+    }
+    #ps-{{ section.id }} .ps-dot.active {
+      background: #1a1a1a;
+      transform: scale(1.3);
+    }
+  }
+  @media (min-width: 641px) {
+    #ps-{{ section.id }} .ps-dots { display: none; }
+  }
+</style>
+
+<section id="ps-{{ section.id }}">
+  <div class="ps-inner">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="ps-heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    <div class="ps-grid">
+      {%- if ps_collection != blank -%}
+        {%- for product in ps_collection.products limit: ps_limit -%}
+          {%- liquid
+            assign color_index = nil
+            for option in product.options
+              assign opt_lower = option | downcase
+              if opt_lower == 'color' or opt_lower == 'colour' or opt_lower == 'shade'
+                assign color_index = forloop.index0
+              endif
+            endfor
+            assign first_variant = product.first_available_variant | default: product.variants.first
+          -%}
+          <div class="ps-card">
+            {%- comment %} Image — use the product's featured (first) image, the original one set in Shopify. {%- endcomment %}
+            {%- assign card_image = product.featured_image | default: product.images.first -%}
+            <a href="{{ product.url }}" class="ps-img-wrap">
+              {%- if card_image -%}
+                {{
+                  card_image
+                  | image_url: width: 600
+                  | image_tag: loading: 'lazy', alt: product.title
+                }}
+              {%- else -%}
+                <div class="ps-img-placeholder">
+                  {{ 'product-1' | placeholder_svg_tag }}
+                </div>
+              {%- endif -%}
+            </a>
+
+            {%- comment %} Title + border (divider) {%- endcomment %}
+            <div class="ps-title-wrap">
+              <a href="{{ product.url }}" class="ps-title">{{ product.title }}</a>
+            </div>
+
+            {%- comment %} Card line under title. Prefer the dedicated
+               custom.card_description metafield (one-liner). Falls back to
+               custom.short_desc, then product.description — but the CSS
+               clamp below caps the box to ~2 lines either way so the card
+               heights stay even across the grid. {%- endcomment %}
+            {%- assign ps_card_line = product.metafields.custom.card_description -%}
+            {%- if ps_card_line == blank -%}
+              {%- assign ps_card_line = product.metafields.custom.short_desc -%}
+            {%- endif -%}
+            {%- if ps_card_line != blank -%}
+              <div class="ps-description">{{ ps_card_line | metafield_tag }}</div>
+            {%- elsif product.description != blank -%}
+              <div class="ps-description">{{ product.description }}</div>
+            {%- endif -%}
+
+            {%- comment %} Color swatches {%- endcomment %}
+            {%- if color_index != nil -%}
+              <div class="ps-swatches" data-product-id="{{ product.id }}">
+                {%- assign seen_colors = '' -%}
+                {%- for variant in product.variants -%}
+                  {%- assign color_val = variant.options[color_index] -%}
+                  {%- assign color_slug = color_val | downcase | replace: ' ', '-' -%}
+                  {%- unless seen_colors contains color_slug -%}
+                    {%- assign seen_colors = seen_colors | append: color_slug | append: ',' -%}
+                    {%- assign color_lower = color_val | downcase | strip -%}
+                    {%- case color_lower -%}
+                      {%- when 'black' -%}{%- assign swatch_hex = '#000000' -%}
+                      {%- when 'white' -%}{%- assign swatch_hex = '#f5f5f5' -%}
+                      {%- when 'blue', 'navy', 'cobalt' -%}{%- assign swatch_hex = '#C8D3EC' -%}
+                      {%- when 'light blue', 'sky', 'sky blue' -%}{%- assign swatch_hex = '#C8D3EC' -%}
+                      {%- when 'grey', 'gray', 'silver', 'charcoal' -%}{%- assign swatch_hex = '#C0C0C0' -%}
+                      {%- when 'light grey', 'light gray' -%}{%- assign swatch_hex = '#D8D8D8' -%}
+                      {%- when 'pink', 'rose', 'blush' -%}{%- assign swatch_hex = '#E8C5D0' -%}
+                      {%- when 'red', 'crimson', 'burgundy' -%}{%- assign swatch_hex = '#D4A0A0' -%}
+                      {%- when 'green', 'olive', 'sage' -%}{%- assign swatch_hex = '#A8C4A8' -%}
+                      {%- when 'yellow', 'gold', 'amber' -%}{%- assign swatch_hex = '#E8D8A0' -%}
+                      {%- when 'purple', 'violet', 'lavender' -%}{%- assign swatch_hex = '#C8B8E0' -%}
+                      {%- when 'orange', 'coral', 'peach' -%}{%- assign swatch_hex = '#E8C4A8' -%}
+                      {%- when 'brown', 'tan', 'beige' -%}{%- assign swatch_hex = '#D4C4B0' -%}
+                      {%- else -%}{%- assign swatch_hex = color_val | downcase | replace: ' ', '' -%}
+                    {%- endcase -%}
+                    <span
+                      class="ps-swatch{% if forloop.first %} active{% endif %}"
+                      data-variant-id="{{ variant.id }}"
+                      data-price="{{ variant.price }}"
+                      data-color="{{ color_val }}"
+                      style="background: {{ swatch_hex }};"
+                      title="{{ color_val }}"
+                    ></span>
+                  {%- endunless -%}
+                {%- endfor -%}
+              </div>
+            {%- else -%}
+              <div class="ps-swatches"></div>
+            {%- endif -%}
+
+            {%- comment %} Price + Add to cart — AJAX'd, opens the cart drawer instead of /cart {%- endcomment %}
+            <form class="ps-form" action="/cart/add" method="post" data-ps-ajax-form>
+              <input type="hidden" name="id" value="{{ first_variant.id }}" class="ps-variant-input">
+              <input type="hidden" name="quantity" value="1">
+              <button type="submit" class="ps-cta">
+                <span class="ps-price">{{ first_variant.price | money }}</span>
+                <span class="ps-cta-dot">•</span>
+                <span>ADD</span>
+              </button>
+            </form>
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..ps_limit) -%}
+          <div class="ps-card">
+            <a href="#" class="ps-img-wrap">
+              <div class="ps-img-placeholder">{{ 'product-1' | placeholder_svg_tag }}</div>
+            </a>
+            <div class="ps-title-wrap">
+              <span class="ps-title">Product Title</span>
+            </div>
+            <div class="ps-swatches">
+              <span class="ps-swatch active" style="background:#000000;"></span>
+              <span class="ps-swatch" style="background:#C8D3EC;"></span>
+              <span class="ps-swatch" style="background:#C0C0C0;"></span>
+            </div>
+            <div class="ps-form">
+              <div class="ps-cta">
+                <span class="ps-price">$20.00</span>
+                <span class="ps-cta-dot">•</span>
+                <span>ADD</span>
+              </div>
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+    <div class="ps-dots" aria-hidden="true"></div>
+  </div>
+</section>
+
+<script>
+(function () {
+  var section = document.getElementById('ps-{{ section.id }}');
+  if (!section) return;
+
+  /* ── Swatch interaction ── */
+  section.querySelectorAll('.ps-swatches').forEach(function (swatchGroup) {
+    swatchGroup.querySelectorAll('.ps-swatch').forEach(function (swatch) {
+      swatch.addEventListener('click', function () {
+        swatchGroup.querySelectorAll('.ps-swatch').forEach(function (s) { s.classList.remove('active'); });
+        this.classList.add('active');
+        var card = this.closest('.ps-card');
+        var variantId = this.dataset.variantId;
+        var price = this.dataset.price;
+        if (variantId) {
+          var input = card.querySelector('.ps-variant-input');
+          if (input) input.value = variantId;
+        }
+        if (price) {
+          var priceEl = card.querySelector('.ps-price');
+          if (priceEl) priceEl.textContent = '$' + (parseInt(price) / 100).toFixed(2);
+        }
+      });
+    });
+  });
+
+  /* ── AJAX add to cart + open the existing minicart drawer ── */
+  function refreshCartCounts(cart) {
+    document.querySelectorAll('.cart-count').forEach(function (el) {
+      if (el.classList.contains('cart-count-drawer')) {
+        el.innerHTML = '(' + cart.item_count + ')';
+      } else {
+        el.innerHTML = cart.item_count;
+      }
+    });
+  }
+  function rerenderMinicart() {
+    return fetch('/?section_id=minicart-form')
+      .then(function (r) { return r.text(); })
+      .then(function (html) {
+        var tmp = document.createElement('div');
+        tmp.innerHTML = html;
+        var newMini = tmp.querySelector('#minicart-form');
+        var oldMini = document.querySelector('#minicart-form');
+        if (newMini && oldMini) oldMini.replaceWith(newMini);
+      })
+      .catch(function () { /* non-fatal */ });
+  }
+  function openCartDrawer() {
+    var notif = document.querySelector('cart-notification');
+    if (notif && typeof notif.open === 'function') {
+      notif.open();
+      return;
+    }
+    var action = document.querySelector('.minicart__action');
+    if (action) action.click();
+  }
+  section.querySelectorAll('[data-ps-ajax-form]').forEach(function (form) {
+    form.addEventListener('submit', function (evt) {
+      evt.preventDefault();
+      var btn = form.querySelector('.ps-cta');
+      if (btn) { btn.disabled = true; btn.style.opacity = '0.7'; }
+      var fd = new FormData(form);
+      fetch('/cart/add.js', {
+        method: 'POST',
+        body: fd,
+        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+      })
+        .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, data: j }; }); })
+        .then(function (res) {
+          if (!res.ok) throw new Error((res.data && res.data.description) || 'Add to cart failed');
+          return fetch('/cart.json').then(function (r) { return r.json(); });
+        })
+        .then(function (cart) {
+          refreshCartCounts(cart);
+          return rerenderMinicart();
+        })
+        .then(function () { openCartDrawer(); })
+        .catch(function (err) { console.error(err); })
+        .then(function () {
+          if (btn) { btn.disabled = false; btn.style.opacity = ''; }
+        });
+    });
+  });
+
+  /* ── Mobile carousel dots ── */
+  var grid = section.querySelector('.ps-grid');
+  var dotsWrap = section.querySelector('.ps-dots');
+  var cards = section.querySelectorAll('.ps-card');
+  if (!grid || !dotsWrap || cards.length === 0) return;
+
+  cards.forEach(function (_, i) {
+    var dot = document.createElement('span');
+    dot.className = 'ps-dot' + (i === 0 ? ' active' : '');
+    dot.addEventListener('click', function () {
+      cards[i].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    });
+    dotsWrap.appendChild(dot);
+  });
+
+  var dots = dotsWrap.querySelectorAll('.ps-dot');
+  var ticking = false;
+  grid.addEventListener('scroll', function () {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () {
+      var cardWidth = cards[0].offsetWidth + 12;
+      var index = Math.min(Math.round(grid.scrollLeft / cardWidth), dots.length - 1);
+      dots.forEach(function (d) { d.classList.remove('active'); });
+      if (dots[index]) dots[index].classList.add('active');
+      ticking = false;
+    });
+  });
+
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Product Showcase",
+  "tag": "section",
+  "class": "product-showcase-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Ornella Essentials"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_limit",
+      "label": "Products to show",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns (desktop)",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Product title color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "img_bg",
+      "label": "Image background",
+      "default": "#f0f0f8"
+    },
+    {
+      "type": "color",
+      "id": "btn_bg",
+      "label": "Button background",
+      "default": "#A6BDDD"
+    },
+    {
+      "type": "color",
+      "id": "btn_color",
+      "label": "Button text color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width (px)",
+      "min": 800,
+      "max": 1600,
+      "step": 20,
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "side_padding",
+      "label": "Side padding (px)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top (px)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom (px)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "default": 80
+    },
+    {
+      "type": "header",
+      "content": "Side margins"
+    },
+    {
+      "type": "range",
+      "id": "side_margin_desktop",
+      "label": "Side margin – Desktop (px)",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "side_margin_mobile",
+      "label": "Side margin – Mobile (px)",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "label": "Gap between cards (px)",
+      "min": 8,
+      "max": 60,
+      "step": 2,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "card_bottom_gap",
+      "label": "Spacing below each card (px)",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "img_radius",
+      "label": "Image border radius (px)",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "img_zoom",
+      "label": "Image zoom (crop white edges)",
+      "info": "100 = fit as-is. Bump higher to crop soft white edges baked into the photo so every card reads as solid colour.",
+      "min": 100,
+      "max": 130,
+      "step": 1,
+      "unit": "%",
+      "default": 108
+    },
+    {
+      "type": "range",
+      "id": "img_zoom_hover",
+      "label": "Image zoom on hover",
+      "min": 100,
+      "max": 140,
+      "step": 1,
+      "unit": "%",
+      "default": 112
+    },
+    {
+      "type": "range",
+      "id": "btn_radius",
+      "label": "Button border radius (px)",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "heading_gap",
+      "label": "Gap below heading (px)",
+      "min": 16,
+      "max": 100,
+      "step": 4,
+      "default": 48
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Showcase"
+    }
+  ]
+}
+{% endschema %}
