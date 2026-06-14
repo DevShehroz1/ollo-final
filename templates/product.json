@@ -1,1 +1,339 @@
-{"sections":{"main":{"type":"main-product-refill","blocks":{"tab_technical":{"type":"tab","settings":{"title":"TECHNICAL INFO","content":"<ul><li>Antimicrobial properties kill odor-causing bacteria</li><li>Keeps you odor-free by neutralising odor at the source.</li><li>Aluminum-free formula allows the body to sweat and breathe naturally</li><li>Prebiotic ingredients support the growth of 'good' bacteria to keep the odor-causing kind in check and support a healthy microbiome</li></ul>","page":""}},"tab_apply":{"type":"tab","settings":{"title":"HOW TO APPLY","content":"<p>Apply to clean, dry underarms. Two to three swipes. Let it settle before dressing.</p>","page":""}},"tab_ingredients":{"type":"tab","settings":{"title":"INGREDIENTS","content":"<p>Caprylic/Capric Triglyceride, Magnesium Hydroxide, Candelilla/Sunflower Wax, Tapioca Starch, Zinc Ricinoleate, Polyhydroxystearic Acid, SymDeo B15, Silica Dimethyl Silylate, Ascorbyl Tetraisopalmitate, Bakuchiol, Panthenol, Tocopherol, Caprylyl Salicylic Acid, Alpha-Bisabolol, Fragrance (IFRA Certified), Aqua</p>","page":""}}},"block_order":["tab_technical","tab_apply","tab_ingredients"],"settings":{"max_width":1500,"grid_gap":32,"media_col_fr":115,"info_col_fr":100,"padding_horizontal":16,"side_margin_mobile":20,"cta_label":"ADD SUBSCRIPTION","eyebrow_label":"REFILLABLE DEODORANT POD","badge_text":"","scent_label":"SCENT","main_image_size_pct":100,"main_image_radius":16,"main_image_height_px":0,"thumbnail_height_px":94,"thumbnail_gap_px":10,"low_inventory_threshold":10}},"review_card_under_main":{"type":"review-card","settings":{"quote":"<p>“I Look Forward to Putting On Deodorant! This stuff is seriously the best. I didn't think it was possible to create an experience out of a product so basic as deodorant but everything from the can to the amazing scent is perfect. Bravo Ornella!”</p>","author":"C.H.","show_verified":true,"verified_label":"Verified Review","show_stars":true,"bg_color":"#c8d3ec","text_color":"#1a1a1a","star_color":"#000000","check_color":"#1a1a1a","desktop_align":"left","desktop_max_width":760,"desktop_left_offset":50,"max_width":1100,"side_padding":20,"card_radius":14,"card_padding":36,"card_padding_mobile":22,"star_size":18,"quote_size_desktop":17,"quote_size_mobile":15,"padding_top_desktop":24,"padding_bottom_desktop":60,"margin_top_desktop":-44,"margin_bottom_desktop":0,"padding_top_mobile":16,"padding_bottom_mobile":32,"margin_top_mobile":0,"margin_bottom_mobile":0}},"custom_liquid_JTipmY":{"type":"custom-liquid","name":"t:sections.custom_liquid.name","settings":{"section_width":"full_width","color_scheme":"","custom_liquid":"<div class=\"top-bar\">\n  <p>BUILT FOR HEAT. BUILT FOR MOVEMENT.</p>\n</div>\n\n<style>\n.top-bar {\n  width: 100%;\n  background: #363b48;\n  padding: 12px 20px; /* adjust padding here */\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  text-align: center;\n}\n\n.top-bar p {\n  margin: 0;\n  color: #fff8b8;\n  font-size: 18px;\n  font-weight: 700;\n  letter-spacing: 1px;\n  text-transform: uppercase;\n  white-space: nowrap;\n}\n\n@media screen and (max-width: 768px) {\n  .top-bar p {\n    font-size: 12px; /* adjust mobile font size here */\n    letter-spacing: 0.5px;\n  }\n}\n</style>","padding_top":0,"padding_bottom":21,"reset_spacing":false}},"scent_notes_nG7j6K":{"type":"scent-notes","name":"Scent Notes","settings":{"eyebrow":"COCONUT WATER + SANDALWOOD","heading":"A fresh, woody scent that sustains a warm, cozy feeling all day","description":"<p>Black pepper wakes you up, sandalwood draws you in while refreshing coconut water and bergamot keep things from getting too heavy.</p>","top_label":"TOP NOTES:","top_notes":"Bergamot, Meyer Lemon, Black Pepper","middle_label":"MIDDLE NOTES:","middle_notes":"Coconut Water, Geranium, Cardamom","base_label":"BASE NOTES:","base_notes":"Cedarwood, Sandalwood, Patchouli","video":"shopify://files/videos/WhatsApp Video 2026-04-30 at 15.44.01.mp4","video_url":"","image_position":"right","image_aspect":"1 / 1","image_radius":24,"image_height_px":0,"bg_color":"#ffffff","text_color":"#1a1a1a","divider_color":"#1a1a1a","eyebrow_size":14,"heading_size_desktop":36,"heading_size_mobile":24,"description_size":16,"max_width":1500,"side_padding":34,"side_padding_mobile":16,"column_gap":80,"text_max_width":600,"text_padding_top":24,"note_padding":18,"padding_top_desktop":44,"padding_bottom_desktop":80,"margin_top_desktop":-100,"margin_bottom_desktop":0,"padding_top_mobile":48,"padding_bottom_mobile":48,"margin_top_mobile":0,"margin_bottom_mobile":0}},"feature_highlights_xdYXXk":{"type":"feature-highlights","blocks":{"feature_wn6nEf":{"type":"feature","settings":{"icon":"shopify://shop_images/44.png","title":"odour fighting","description":"Three-mechanism protection. Magnesium hydroxide shifts skin pH, zinc ricinoleate traps odour molecules, and SymDeo B15 blocks the enzyme that causes smell at the source.","column":"left"}},"feature_NbrBE4":{"type":"feature","settings":{"icon":"shopify://shop_images/43.png","title":"ALUMINIUM-FREE","description":"No aluminium, no blocked pores. Your body sweats the way it's meant to. We just make sure it doesn't smell like it.","column":"left"}},"feature_agi4hr":{"type":"feature","settings":{"icon":"shopify://shop_images/42.png","title":"NO WHITE CAST OR RESIDUE","description":"Baking soda-free and formulated for Indian skin tones. No chalky residue, no marks on dark clothes.","column":"left"}},"feature_EPBBgn":{"type":"feature","settings":{"icon":"shopify://shop_images/41.png","title":"SKINCARE-GRADE ACTIVES","description":"Bakuchiol for ingrown prevention. Vitamin C for tone. LHA for gentle exfoliation. Bisabolol and Panthenol to keep the skin barrier intact.","column":"right"}},"feature_RgHPzV":{"type":"feature","settings":{"icon":"shopify://shop_images/40.png","title":"IFRA-CERTIFIED FRAGRANCE","description":"Non-synthetic, allergen-conscious scents. Long-lasting without the irritation.","column":"right"}},"feature_qgNz6U":{"type":"feature","settings":{"icon":"shopify://shop_images/39.png","title":"REFILLABLE BY DESIGN","description":"You keep the case. You swap the pod. Less waste, same performance, every time.","column":"right"}}},"block_order":["feature_wn6nEf","feature_NbrBE4","feature_agi4hr","feature_EPBBgn","feature_RgHPzV","feature_qgNz6U"],"name":"Feature Highlights","settings":{"eyebrow":"Built for motion. Made for skin. Everything in between, handled.","heading":"DEODORANT FOR MODERN, ACTIVE LIFE","image":"shopify://shop_images/Gemini_Generated_Image_g6cid9g6cid9g6ci_1.png","image_aspect":"4 / 5","image_radius":15,"image_width_desktop":460,"bg_color":"#363b47","text_color":"#fff8b8","icon_color":"#19a974","icon_size_desktop":78,"icon_size_mobile":60,"eyebrow_size":13,"heading_size_desktop":22,"heading_size_mobile":22,"max_width":1400,"side_padding":24,"head_max_width":1100,"head_gap":40,"column_gap":40,"feature_gap":80,"padding_top_desktop":64,"padding_bottom_desktop":64,"margin_top_desktop":0,"margin_bottom_desktop":0,"padding_top_mobile":40,"padding_bottom_mobile":40,"margin_top_mobile":0,"margin_bottom_mobile":0}},"product_showcase_HTBxgb":{"type":"product-showcase","name":"Product Showcase","settings":{"heading":"Ornella Essentials","collection":"refill","products_limit":4,"columns":4,"bg_color":"#ffffff","heading_color":"#1a1a1a","title_color":"#1a1a1a","img_bg":"#f0f0f8","btn_bg":"#a6bddd","btn_color":"#1a1a1a","max_width":1500,"side_padding":20,"padding_top":80,"padding_bottom":80,"side_margin_desktop":0,"side_margin_mobile":20,"card_gap":20,"card_bottom_gap":0,"img_radius":8,"img_zoom":108,"img_zoom_hover":112,"btn_radius":6,"heading_gap":48}},"faqs_grid_rwxbWW":{"type":"faqs-grid","blocks":{"faq_1":{"type":"faq","disabled":true,"settings":{"question":"How is this different from regular body sprays or deodorant?","answer":"<p>Regular sprays and deodorants attempt to mask body odor with overpowering fragrances. Ornella uses microbiome-friendly ingredients to neutralize odor-causing bacteria at the source, then layers on a balanced, elevated fragrance that's sure to get you compliments.</p>","open_by_default":false}},"faq_2":{"type":"faq","settings":{"question":"Does this stop sweat?","answer":"<p>No. Ornella is a deodorant, not an antiperspirant. It neutralizes odor-causing bacteria without blocking sweat, because sweating is a normal bodily function and we're not in the business of stopping it. No aluminum, no pore-clogging.</p>","open_by_default":false}},"faq_3":{"type":"faq","settings":{"question":"How often do I have to reapply?","answer":"<p>Once a day is enough. Apply 2-3 swipes on clean, dry underarms in the morning and you're covered.</p>","open_by_default":false}},"faq_4":{"type":"faq","settings":{"question":"How long does one refill last?","answer":"<p>With daily use at 2-3 swipes per application, one 45g refill lasts 60 days. When it runs out, just swap in a new one. Same case, new refill.</p>","open_by_default":false}},"faq_5":{"type":"faq","settings":{"question":"Will this stain my clothes?","answer":"<p>No. The formula is baking soda-free and leaves zero white cast on skin. It dries invisible and won't leave marks or residue on fabric.</p>","open_by_default":false}},"faq_6":{"type":"faq","settings":{"question":"Are the scents for men or women?","answer":"<p>Neither and both. All Ornella scents are gender-neutral, built for anyone who wants to smell good after sweating.</p>","open_by_default":false}},"faq_7":{"type":"faq","settings":{"question":"I care about what I put on my body. Is Ornella clean?","answer":"<p>Yes. No parabens, sulfates, phthalates, aluminum, or baking soda. Formulated to be effective without the ingredients you'd rather avoid.</p>","open_by_default":false}},"faq_8":{"type":"faq","settings":{"question":"I TRAVEL A LOT. CAN I BRING THIS WITH ME?","answer":"<p>Yes. The refill is a solid stick, so there are no liquid restrictions to worry about. It fits easily in a carry-on, won’t leak, and won’t get flagged at security. The case is compact enough to live in your gym bag, your travel kit, or both.</p>","open_by_default":false}},"faq_9":{"type":"faq","disabled":true,"settings":{"question":"Where are your products made?","answer":"<p>All of our products are formulated and manufactured right here in the United States.</p>","open_by_default":false}}},"block_order":["faq_1","faq_2","faq_3","faq_4","faq_5","faq_6","faq_7","faq_8","faq_9"],"name":"FAQs Grid","settings":{"heading":"FAQ","bg_color":"#ffffff","color_scheme":"scheme-1","max_width":980,"padding_top":80,"padding_bottom":80}},"tb_guarantees":{"type":"tiny-beats-guarantees","blocks":{"g1":{"type":"guarantee","settings":{"icon":"cod","icon_bg":"#34BAB7","heading":"Cash on Delivery","description":"Pay only after you've held it in your hands. No upfront stress."}},"g2":{"type":"guarantee","settings":{"icon":"shipping","icon_bg":"#F8BB38","heading":"Free Shipping","description":"Complimentary delivery on every order above PKR 2,999."}},"g3":{"type":"guarantee","settings":{"icon":"return","icon_bg":"#F1556E","heading":"30-Day Size Exchange","description":"Outgrew it already? Swap sizes free for a full month."}},"g4":{"type":"guarantee","settings":{"icon":"shield","icon_bg":"#1E2A3A","heading":"GOTS Certified","description":"Organic, allergen-tested cotton that's gentle on little skin."}},"g5":{"type":"guarantee","settings":{"icon":"support","icon_bg":"#34BAB7","heading":"Parent-First Support","description":"Real people, real fast. Reach us 7 days a week on WhatsApp."}}},"block_order":["g1","g2","g3","g4","g5"],"settings":{"eyebrow":"WHY TINY BEATS","title":"Promises We Keep With Every Order","bg_color":"#FAFBFD","eyebrow_color":"#F1556E","heading_color":"#1E2A3A","text_color":"#5B6573","max_width":1300,"padding_top":64,"padding_bottom":64}},"size_guide":{"type":"size-guide-tinybeats","blocks":{"r1":{"type":"row","settings":{"age":"2–3 Years","col2":"17\"","col3":"13\"","col4":"13.5\"","col5":"20\""}},"r2":{"type":"row","settings":{"age":"3–4 Years","col2":"18.5\"","col3":"13.5\"","col4":"14.5\"","col5":"22\""}},"r3":{"type":"row","settings":{"age":"4–5 Years","col2":"19.5\"","col3":"14.5\"","col4":"15.5\"","col5":"24\""}},"r4":{"type":"row","settings":{"age":"5–6 Years","col2":"20.5\"","col3":"15\"","col4":"17\"","col5":"27\""}},"r5":{"type":"row","settings":{"age":"7–8 Years","col2":"22\"","col3":"16.5\"","col4":"18\"","col5":"30\""}},"r6":{"type":"row","settings":{"age":"9–10 Years","col2":"23\"","col3":"17\"","col4":"19\"","col5":"32\""}}},"block_order":["r1","r2","r3","r4","r5","r6"],"settings":{"eyebrow":"SIZE GUIDE","heading":"Find Your Perfect Fit","subheading":"Accurate measurements for happy kids and confident parents","col1_label":"AGE","col2_label":"SHIRT LENGTH","col3_label":"CHEST","col4_label":"SLEEVE LENGTH","col5_label":"TROUSER LENGTH","note":"<p><strong>Note:</strong> All measurements are in inches. For the best fit, measure your child and compare with our chart.</p>","bg_color":"#F4FAFF","accent_color":"#34BAB7","eyebrow_color":"#F1556E","heading_color":"#1E2A3A","text_color":"#5B6573","row_alt_color":"#FFF5EC","note_bg_color":"#FFF5EC","note_color":"#1E2A3A","max_width":1100,"padding_top":80,"padding_bottom":80}}},"order":["main","review_card_under_main","custom_liquid_JTipmY","scent_notes_nG7j6K","feature_highlights_xdYXXk","size_guide","tb_guarantees","product_showcase_HTBxgb","faqs_grid_rwxbWW"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "breadcrumb": {
+      "type": "breadcrumb",
+      "settings": {
+        "section_width": "container",
+        "color_scheme": "",
+        "next_prev": true
+      }
+    },
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "badges_RwfTMp": {
+          "type": "badges",
+          "settings": {}
+        },
+        "title_G6tU8U": {
+          "type": "title",
+          "settings": {}
+        },
+        "review_and_sold_AAbJC9": {
+          "type": "review_and_sold",
+          "settings": {
+            "show_review": true,
+            "show_sold_products": true,
+            "sold": "8,10,12,15,17,22",
+            "hours": "10,12,15,16,18,20,24"
+          }
+        },
+        "price_VJ4N8m": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker_tcCihG": {
+          "type": "variant_picker",
+          "settings": {
+            "variant_type": "swatches",
+            "show_size_guide": true,
+            "size_guide_label": "Size guide",
+            "size_guide_page": "size-guide"
+          }
+        },
+        "buy_buttons_LcQGtR": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "show_gift_card_recipient": true,
+            "show_wishlist": true,
+            "show_compare": true
+          }
+        },
+        "collapsible_row_m3g6f8": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Description",
+            "content": "",
+            "use_product_description": true
+          }
+        },
+        "collapsible_row_eLaQpR": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Shipping and Returns",
+            "content": "<p>We offer fast and reliable shipping for all our clothing items. Orders are processed within <strong>1-2 business days</strong> and shipped via standard delivery, which typically takes 3-5 business days.</p>",
+            "use_product_description": false
+          }
+        },
+        "collapsible_row_DA4FUC": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Return Policies",
+            "content": "<p>Provided the conditions in our refund policy have been met, refunds will be processed using the original form of payment. You can return an item purchased online by posting it to us. Please contact customer service for return address. Please note that delivery costs will be excluded from the refund unless goods are returned in accordance with your statutory rights (e.g. they are faulty or not as ordered).</p><ul><li>The items with the original receipt are returned within 30 days of purchase. </li><li>Items must be in the original condition as purchased with all labels/tickets attached.</li></ul><p>Provided the conditions in our refund policy have been met, refunds will be processed using the original form of payment. You can return an item purchased online by posting it to us. Please contact customer service for return address. Please note that delivery costs will be excluded from the refund unless goods are returned in accordance with your statutory rights (e.g. they are faulty or not as ordered).</p>",
+            "use_product_description": false
+          }
+        },
+        "custom_liquid_zxhWCz": {
+          "type": "custom_liquid",
+          "disabled": true,
+          "settings": {
+            "custom_liquid": "<div>\n  <div class=\"usp-container\">\n  <div class=\"usp-item\">\n    <div class=\"usp-icon\">\n      <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\">\n        <rect x=\"1\" y=\"3\" width=\"15\" height=\"13\"></rect>\n        <polygon points=\"16 8 20 8 23 11 23 16 16 16 16 8\"></polygon>\n        <circle cx=\"5.5\" cy=\"18.5\" r=\"2.5\"></circle>\n        <circle cx=\"18.5\" cy=\"18.5\" r=\"2.5\"></circle>\n      </svg>\n    </div>\n    <div class=\"usp-text\">\n      <strong>Free Shipping</strong>\n      <span>On all orders </span>\n    </div>\n  </div>\n\n  <div class=\"usp-item\">\n    <div class=\"usp-icon\">\n      <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\">\n        <path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"></path>\n        <path d=\"M3 3v5h5\"></path>\n        <path d=\"M12 7v5l4 2\"></path>\n      </svg>\n    </div>\n    <div class=\"usp-text\">\n      <strong>7 Days Return</strong>\n      <span>No questions asked</span>\n    </div>\n  </div>\n\n  <div class=\"usp-item\">\n    <div class=\"usp-icon\">\n      <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\">\n        <rect x=\"3\" y=\"11\" width=\"18\" height=\"11\" rx=\"2\" ry=\"2\"></rect>\n        <path d=\"M7 11V7a5 5 0 0 1 10 0v4\"></path>\n      </svg>\n    </div>\n    <div class=\"usp-text\">\n      <strong>100% Secured</strong>\n      <span>SSL Certified</span>\n    </div>\n  </div>\n\n  <div class=\"usp-item\">\n    <div class=\"usp-icon\">\n      <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\">\n        <circle cx=\"12\" cy=\"12\" r=\"10\"></circle>\n        <polyline points=\"12 6 12 12 16 14\"></polyline>\n      </svg>\n    </div>\n    <div class=\"usp-text\">\n      <strong>Delivery Time</strong>\n      <span>Estimate: 2-3 Days</span>\n    </div>\n  </div>\n</div>\n\n<style>\n.usp-container {\n  display: grid;\n  grid-template-columns: repeat(2, 1fr); /* Creates two equal columns */\n  gap: 15px;\n  padding: 20px;\n  background: #fafafa;\n  border: 1px solid #e5e7eb;\n  border-radius: 12px;\n  max-width: 450px; /* Increased to accommodate two columns */\n}\n\n.usp-item {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-start;\n  gap: 5px;\n}\n\n.usp-icon {\n  width: 28px;\n  height: 28px;\n  color: #059669; /* Emerald Green */\n  background: #ecfdf5; /* Soft green background circle */\n  padding: 6px;\n  border-radius: 50%;\n  flex-shrink: 0;\n}\n\n.usp-text {\n  display: flex;\n  flex-direction: column;\n}\n\n.usp-text strong {\n  font-size: 13px;\n  color: #111827;\n  font-weight: 700;\n  line-height: 1.4;\n}\n\n.usp-text span {\n  font-size: 11px;\n  color: #6b7280;\n  margin-top: 4px;\n}\n\n/* Mobile: Revert to 1 column on very narrow screens */\n@media (max-width: 350px) {\n  .usp-container {\n    grid-template-columns: 1fr;\n  }\n}\n</style>\n</div>\n\n\n\n  </div>\n</div>\n\n\n\n</div>\n\n\n\n\n\n\n      \n    \n  </div>\n\n  \n  \n\n</div>"
+          }
+        }
+      },
+      "block_order": [
+        "badges_RwfTMp",
+        "title_G6tU8U",
+        "review_and_sold_AAbJC9",
+        "price_VJ4N8m",
+        "variant_picker_tcCihG",
+        "buy_buttons_LcQGtR",
+        "collapsible_row_m3g6f8",
+        "collapsible_row_eLaQpR",
+        "collapsible_row_DA4FUC",
+        "custom_liquid_zxhWCz"
+      ],
+      "settings": {
+        "section_width": "container",
+        "enable_sticky_content_on_desktop": true,
+        "enable_skeleton_loading": true,
+        "desktop_media_width": 50,
+        "desktop_layout": "thumbnail_left",
+        "image_zoom": "open_lightbox",
+        "enable_video_looping": true,
+        "enable_video_autoplay": true,
+        "user_variants_image_group": true,
+        "enable_frequently_bought_together": true,
+        "enable_on_desktop": true,
+        "enable_on_mobile": true,
+        "mobile_options": "hidden_thumbnail"
+      }
+    },
+    "product-set": {
+      "type": "product-set",
+      "disabled": true,
+      "settings": {
+        "section_width": "container",
+        "color_scheme": "",
+        "heading": "Combination Styles",
+        "description": "",
+        "header_size": "medium",
+        "header_alignment": "left",
+        "items_per_row": 2,
+        "column_gap": 30,
+        "show_arrow": false,
+        "carousel_pagination": "show_dots",
+        "infinite": false,
+        "autoplay": true,
+        "autorotate_speed": 5,
+        "reveal": false,
+        "items_per_row_mobile": 1,
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "reset_spacing": false
+      }
+    },
+    "related_products": {
+      "type": "related-products",
+      "disabled": true,
+      "settings": {
+        "section_width": "container",
+        "color_scheme": "",
+        "heading": "People Also Bought",
+        "description": "Here’s some of our most similar products people are buying. Click to discover trending style.",
+        "header_size": "medium",
+        "header_alignment": "center",
+        "items_to_show": 4,
+        "items_per_row": 4,
+        "column_gap": 30,
+        "items_per_row_mobile": 2,
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "reset_spacing": false
+      }
+    },
+    "size_guide_tinybeats_4tJHky": {
+      "type": "size-guide-tinybeats",
+      "blocks": {
+        "row_GwQ7Dc": {
+          "type": "row",
+          "settings": {
+            "age": "2–3 Years",
+            "col2": "17\"",
+            "col3": "13\"",
+            "col4": "13.5\"",
+            "col5": "20\""
+          }
+        },
+        "row_wVt4aq": {
+          "type": "row",
+          "settings": {
+            "age": "3–4 Years",
+            "col2": "18.5\"",
+            "col3": "13.5\"",
+            "col4": "14.5\"",
+            "col5": "22\""
+          }
+        },
+        "row_n6B7eB": {
+          "type": "row",
+          "settings": {
+            "age": "4–5 Years",
+            "col2": "19.5\"",
+            "col3": "14.5\"",
+            "col4": "15.5\"",
+            "col5": "24\""
+          }
+        },
+        "row_pYqGDC": {
+          "type": "row",
+          "settings": {
+            "age": "5–6 Years",
+            "col2": "20.5\"",
+            "col3": "15\"",
+            "col4": "17\"",
+            "col5": "27\""
+          }
+        },
+        "row_EeFgUr": {
+          "type": "row",
+          "settings": {
+            "age": "7–8 Years",
+            "col2": "22\"",
+            "col3": "16.5\"",
+            "col4": "18\"",
+            "col5": "30\""
+          }
+        },
+        "row_6annFj": {
+          "type": "row",
+          "settings": {
+            "age": "9–10 Years",
+            "col2": "23\"",
+            "col3": "17\"",
+            "col4": "19\"",
+            "col5": "32\""
+          }
+        }
+      },
+      "block_order": [
+        "row_GwQ7Dc",
+        "row_wVt4aq",
+        "row_n6B7eB",
+        "row_pYqGDC",
+        "row_EeFgUr",
+        "row_6annFj"
+      ],
+      "name": "Size Guide",
+      "settings": {
+        "eyebrow": "SIZE GUIDE",
+        "heading": "Find Your Perfect Fit",
+        "subheading": "Accurate measurements for happy kids and confident parents",
+        "col1_label": "AGE",
+        "col2_label": "SHIRT LENGTH",
+        "col3_label": "CHEST",
+        "col4_label": "SLEEVE LENGTH",
+        "col5_label": "TROUSER LENGTH",
+        "note": "<p><strong>Note:</strong> All measurements are in inches. For the best fit, measure your child and compare with our chart.</p>",
+        "bg_color": "#F4FAFF",
+        "accent_color": "#34BAB7",
+        "eyebrow_color": "#F1556E",
+        "heading_color": "#1E2A3A",
+        "text_color": "#5B6573",
+        "row_alt_color": "#FFF5EC",
+        "note_bg_color": "#FFF5EC",
+        "note_color": "#1E2A3A",
+        "max_width": 1100,
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "tiny_beats_guarantees_qxqDKD": {
+      "type": "tiny-beats-guarantees",
+      "blocks": {
+        "guarantee_tJKLnz": {
+          "type": "guarantee",
+          "settings": {
+            "icon": "cod",
+            "icon_bg": "#34bab7",
+            "heading": "Cash on Delivery",
+            "description": "Pay only after you've held it in your hands. No upfront stress."
+          }
+        },
+        "guarantee_pUEAVY": {
+          "type": "guarantee",
+          "settings": {
+            "icon": "shipping",
+            "icon_bg": "#f8bb38",
+            "heading": "Free Shipping",
+            "description": "Complimentary delivery on every order above PKR 2,999."
+          }
+        },
+        "guarantee_eNMwci": {
+          "type": "guarantee",
+          "settings": {
+            "icon": "return",
+            "icon_bg": "#f1556e",
+            "heading": "30-Day Size Exchange",
+            "description": "Outgrew it already? Swap sizes free for a full month."
+          }
+        },
+        "guarantee_UEaMQK": {
+          "type": "guarantee",
+          "settings": {
+            "icon": "shield",
+            "icon_bg": "#1e2a3a",
+            "heading": "GOTS Certified",
+            "description": "Organic, allergen-tested cotton that's gentle on little skin."
+          }
+        },
+        "guarantee_N8bhgX": {
+          "type": "guarantee",
+          "settings": {
+            "icon": "support",
+            "icon_bg": "#34bab7",
+            "heading": "Parent-First Support",
+            "description": "Real people, real fast. Reach us 7 days a week on WhatsApp."
+          }
+        }
+      },
+      "block_order": [
+        "guarantee_tJKLnz",
+        "guarantee_pUEAVY",
+        "guarantee_eNMwci",
+        "guarantee_UEaMQK",
+        "guarantee_N8bhgX"
+      ],
+      "name": "Tiny Beats Guarantees",
+      "settings": {
+        "eyebrow": "WHY TINY BEATS",
+        "title": "Promises We Keep With Every Order",
+        "bg_color": "#FAFBFD",
+        "eyebrow_color": "#F1556E",
+        "heading_color": "#1E2A3A",
+        "text_color": "#5B6573",
+        "max_width": 1300,
+        "padding_top": 64,
+        "padding_bottom": 64
+      }
+    }
+  },
+  "order": [
+    "breadcrumb",
+    "main",
+    "product-set",
+    "related_products",
+    "size_guide_tinybeats_4tJHky",
+    "tiny_beats_guarantees_qxqDKD"
+  ]
+}
