@@ -1,0 +1,203 @@
+{%- liquid
+  assign st = section.settings
+-%}
+<style>
+  #section-{{ section.id }} {
+    --tb-teal: {{ st.accent_color }};
+    --tb-coral: {{ st.eyebrow_color }};
+    --tb-heading: {{ st.heading_color }};
+    --tb-text: {{ st.text_color }};
+    --tb-row-alt: {{ st.row_alt_color }};
+    --tb-note-bg: {{ st.note_bg_color }};
+    --tb-note-color: {{ st.note_color }};
+    background: {{ st.bg_color }};
+    padding: {{ st.padding_top }}px 20px {{ st.padding_bottom }}px;
+  }
+  #section-{{ section.id }} .tb-sg__wrap {
+    max-width: {{ st.max_width }}px;
+    margin: 0 auto;
+  }
+  #section-{{ section.id }} .tb-sg__eyebrow {
+    color: var(--tb-coral);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 13px;
+    text-align: center;
+    margin: 0 0 12px;
+  }
+  #section-{{ section.id }} .tb-sg__heading {
+    color: var(--tb-heading);
+    font-weight: 800;
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1.15;
+    text-align: center;
+    margin: 0 0 12px;
+  }
+  #section-{{ section.id }} .tb-sg__sub {
+    color: var(--tb-text);
+    text-align: center;
+    font-size: 16px;
+    max-width: 640px;
+    margin: 0 auto 36px;
+  }
+  #section-{{ section.id }} .tb-sg__card {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    background: #ffffff;
+  }
+  #section-{{ section.id }} .tb-sg__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+    color: var(--tb-heading);
+  }
+  #section-{{ section.id }} .tb-sg__table th {
+    background: var(--tb-teal);
+    color: #ffffff;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 18px 16px;
+    text-align: center;
+    font-size: 13px;
+  }
+  #section-{{ section.id }} .tb-sg__table td {
+    padding: 16px 14px;
+    text-align: center;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+  }
+  #section-{{ section.id }} .tb-sg__table tbody tr:nth-child(even) td {
+    background: var(--tb-row-alt);
+  }
+  #section-{{ section.id }} .tb-sg__table tbody tr td:first-child {
+    color: var(--tb-teal);
+    font-weight: 800;
+  }
+  #section-{{ section.id }} .tb-sg__note {
+    margin-top: 20px;
+    background: var(--tb-note-bg);
+    color: var(--tb-note-color);
+    border-radius: 12px;
+    padding: 16px 22px;
+    text-align: center;
+    font-size: 14px;
+  }
+  #section-{{ section.id }} .tb-sg__note strong {
+    color: var(--tb-coral);
+  }
+  @media (max-width: 640px) {
+    #section-{{ section.id }} .tb-sg__table th,
+    #section-{{ section.id }} .tb-sg__table td {
+      padding: 12px 8px;
+      font-size: 12px;
+    }
+  }
+</style>
+
+<div id="section-{{ section.id }}">
+  <div class="tb-sg__wrap">
+    {% if st.eyebrow != blank %}
+      <div class="tb-sg__eyebrow">{{ st.eyebrow }}</div>
+    {% endif %}
+    {% if st.heading != blank %}
+      <h2 class="tb-sg__heading">{{ st.heading }}</h2>
+    {% endif %}
+    {% if st.subheading != blank %}
+      <p class="tb-sg__sub">{{ st.subheading }}</p>
+    {% endif %}
+    <div class="tb-sg__card">
+      <table class="tb-sg__table">
+        <thead>
+          <tr>
+            <th>{{ st.col1_label }}</th>
+            <th>{{ st.col2_label }}</th>
+            <th>{{ st.col3_label }}</th>
+            <th>{{ st.col4_label }}</th>
+            <th>{{ st.col5_label }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%- for block in section.blocks -%}
+            <tr {{ block.shopify_attributes }}>
+              <td>{{ block.settings.age }}</td>
+              <td>{{ block.settings.col2 }}</td>
+              <td>{{ block.settings.col3 }}</td>
+              <td>{{ block.settings.col4 }}</td>
+              <td>{{ block.settings.col5 }}</td>
+            </tr>
+          {%- endfor -%}
+        </tbody>
+      </table>
+    </div>
+    {% if st.note != blank %}
+      <div class="tb-sg__note">{{ st.note }}</div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Size Guide",
+  "tag": "section",
+  "class": "section-size-guide",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow text", "default": "SIZE GUIDE" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Find Your Perfect Fit" },
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "Accurate measurements for happy kids and confident parents" },
+    { "type": "header", "content": "Column headings" },
+    { "type": "text", "id": "col1_label", "label": "Column 1", "default": "AGE" },
+    { "type": "text", "id": "col2_label", "label": "Column 2", "default": "SHIRT LENGTH" },
+    { "type": "text", "id": "col3_label", "label": "Column 3", "default": "CHEST" },
+    { "type": "text", "id": "col4_label", "label": "Column 4", "default": "SLEEVE LENGTH" },
+    { "type": "text", "id": "col5_label", "label": "Column 5", "default": "TROUSER LENGTH" },
+    { "type": "header", "content": "Note" },
+    { "type": "richtext", "id": "note", "label": "Note", "default": "<p><strong>Note:</strong> All measurements are in inches. For the best fit, measure your child and compare with our chart.</p>" },
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "bg_color", "label": "Background", "default": "#F4FAFF" },
+    { "type": "color", "id": "accent_color", "label": "Table header / accent (teal)", "default": "#34BAB7" },
+    { "type": "color", "id": "eyebrow_color", "label": "Eyebrow / highlight (coral)", "default": "#F1556E" },
+    { "type": "color", "id": "heading_color", "label": "Heading", "default": "#1E2A3A" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#5B6573" },
+    { "type": "color", "id": "row_alt_color", "label": "Alt row background", "default": "#FFF5EC" },
+    { "type": "color", "id": "note_bg_color", "label": "Note background", "default": "#FFF5EC" },
+    { "type": "color", "id": "note_color", "label": "Note text", "default": "#1E2A3A" },
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "max_width", "min": 720, "max": 1400, "step": 10, "unit": "px", "label": "Max width", "default": 1100 },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "Padding top", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "Padding bottom", "default": 80 }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Size row",
+      "settings": [
+        { "type": "text", "id": "age", "label": "Age", "default": "2–3 Years" },
+        { "type": "text", "id": "col2", "label": "Column 2 value", "default": "17\"" },
+        { "type": "text", "id": "col3", "label": "Column 3 value", "default": "13\"" },
+        { "type": "text", "id": "col4", "label": "Column 4 value", "default": "13.5\"" },
+        { "type": "text", "id": "col5", "label": "Column 5 value", "default": "20\"" }
+      ]
+    }
+  ],
+  "max_blocks": 20,
+  "presets": [
+    {
+      "name": "Size Guide",
+      "blocks": [
+        { "type": "row", "settings": { "age": "2–3 Years",  "col2": "17\"",   "col3": "13\"",   "col4": "13.5\"", "col5": "20\"" } },
+        { "type": "row", "settings": { "age": "3–4 Years",  "col2": "18.5\"", "col3": "13.5\"", "col4": "14.5\"", "col5": "22\"" } },
+        { "type": "row", "settings": { "age": "4–5 Years",  "col2": "19.5\"", "col3": "14.5\"", "col4": "15.5\"", "col5": "24\"" } },
+        { "type": "row", "settings": { "age": "5–6 Years",  "col2": "20.5\"", "col3": "15\"",   "col4": "17\"",   "col5": "27\"" } },
+        { "type": "row", "settings": { "age": "7–8 Years",  "col2": "22\"",   "col3": "16.5\"", "col4": "18\"",   "col5": "30\"" } },
+        { "type": "row", "settings": { "age": "9–10 Years", "col2": "23\"",   "col3": "17\"",   "col4": "19\"",   "col5": "32\"" } }
+      ]
+    }
+  ],
+  "enabled_on": {
+    "templates": ["product", "page", "index", "collection"]
+  }
+}
+{% endschema %}

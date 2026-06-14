@@ -517,8 +517,8 @@
     flex: 1 1 auto;
     min-width: 0;
     height: 50px;
-    background: #A098D7;
-    color: #ffffff;
+    background: #111111 !important;
+    color: #ffffff !important;
     border: none;
     border-radius: 5px;
     font-family: 'Inter', sans-serif;
@@ -534,8 +534,19 @@
   }
 
   .refill-product__cta:hover {
-    background: #8278C9;
-    color: #ffffff;
+    background: #000000 !important;
+    color: #ffffff !important;
+  }
+  /* Shopify dynamic checkout (Buy it now) — match black */
+  #section-{{ section.id }} .shopify-payment-button__button,
+  #section-{{ section.id }} .shopify-payment-button__button--unbranded {
+    background: #111111 !important;
+    color: #ffffff !important;
+    border-color: #111111 !important;
+  }
+  #section-{{ section.id }} .shopify-payment-button__button:hover,
+  #section-{{ section.id }} .shopify-payment-button__button--unbranded:hover {
+    background: #000000 !important;
   }
   .refill-product__cta:focus,
   .refill-product__cta:active {

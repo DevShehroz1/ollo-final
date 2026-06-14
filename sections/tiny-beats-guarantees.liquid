@@ -1,0 +1,189 @@
+{%- liquid
+  assign st = section.settings
+  assign cols = section.blocks.size
+  if cols == 0
+    assign cols = 5
+  endif
+-%}
+<style>
+  #section-{{ section.id }} {
+    background: {{ st.bg_color }};
+    padding: {{ st.padding_top }}px 20px {{ st.padding_bottom }}px;
+  }
+  #section-{{ section.id }} .tb-grt__wrap {
+    max-width: {{ st.max_width }}px;
+    margin: 0 auto;
+  }
+  #section-{{ section.id }} .tb-grt__head {
+    text-align: center;
+    margin: 0 0 36px;
+  }
+  #section-{{ section.id }} .tb-grt__eyebrow {
+    color: {{ st.eyebrow_color }};
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 12px;
+    margin: 0 0 10px;
+  }
+  #section-{{ section.id }} .tb-grt__title {
+    color: {{ st.heading_color }};
+    font-weight: 800;
+    font-size: clamp(24px, 3.4vw, 36px);
+    line-height: 1.15;
+    margin: 0;
+  }
+  #section-{{ section.id }} .tb-grt__grid {
+    display: grid;
+    grid-template-columns: repeat({{ cols }}, minmax(0, 1fr));
+    gap: 18px;
+  }
+  #section-{{ section.id }} .tb-grt__card {
+    position: relative;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 28px 18px 24px;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(20, 30, 50, 0.06);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border: 1px solid rgba(20, 30, 50, 0.04);
+  }
+  #section-{{ section.id }} .tb-grt__card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px rgba(20, 30, 50, 0.10);
+  }
+  #section-{{ section.id }} .tb-grt__icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.10);
+  }
+  #section-{{ section.id }} .tb-grt__icon svg {
+    width: 26px;
+    height: 26px;
+  }
+  #section-{{ section.id }} .tb-grt__h {
+    color: {{ st.heading_color }};
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    margin: 0 0 6px;
+  }
+  #section-{{ section.id }} .tb-grt__p {
+    color: {{ st.text_color }};
+    font-size: 13.5px;
+    line-height: 1.45;
+    margin: 0;
+  }
+  @media (max-width: 1024px) {
+    #section-{{ section.id }} .tb-grt__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (max-width: 640px) {
+    #section-{{ section.id }} .tb-grt__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>
+
+<div id="section-{{ section.id }}">
+  <div class="tb-grt__wrap">
+    {% if st.eyebrow != blank or st.title != blank %}
+      <div class="tb-grt__head">
+        {% if st.eyebrow != blank %}
+          <div class="tb-grt__eyebrow">{{ st.eyebrow }}</div>
+        {% endif %}
+        {% if st.title != blank %}
+          <h2 class="tb-grt__title">{{ st.title }}</h2>
+        {% endif %}
+      </div>
+    {% endif %}
+    <div class="tb-grt__grid">
+      {%- for block in section.blocks -%}
+        <div class="tb-grt__card" {{ block.shopify_attributes }}>
+          <span class="tb-grt__icon" style="background: {{ block.settings.icon_bg }};">
+            {%- case block.settings.icon -%}
+              {%- when 'cod' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              {%- when 'shipping' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17h13V5H3v12z"/><path d="M16 8h4l3 4v5h-7"/><circle cx="7" cy="19" r="2"/><circle cx="18" cy="19" r="2"/></svg>
+              {%- when 'return' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.5-6.3L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.3L3 16"/><path d="M3 21v-5h5"/></svg>
+              {%- when 'shield' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v7c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z"/><path d="m9 12 2 2 4-4"/></svg>
+              {%- when 'support' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"/><path d="M9 10h6"/><path d="M9 13h4"/></svg>
+              {%- when 'organic' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20a8 8 0 0 1-8-8c0-5 4-9 9-9 5 0 9 4 9 9-1 0-2 .3-3 1-2 2-4 4-7 7"/><path d="M4 20c4-4 6-6 9-9"/></svg>
+              {%- when 'heart' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+              {%- else -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>
+            {%- endcase -%}
+          </span>
+          <h3 class="tb-grt__h">{{ block.settings.heading }}</h3>
+          <p class="tb-grt__p">{{ block.settings.description }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Tiny Beats Guarantees",
+  "tag": "section",
+  "class": "section-tb-guarantees",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "WHY TINY BEATS" },
+    { "type": "text", "id": "title", "label": "Heading", "default": "Promises We Keep With Every Order" },
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "bg_color", "label": "Background", "default": "#FAFBFD" },
+    { "type": "color", "id": "eyebrow_color", "label": "Eyebrow", "default": "#F1556E" },
+    { "type": "color", "id": "heading_color", "label": "Heading / titles", "default": "#1E2A3A" },
+    { "type": "color", "id": "text_color", "label": "Body text", "default": "#5B6573" },
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "max_width", "min": 960, "max": 1500, "step": 10, "unit": "px", "label": "Max width", "default": 1300 },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "Padding top", "default": 64 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "Padding bottom", "default": 64 }
+  ],
+  "blocks": [
+    {
+      "type": "guarantee",
+      "name": "Guarantee card",
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icon", "default": "shield", "options": [
+          { "value": "cod", "label": "Cash on delivery" },
+          { "value": "shipping", "label": "Shipping" },
+          { "value": "return", "label": "Return / exchange" },
+          { "value": "shield", "label": "Shield (quality)" },
+          { "value": "support", "label": "Customer support" },
+          { "value": "organic", "label": "Organic / leaf" },
+          { "value": "heart", "label": "Heart" }
+        ] },
+        { "type": "color", "id": "icon_bg", "label": "Icon background", "default": "#34BAB7" },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Promise" },
+        { "type": "textarea", "id": "description", "label": "Description", "default": "Short supporting copy that builds trust without overstating." }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Tiny Beats Guarantees",
+      "blocks": [
+        { "type": "guarantee", "settings": { "icon": "cod", "icon_bg": "#34BAB7", "heading": "Cash on Delivery", "description": "Pay only after you've held it in your hands. No upfront stress." } },
+        { "type": "guarantee", "settings": { "icon": "shipping", "icon_bg": "#F8BB38", "heading": "Free Shipping", "description": "Complimentary delivery on every order above PKR 2,999." } },
+        { "type": "guarantee", "settings": { "icon": "return", "icon_bg": "#F1556E", "heading": "30-Day Size Exchange", "description": "Outgrew it already? Swap sizes free for a full month." } },
+        { "type": "guarantee", "settings": { "icon": "shield", "icon_bg": "#1E2A3A", "heading": "GOTS Certified", "description": "Organic, allergen-tested cotton that's gentle on little skin." } },
+        { "type": "guarantee", "settings": { "icon": "support", "icon_bg": "#34BAB7", "heading": "Parent-First Support", "description": "Real people, real fast. Reach us 7 days a week on WhatsApp." } }
+      ]
+    }
+  ],
+  "enabled_on": {
+    "templates": ["product", "page", "index", "collection"]
+  }
+}
+{% endschema %}
