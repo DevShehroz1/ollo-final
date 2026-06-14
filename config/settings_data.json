@@ -42,7 +42,7 @@
     "product_image_ratio": "portrait",
     "show_action_on_mobile": true,
     "swatch_item_type": "variant_images",
-    "search_type": "default",
+    "search_type": "popup",
     "search_result": "products",
     "enable_search_suggestion": true,
     "popular_key_word": "t-shirt, dress, crop top",
@@ -182,14 +182,14 @@
         "settings": {
           "background": "#ffffff",
           "background_gradient": "",
-          "primary_color": "#d0473e",
+          "primary_color": "#F1556E",
           "text_color": "#444444",
           "heading_color": "#111111",
           "border_color": "#ebebeb",
           "btn_primary_color": "#ffffff",
-          "btn_primary_background": "#111111",
+          "btn_primary_background": "#F1556E",
           "btn_primary_hover_color": "#ffffff",
-          "btn_primary_hover_background": "#000000",
+          "btn_primary_hover_background": "#d8485f",
           "btn_outline_color": "#111111",
           "btn_outline_border_color": "#111111",
           "button_link_color": "#111111",
@@ -288,7 +288,7 @@
       },
       "scheme-ad797966-f3b4-43c4-a6fd-c13804ac2096": {
         "settings": {
-          "background": "#bfced6",
+          "background": "#34BAB7",
           "background_gradient": "",
           "primary_color": "#d0473e",
           "text_color": "#444444",
@@ -306,7 +306,7 @@
       },
       "scheme-501072de-d6e5-49cc-b071-41503a2e2410": {
         "settings": {
-          "background": "#fdbe06",
+          "background": "#F8BB38",
           "background_gradient": "",
           "primary_color": "#d0473e",
           "text_color": "#444444",
