@@ -11,6 +11,7 @@
   "sections": {
     "breadcrumb": {
       "type": "breadcrumb",
+      "disabled": true,
       "settings": {
         "section_width": "container",
         "color_scheme": "",
@@ -245,14 +246,14 @@
         "col4_label": "SLEEVE LENGTH",
         "col5_label": "TROUSER LENGTH",
         "note": "<p><strong>Note:</strong> All measurements are in inches. For the best fit, measure your child and compare with our chart.</p>",
-        "bg_color": "#F4FAFF",
-        "accent_color": "#34BAB7",
-        "eyebrow_color": "#F1556E",
-        "heading_color": "#1E2A3A",
-        "text_color": "#5B6573",
-        "row_alt_color": "#FFF5EC",
-        "note_bg_color": "#FFF5EC",
-        "note_color": "#1E2A3A",
+        "bg_color": "#f4faff",
+        "accent_color": "#34bab7",
+        "eyebrow_color": "#f1556e",
+        "heading_color": "#1e2a3a",
+        "text_color": "#5b6573",
+        "row_alt_color": "#fff5ec",
+        "note_bg_color": "#fff5ec",
+        "note_color": "#1e2a3a",
         "max_width": 1100,
         "padding_top": 80,
         "padding_bottom": 80
@@ -288,15 +289,6 @@
             "description": "Outgrew it already? Swap sizes free for a full month."
           }
         },
-        "guarantee_UEaMQK": {
-          "type": "guarantee",
-          "settings": {
-            "icon": "shield",
-            "icon_bg": "#1e2a3a",
-            "heading": "GOTS Certified",
-            "description": "Organic, allergen-tested cotton that's gentle on little skin."
-          }
-        },
         "guarantee_N8bhgX": {
           "type": "guarantee",
           "settings": {
@@ -311,17 +303,16 @@
         "guarantee_tJKLnz",
         "guarantee_pUEAVY",
         "guarantee_eNMwci",
-        "guarantee_UEaMQK",
         "guarantee_N8bhgX"
       ],
       "name": "Tiny Beats Guarantees",
       "settings": {
         "eyebrow": "WHY TINY BEATS",
         "title": "Promises We Keep With Every Order",
-        "bg_color": "#FAFBFD",
-        "eyebrow_color": "#F1556E",
-        "heading_color": "#1E2A3A",
-        "text_color": "#5B6573",
+        "bg_color": "#fafbfd",
+        "eyebrow_color": "#f1556e",
+        "heading_color": "#1e2a3a",
+        "text_color": "#5b6573",
         "max_width": 1300,
         "padding_top": 64,
         "padding_bottom": 64
