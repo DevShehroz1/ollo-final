@@ -51,10 +51,10 @@
       display: block;
     }
     announcement-bar .announcement__bar-message {
-      column-gap: 12px !important;
+      column-gap: 14px !important;
     }
-    announcement-bar .animation-marquee {
-      column-gap: var(--col-gap, 32px);
+    announcement-bar .marquee .announcement__bar-message {
+      padding-inline-end: 14px;
     }
     announcement-bar .announcement__bar-message > .grow {
       flex: 1 1 auto;
@@ -63,8 +63,13 @@
     announcement-bar .announcement__bar-message > svg,
     announcement-bar .announcement__bar-message > img {
       flex: 0 0 auto;
+      width: 12px;
+      height: 12px;
       display: inline-block;
       vertical-align: middle;
+    }
+    announcement-bar .announcement__bar-message > .spacing {
+      display: none;
     }
     announcement-bar countdown-timer{
       {% if section_st.font_weight == 'subheading_weight' %}--countdown-text-weight: var(--subheading-weight, 600);--heading-weight: var(--subheading-weight, 600);{% elsif section_st.font_weight == 'heading_weight' %}--countdown-text-weight: var(--heading-weight, 600);--heading-weight: var(--heading-weight, 600);{% else %}--countdown-text-weight: var(--body-weight, 600);--heading-weight: var(--body-weight, 600){% endif %}
