@@ -45,7 +45,7 @@
         "newsletter_Rk8BD6": {
           "type": "newsletter",
           "settings": {
-            "heading": "Join the Ollo Kids Club",
+            "heading": "Join the Tiny Beats Club",
             "description": "Sign up for 10% off your first kids' order plus free shipping. Be first to hear about new drops, restocks and family-only sales.",
             "email_placeholder": "Enter your email...",
             "button_label": "Sign Up",
@@ -71,7 +71,7 @@
         "show_social": false,
         "payment_enable": false,
         "payment_width": 340,
-        "copyright_text": "© 2026 Ollo Kids. All rights reserved.",
+        "copyright_text": "© 2026 Tiny Beats. All rights reserved.",
         "footer_heading_size": 16,
         "padding_top": 60,
         "padding_bottom": 45,

@@ -37,7 +37,7 @@
         "subheading_aXhCec": {
           "type": "subheading",
           "settings": {
-            "subheading": "Welcome to Ollo Kids",
+            "subheading": "Welcome to Tiny Beats",
             "font_size": 15,
             "font_weight": "heading_weight",
             "uppercase": false,
@@ -132,7 +132,7 @@
             "ending_number": 8.5,
             "unit": "k",
             "heading": "Happy Families",
-            "description": "<p>Families who trust Ollo Kids for their little ones' everyday wardrobe — and tell their friends.<\/p>"
+            "description": "<p>Families who trust Tiny Beats for their little ones' everyday wardrobe — and tell their friends.<\/p>"
           }
         },
         "counter_FmWY3q": {
@@ -281,7 +281,7 @@
             "image_link": "",
             "subheading": "",
             "heading": "Designed to Last",
-            "description": "<p>From school uniforms to weekend playwear, every Ollo Kids piece is built around real movement — comfort, stretch and reinforced stitching.<\/p>",
+            "description": "<p>From school uniforms to weekend playwear, every Tiny Beats piece is built around real movement — comfort, stretch and reinforced stitching.<\/p>",
             "first_button_label": "",
             "first_button_link": "",
             "first_button_type": "link",
@@ -371,7 +371,7 @@
         "description_NKGpBk": {
           "type": "description",
           "settings": {
-            "description": "<p><em>\" Ollo Kids exists to make childhood a little better — through clothes that are kinder to children, kinder to families and kinder to the planet they'll grow up on. \"<\/em><\/p>",
+            "description": "<p><em>\" Tiny Beats exists to make childhood a little better — through clothes that are kinder to children, kinder to families and kinder to the planet they'll grow up on. \"<\/em><\/p>",
             "font_size": 18,
             "font_weight": "body_weight",
             "spacing_bottom": 15
@@ -380,7 +380,7 @@
         "subheading_RLCEF7": {
           "type": "subheading",
           "settings": {
-            "subheading": "The Ollo Kids Team",
+            "subheading": "The Tiny Beats Team",
             "font_size": 16,
             "font_weight": "heading_weight",
             "uppercase": false,
@@ -390,7 +390,7 @@
         "description_jRcfa7": {
           "type": "description",
           "settings": {
-            "description": "<p>Founders, Ollo Kids<\/p>",
+            "description": "<p>Founders, Tiny Beats<\/p>",
             "font_size": 14,
             "font_weight": "body_weight",
             "spacing_bottom": 0
@@ -488,7 +488,7 @@
             "image_link": "",
             "subheading": "Our Products",
             "heading": "Built for Hand-Me-Downs",
-            "description": "<p>At Ollo Kids, we're not big on disposable fashion. We want our pieces to live through<br\/> siblings, cousins and neighbours' kids. That's why we source the finest kid-safe materials<br\/> — soft Pima cotton tees, durable denim, and stretch-knit basics built for play.<\/p>",
+            "description": "<p>At Tiny Beats, we're not big on disposable fashion. We want our pieces to live through<br\/> siblings, cousins and neighbours' kids. That's why we source the finest kid-safe materials<br\/> — soft Pima cotton tees, durable denim, and stretch-knit basics built for play.<\/p>",
             "first_button_label": "Learn More",
             "first_button_link": "shopify:\/\/collections\/best-seller",
             "first_button_type": "primary",
@@ -572,7 +572,7 @@
         "description_3VEKaL": {
           "type": "description",
           "settings": {
-            "description": "<p>At Ollo Kids, we listen to the families we dress every day. Every new collection is shaped by real feedback from real<br\/> parents and the little ones who actually wear our clothes.<\/p>",
+            "description": "<p>At Tiny Beats, we listen to the families we dress every day. Every new collection is shaped by real feedback from real<br\/> parents and the little ones who actually wear our clothes.<\/p>",
             "font_size": 15,
             "font_weight": "body_weight",
             "spacing_bottom": 10
